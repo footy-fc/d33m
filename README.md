@@ -1,10 +1,8 @@
-# Farcaster Channel Chat
+# deem rooms - Farcaster Channel Chat for The Beautiful Game
 
 Pop-up Farcaster Channels ak.a. d33m rooms. No replies, no reactions, no nothing. Just an IRC like chat widget that can create unique 6 character channels for the domain this repo is deployed on.
 
 ## About
-
-![Demo](https://github.com/i001962/Farcaster_Channel_Chat/blob/main/public/assets/Screenshot_demo.png) OLD IMAGE
 
 Example site: https://d33m.com
 
