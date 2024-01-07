@@ -127,6 +127,7 @@ const SocialMediaFeed = () => {
 
   const openPanel = () => {
     setIsPanelOpen(true);
+    setShowDropdown(false);
   };
 
   const closePanel = () => {
