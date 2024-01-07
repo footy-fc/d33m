@@ -198,6 +198,13 @@ const SocialMediaFeed = () => {
     adjustTextareaHeight();
   }, [newPost]); 
   
+  useEffect(() => {
+    const storedApiKey = getApiKeyFromLocalStorage();
+    if (storedApiKey) {
+      setApiKey(storedApiKey);
+    }
+  }, []);
+  
   // FUNCTIONS
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
@@ -274,6 +281,12 @@ const SocialMediaFeed = () => {
 
   const getApiKeyFromLocalStorage = () => {
     return localStorage.getItem('chatgpt-api-key');
+  };
+  
+  const handleApiKeyChange = (e: { target: { value: any; }; }) => {
+    const newApiKey = e.target.value;
+    setApiKey(newApiKey);
+    setApiKeyToLocalStorage(newApiKey);
   };
   
   // TODO: move this to a hook
@@ -620,7 +633,7 @@ const SocialMediaFeed = () => {
                     placeholder="Enter OpenAI APIKey"
                     className="bg-transparent border-b border-white text-white text-sm focus:outline-none"
                     value={openAiApiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
+                    onChange={handleApiKeyChange}
                   />
                 </div>
               )}
