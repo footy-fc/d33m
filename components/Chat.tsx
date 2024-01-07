@@ -47,7 +47,6 @@ import { faCircleUser, faBuilding, faArrowAltCircleUp } from '@fortawesome/free-
 
 /* TEAM LOGOS */
 import validTeamLogos from '../public/validTeams.json';
-const teamLogosData: TeamLogos = validTeamLogos;
 
 /* SIDE PANEL */
 import SlideOutPanel from '../components/SlideOutPanel'; // Import the SlideOutPanel component
@@ -238,6 +237,7 @@ const SocialMediaFeed = () => {
       const responseAI = await sendAi(newPost, openAiApiKey);
       //console.log("AI response", responseAI);
       setNewPost(responseAI)//
+      setRemainingChars(CastLengthLimit-responseAI.length);
       return;
     }
     const bioPost = /^\/team\s/; // checks for /ai command
@@ -245,6 +245,7 @@ const SocialMediaFeed = () => {
       setNewPost("Updating your Farcaster bio..."); // TODO: change this to a spinner and error msg
       const responseBio = await sendBio(newPost, encryptedSigner!,hubAddress, CLIENT_NAME,);
       setNewPost(responseBio);
+      setRemainingChars(CastLengthLimit);
       setTimeout(() => {
         setNewPost(""); // Clear the message
       }, 1000); // 1000 milliseconds (1 second) timeout
@@ -264,6 +265,7 @@ const SocialMediaFeed = () => {
     }, { fid: request?.userFid, network: FarcasterNetwork.MAINNET }, (encryptedSigner as NobleEd25519Signer)))._unsafeUnwrap();
     hub.submitMessage(cast); // w open hub this works
     setNewPost("");
+    setRemainingChars(CastLengthLimit);
   }
 
   const setApiKeyToLocalStorage = (apiKey: string) => {
@@ -359,10 +361,12 @@ const SocialMediaFeed = () => {
               const sixCharacterString = joinMatch[1];
               setTargetUrl(DefaultChannelDomain + sixCharacterString);
               setNewPost(""); // Clear the message
+              setRemainingChars(CastLengthLimit);
             }
             // If it's a valid URL, set targetUrl as the provided URL
             else if (joinMatch[0]) {
               setTargetUrl(joinMatch[0]);
+              setRemainingChars(CastLengthLimit-joinMatch[0].length+1);
             }
           }
           break;
@@ -372,6 +376,7 @@ const SocialMediaFeed = () => {
           setTargetUrl("chain://eip155:1/erc721:0x7abfe142031532e1ad0e46f971cc0ef7cf4b98b0");
           setShowDropdown(false);
           setNewPost(""); // Clear the message
+          setRemainingChars(CastLengthLimit);
           break;
 
         case 'ai':
