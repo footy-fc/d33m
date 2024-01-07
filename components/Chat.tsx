@@ -1,9 +1,10 @@
 /* REACT */
-import { useEffect, useRef, useState } from 'react';
+import { SetStateAction, useEffect, useRef, useState } from 'react';
 import QRCode from "react-qr-code";
 import { useRouter } from 'next/router';
 import Image from "next/image";
 import Link from "next/link";
+import TeamsModal from './TeamLogos';
 
 /* HOOKS */
 import { useFetchUserDetails } from "./useFetchUserDetails";
@@ -43,7 +44,7 @@ const IMGAGE_WIDTH = 20;
 
 /* ICONS */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleUser, faBuilding, faArrowAltCircleUp } from '@fortawesome/free-regular-svg-icons';
+import { faCircleUser, faBuilding, faArrowAltCircleUp, faIdBadge } from '@fortawesome/free-regular-svg-icons';
 
 /* TEAM LOGOS */
 import validTeamLogos from '../public/validTeams.json';
@@ -121,13 +122,27 @@ const SocialMediaFeed = () => {
   const [casterFID, setCasterFID] = useState<number>(FarcasterAppFID);
   const { userResult: casterBio, loading1: loadingBio } = useFetchUserDetails(casterFID, FarcasterHub, UserDataType.BIO);
   const { userResult: casterFname, loading1: loadingFname } = useFetchUserDetails(casterFID, FarcasterHub, UserDataType.FNAME);
-  
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedTeam, setSelectedTeam] = useState('');
+
   const openPanel = () => {
     setIsPanelOpen(true);
   };
 
   const closePanel = () => {
     setIsPanelOpen(false);
+  };
+
+  const handleTeamSelect = (teamName: SetStateAction<string>) => {
+    setSelectedTeam(teamName);
+    const d33mRegex = /d33m:[^\s]+/;
+    // Check if d33m:team tag already exists in casterBio
+    if (d33mRegex.test(casterBio.join(' '))) {
+        const updatedBio = casterBio.map(bio => bio.replace(d33mRegex, `d33m:${teamName}`)).join(' ');
+        setNewPost(`/team ${updatedBio}`);    
+    } else {
+        setNewPost(`/team ${casterBio} d33m:${teamName}`);
+    }
   };
 
   scrollRef = useRef(null);
@@ -251,12 +266,11 @@ const SocialMediaFeed = () => {
     if (bioPost.test(newPost)) {
       setNewPost("Updating your Farcaster bio..."); // TODO: change this to a spinner and error msg
       const responseBio = await sendBio(newPost, encryptedSigner!,hubAddress, CLIENT_NAME,);
-      setNewPost(responseBio);
+      setNewPost(responseBio+" d33m:"+selectedTeam);
       setRemainingChars(CastLengthLimit);
       setTimeout(() => {
         setNewPost(""); // Clear the message
       }, 1000); // 1000 milliseconds (1 second) timeout
-    
       return;
     }
     const castBody = newPost;
@@ -354,6 +368,7 @@ const SocialMediaFeed = () => {
       )
       setFilteredCommands(matchedCommands);
       setShowDropdown(matchedCommands.length > 0);
+
     } else {
       setShowDropdown(false);
     }
@@ -394,11 +409,6 @@ const SocialMediaFeed = () => {
 
         case 'ai':
             break;
-
-        case 'team':
-          // TODO: hand case where user types /team, can't edit bio atm
-          //setNewPost(`/${command} ${casterBio.userResult } d33m:liv <- your team`);
-          break;
 
         default:
           // Handle unrecognized commands or provide a default action
@@ -525,31 +535,40 @@ const SocialMediaFeed = () => {
               setNewPost={setNewPost}
               handlePostChange={handlePostChange}
               /> )}
+              {isModalVisible && (
+                  <>
+                  <TeamsModal 
+                  isOpen={isModalVisible} 
+                  onRequestClose={() => setIsModalVisible(false)}
+                  onTeamSelect={handleTeamSelect}
+                />
+                </>
+                )}
               {showDropdown && (
-                <div className="absolute bottom-full left-0 right-0 mt-1 bg-lightPurple text-black shadow-lg z-10" style={{ width: '100%' }}>
-                  {filteredCommands.map(({ command, description }, index) => (
+                <div className="absolute bottom-full left-0 right-0 mt-1 boarder-1 border-limeGreenOpacity bg-purplePanel shadow-lg z-10" style={{ width: '100%' }}>
+                  {filteredCommands.map(({ command, description, botSource }, index) => (
                     <div
                       key={command}
-                      className={`px-4 py-2 hover:bg-deepPink cursor-pointer ${index === filteredCommands.length - 1 ? '' : ''}`
+                      className={`px-4 py-2 hover:bg-darkPurple cursor-pointer ${index === filteredCommands.length - 1 ? '' : ''}`
                       }
                       onClick={() => {
-                        //TODO SWITCH TO SWITCH?
-                        if(command === "team") {
-                          setNewPost(`/${command} ${casterBio } d33m:liv <-[your team]`);
-                          setShowDropdown(false);
-                          textareaRef.current?.focus(); // Set focus back to the textarea
-                        } else if (command === "football") {
+                        if (command === "football") {
                           setNewPost(`/${command}`);
                           setShowDropdown(false);
                           handlePostChange({ target: { value: "/football" } }); // change rooms immediately
-                          } else {
-                            setNewPost(`/${command}`);
-                            setShowDropdown(false);
-                            textareaRef.current?.focus(); // Set focus back to the textarea
-                            }
+                        } else {
+                          setNewPost(`/${command}`);
+                          setShowDropdown(false);
+                          textareaRef.current?.focus(); // Set focus back to the textarea
+                        }
                       }}
-                    >
-                      <strong>{command}</strong> - {description}
+                    > 
+                      <div className="flex items-center">
+                        <span className="text-sm text-lightPurple font-semibold">🤖 /{command} - </span>
+                        <span className="text-sm text-lightPurple font-normal">{description}</span>
+                        <span className="ml-auto text-sm text-lightPurple font-normal">{botSource}</span>
+                      </div>
+
                     </div>
                   ))}
                 </div>
@@ -569,13 +588,8 @@ const SocialMediaFeed = () => {
                     else if (e.key === 'Tab' && showDropdown && filteredCommands.length > 0) {
                       e.preventDefault(); // Prevent losing focus from the textarea
                       const firstCommand = filteredCommands[0].command;
-                      if (firstCommand === "team") {
-                        setNewPost(`/${firstCommand } ${casterBio } d33m:liv <- your team`);
-                        setShowDropdown(false);
-                      } else {
                       setNewPost(`/${firstCommand}`);
-                      setShowDropdown(false);
-                      }
+                      setShowDropdown(false); 
                   }
                 }}
                 style={{ minHeight: '1rem', lineHeight: 'normal' }}> {/* Adjusted min-height and lineHeight */}
@@ -607,6 +621,17 @@ const SocialMediaFeed = () => {
             >
               <FontAwesomeIcon icon={faBuilding}  style={{ color: '#C0B2F0', fontSize: '24px' }} />
               <p className="text-xxs" style={{ color: '#C0B2F0' }}>Lobby</p>
+            </button>
+            <button
+              onClick={() => {
+                setIsModalVisible(true);
+                setShowDropdown(false); // Close the dropdown first
+
+              }}
+              className="flex flex-col items-center" 
+            >
+              <FontAwesomeIcon icon={faIdBadge}  style={{ color: '#C0B2F0', fontSize: '24px' }} />
+              <p className="text-xxs" style={{ color: '#C0B2F0' }}>Badge</p>
             </button>
             <button className="text-md text-lightPurple font-semibold text-medium" onClick={() => copyToClipboardAndShare()}>
               <FontAwesomeIcon icon={faArrowAltCircleUp} style={{ color: '#C0B2F0', fontSize: '24px' }} />
