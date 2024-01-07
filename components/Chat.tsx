@@ -544,14 +544,13 @@ const SocialMediaFeed = () => {
                 />
                 </>
                 )}
-              {showDropdown && (
-                <div className="absolute bottom-full left-0 right-0 mt-1 boarder-1 border-limeGreenOpacity bg-purplePanel shadow-lg z-10" style={{ width: '100%' }}>
-                  {filteredCommands.map(({ command, description, botSource }, index) => (
-                    <div
-                      key={command}
-                      className={`px-4 py-2 hover:bg-darkPurple cursor-pointer ${index === filteredCommands.length - 1 ? '' : ''}`
-                      }
-                      onClick={() => {
+             {showDropdown && (
+              <div className="absolute bottom-full left-0 right-0 mt-1 border border-limeGreenOpacity bg-purplePanel shadow-lg z-10" style={{ width: '100%' }}>
+                {filteredCommands.map(({ command, description, botSource }, index) => (
+                  <div
+                    key={command}
+                    className={`grid grid-cols-[auto,1fr,auto] gap-2 px-4 py-2 hover:bg-darkPurple cursor-pointer ${index === filteredCommands.length - 1 ? '' : ''}`}
+                    onClick={() => {
                         if (command === "football") {
                           setNewPost(`/${command}`);
                           setShowDropdown(false);
@@ -563,12 +562,9 @@ const SocialMediaFeed = () => {
                         }
                       }}
                     > 
-                      <div className="flex items-center">
-                        <span className="text-sm text-lightPurple font-semibold">🤖 /{command} - </span>
-                        <span className="text-sm text-lightPurple font-normal">{description}</span>
-                        <span className="ml-auto text-sm text-lightPurple font-normal">{botSource}</span>
-                      </div>
-
+                      <span className="text-sm text-lightPurple font-semibold whitespace-nowrap">🤖 /{command}</span>
+                      <span className="text-sm text-lightPurple font-normal text-left">{description}</span>
+                      <span className="text-sm text-lightPurple font-normal justify-self-end">{botSource}</span>
                     </div>
                   ))}
                 </div>
