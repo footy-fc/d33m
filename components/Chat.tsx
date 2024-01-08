@@ -9,6 +9,8 @@ import TeamsModal from './TeamLogos';
 /* HOOKS */
 import { useFetchUserDetails } from "./useFetchUserDetails";
 import { useFetchCastsParentUrl } from './useFetchCastsParentUrl';
+import fetchCastersDetails from './fetchCasterDetails';
+import sendCast from './sendCast'; // adjust the path to match your project structure
 
 /* FARCASTER */
 import { 
@@ -20,22 +22,9 @@ import {
 } from "@farsign/hooks";
 
 import { 
-  makeCastAdd, 
-  getHubRpcClient, 
-  FarcasterNetwork, 
   Message, 
-  NobleEd25519Signer, 
   UserDataType, 
-  UserDataAddData, 
-  SignatureScheme, 
-  HubRpcClient, 
-  isUserDataAddMessage,
-  makeUserDataAdd
 } from "@farcaster/hub-web";
-import sendBio from './bioUpdate'; 
-
-/* OPEN AI */
-import sendAi from './ai'; // Adjust the path to match your project structure
 
 /* CONSTANTS */
 import { DefaultChannelDomain, FarcasterAppName, FarcasterHub, FarcasterAppFID, FarcasterAppMneumonic, DefaultChannelName, CastLengthLimit } from '../constants/constants'
@@ -46,26 +35,13 @@ const IMGAGE_WIDTH = 20;
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleUser, faBuilding, faArrowAltCircleUp, faIdBadge } from '@fortawesome/free-regular-svg-icons';
 
-/* TEAM LOGOS */
-import validTeamLogos from '../public/validTeams.json';
-
 /* SIDE PANEL */
 import SlideOutPanel from '../components/SlideOutPanel'; // Import the SlideOutPanel component
-
-/* TYPES */
-interface TeamLogos {
-  [key: string]: string;
-}
 
 interface UpdatedCast extends Message {
   fname: string;
   pfp: string;
   teamLogo: string;
-}
-
-type UserPseudos = {
-  userResult: string[],
-  loading1: boolean
 }
 
 /* used by @farsign/hooks */
@@ -152,8 +128,6 @@ const SocialMediaFeed = () => {
     if (typeof window !== 'undefined') {
       const request = JSON.parse(localStorage.getItem("farsign-" + CLIENT_NAME)!);
       setCasterFID(request?.userFid || FarcasterAppFID);
-      //const joinUrl = window.location.origin + "/" + DefaultChannelName; // easier to test locally
-      //setTargetUrl(joinUrl);
     }
   }, []);
   
@@ -187,12 +161,12 @@ const SocialMediaFeed = () => {
   }, [updatedCasts]);
 
   useEffect(() => {
-    fetchCastersDetails();
-  }, [casts]);
+    fetchCastersDetails(casts, hubAddress, setUpdatedCasts);
+  }, [casts, hubAddress]);
 
   useEffect(() => {
     const apiKey = getApiKeyFromLocalStorage();
-    setApiKey(apiKey || ''); // Use an empty string as the default value
+    setApiKey(apiKey || ''); // Use an empty string as the default value or boom
   }, []);
   
   // Calculate the aspect ratio and update the height
@@ -230,66 +204,6 @@ const SocialMediaFeed = () => {
     }
   };    
 
-  const getUserDataFromFid = async (
-    fid: number,
-    userDataType: UserDataType,
-    client: HubRpcClient
-  ): Promise<string> => {
-    const result = await client.getUserData({ fid: fid, userDataType: userDataType });
-    if (result.isOk()) {
-      const userDataAddMessage = result.value as Message & {
-        data: UserDataAddData;
-        signatureScheme: SignatureScheme.ED25519;
-      };
-      if (isUserDataAddMessage(userDataAddMessage)) {
-        return userDataAddMessage.data.userDataBody.value;
-      } else {
-        return "";
-      }
-    } else {
-      // Handle the error case here
-      throw new Error(result.error.toString());
-    }
-  };
-
-  // TODO condsider moving this to a hook
-  const sendCast = async (newPost: string, encryptedSigner: NobleEd25519Signer) => {
-    const aiPost = /^\/ai\s/; // checks for /ai command
-    if (aiPost.test(newPost)) {
-      setNewPost("Loading AI... checking for your API key \u2198"); // TODO: change this to a spinner and error msg
-      const responseAI = await sendAi(newPost, openAiApiKey);
-      //console.log("AI response", responseAI);
-      setNewPost(responseAI)//
-      setRemainingChars(CastLengthLimit-responseAI.length);
-      return;
-    }
-    const bioPost = /^\/team\s/; // checks for /ai command
-    if (bioPost.test(newPost)) {
-      setNewPost("Updating your Farcaster bio..."); // TODO: change this to a spinner and error msg
-      const responseBio = await sendBio(newPost, encryptedSigner!,hubAddress, CLIENT_NAME,);
-      setNewPost(responseBio+" d33m:"+selectedTeam);
-      setRemainingChars(CastLengthLimit);
-      setTimeout(() => {
-        setNewPost(""); // Clear the message
-      }, 1000); // 1000 milliseconds (1 second) timeout
-      return;
-    }
-    const castBody = newPost;
-    const hub = getHubRpcClient(hubAddress); // works with open hub
-    const request = JSON.parse(localStorage.getItem("farsign-" + CLIENT_NAME)!);
-    const cast = (await makeCastAdd({
-      text: castBody,
-      parentUrl: targetUrl,
-      embeds: [],
-      embedsDeprecated: [],
-      mentions: [],
-      mentionsPositions: [],
-    }, { fid: request?.userFid, network: FarcasterNetwork.MAINNET }, (encryptedSigner as NobleEd25519Signer)))._unsafeUnwrap();
-    hub.submitMessage(cast); // w open hub this works
-    setNewPost("");
-    setRemainingChars(CastLengthLimit);
-  }
-
   const setApiKeyToLocalStorage = (apiKey: string) => {
     localStorage.setItem('chatgpt-api-key', apiKey);
   };
@@ -304,57 +218,6 @@ const SocialMediaFeed = () => {
     setApiKeyToLocalStorage(newApiKey);
   };
   
-  // TODO: move this to a hook
-  const fetchCastersDetails = async () => {
-    const client = getHubRpcClient(hubAddress);
-    const updatedData = casts
-      .filter((cast) => cast.data !== undefined) // Remove rows where data is undefined
-      .map(async (cast) => {
-        if (cast.data?.castAddBody) {
-          const { fid } = cast.data;
-          const pfp = await getUserDataFromFid(fid, 1, client); // Assuming you have access to the `client` variable
-          const fname = await getUserDataFromFid(fid, 2, client); // Assuming you have access to the `client` variable
-          const bio = await getUserDataFromFid(fid, 3, client); // Assuming you have access to the `client` variable
-          let teamLogo = '';
-          // let category = '';
-          
-          const d33mIndex = bio.indexOf('d33m:');
-          if (d33mIndex !== -1) {
-              const substringFromD33m = bio.substring(d33mIndex);
-              const parts = substringFromD33m.split(':');
-          
-              if (parts.length >= 2) {
-                  //category = parts[1]; // e.g., 'epl'
-                  const teamPart = parts[1];
-                  const spaceIndex = teamPart.indexOf(' ');
-                  const teamCode = spaceIndex === -1 ? teamPart : teamPart.substring(0, spaceIndex);
-                  teamLogo = validTeamLogos.hasOwnProperty(teamCode)
-                              ? validTeamLogos[teamCode as keyof typeof validTeamLogos]
-                              : "defifa_spinner.gif";
-              }
-          } else {
-            teamLogo = "defifa_spinner.gif";
-        }
-        // console.log("teamLogo", teamLogo);
-          const humanReadableTime = new Date(cast.data.timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-          return {
-            ...(cast as UpdatedCast),
-            pfp: pfp ?? '',
-            fname: fname ?? '', // add the fname field with the returned value from `getUserDataFromFid` or an empty string
-            teamLogo: teamLogo ?? '',
-            humanReadableTime: humanReadableTime ?? '',
-          };
-        } else {
-          return null; // Skip this array row
-        }
-      });
-
-    const extendedCasts = (await Promise.all(updatedData)).filter((cast) => cast !== null) as unknown as UpdatedCast[];
-    // Reverse the array
-    extendedCasts.reverse();
-    setUpdatedCasts(extendedCasts);
-  };
-
   const handlePostChange = (event: { target: { value: any; }; }) => {
     const inputValue = event.target.value;
     setNewPost(inputValue);
@@ -457,7 +320,8 @@ const SocialMediaFeed = () => {
       console.warn('Clipboard API not supported');
     }
   };
-
+  // TODO make some components for this and use them in the panel
+  // TODO slide out panel only closing on affordnace click, should close on click outside
   return isConnected ? (
     <>  
       <div className="flex flex-grow flex-col min-h-screen"> {/* FULL SCREEN */}
@@ -580,8 +444,8 @@ const SocialMediaFeed = () => {
                 onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
-                        sendCast(newPost, encryptedSigner!);
-                    }
+                        sendCast(newPost, setNewPost, setRemainingChars, encryptedSigner!, hubAddress, CLIENT_NAME, targetUrl, selectedTeam);
+                      }
                     else if (e.key === 'Tab' && showDropdown && filteredCommands.length > 0) {
                       e.preventDefault(); // Prevent losing focus from the textarea
                       const firstCommand = filteredCommands[0].command;
@@ -595,7 +459,7 @@ const SocialMediaFeed = () => {
             <button
               className="mb-2 py-2 px-4 bg-deepPink hover:bg-pink-600 rounded-full flex items-center justify-center transition duration-300 ease-in-out shadow-md hover:shadow-lg text-lightPurple font-semibold text-medium"
               onClick={() => {
-                sendCast(newPost, encryptedSigner!);
+                sendCast(newPost, setNewPost, setRemainingChars, encryptedSigner!, hubAddress, CLIENT_NAME, targetUrl, selectedTeam);
                 const audioElement = new Audio('/assets/soccer-ball-kick-37625.mp3');
                 audioElement.play();
               }}>
@@ -622,7 +486,7 @@ const SocialMediaFeed = () => {
             <button
               onClick={() => {
                 setIsModalVisible(true);
-                setShowDropdown(false); // Close the dropdown first
+                setShowDropdown(false); 
 
               }}
               className="flex flex-col items-center" 
