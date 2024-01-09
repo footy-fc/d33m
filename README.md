@@ -1,6 +1,6 @@
 # d33m rooms - Farcaster Channel Chat for The Beautiful Game
 
-Pop-up Farcaster Channels ak.a. d33m rooms. No replies, no reactions, no nothing. Just an IRC like chat widget that can create unique 6 character channels for the domain this repo is deployed on.
+Pop-up Farcaster Channels a.k.a. d33m rooms. No replies, no reactions, no nothing. Just an IRC like chat widget that can create unique 6 character channels for the domain this repo is deployed on.
 
 ## About
 
@@ -9,7 +9,7 @@ Example site: https://d33m.com
 Uses @noctisatrae's [/farsign/hooks](https://github.com/noctisatrae/farsign) for user authentication.
 
 ## Usage
-A random d33m room is created every time you visit d33m.com. Move from room to room by typing `/join [ID]`. The room name is 6 characters. You can also create a new room by typing any 6 characters after `/join`. For example, `/join 123456` will create or join the room with the ID `123456`. 
+When you visit d33m.com you show up in a general lobby room (lobby1). You can move from room to room by typing `/join [ID]`. Each room name(ID) is 6 characters. You can also create a new room by typing any 6 characters after `/join`. For example, `/join 123456` will create or join the room with the ID `123456`. 
 
 `Note: Channels are case-sensitive. "LIVMUN" is not the same as "livmun".`
 
@@ -22,7 +22,7 @@ There are a few console.logs in the code to help you understand what's going on.
 
 Non obvious feature:
 
-- To display an avatar badge that represents the team you are supporting add `d33m:[team abreviation]` to your Farcaster bio. For example, `d33m:liv` will display the Liverpool FC badge. d33m:ars will display the Arsenal FC badge etc. PR to add your team's badge.
+- To display an avatar badge that represents the team you are supporting add `d33m:[team abreviation]` to your Farcaster bio. For example, `d33m:liv` will display the Liverpool FC badge. `d33m:ars` will display the Arsenal FC badge etc. PR to add your team's badge.
 
 ## Installation
 
