@@ -21,11 +21,16 @@
     "wol": "wol.png",
     "fcb": "fcb.png",
     "rma": "rma.png",
+    "sev": "sev.png",
     "bvb": "bvb.png",
     "bay": "bay.png",
     "int": "int.png",
     "acm": "acm.png",
+    "juv": "juv.png",
+    "nap": "nap.png",
     "gal": "gal.png",
-    "sev": "sev.png"
+    "fen": "fen.png",
+    "psg": "psg.png",
+    "ajx": "ajx.png"
   }
   
