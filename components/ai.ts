@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+let conversationHistory: { role: string; content: any; }[] = [];
+
 // Import any other necessary variables or constants here
 const sendAi = async (aiPrompt: string, openAiApiKey: string) => {
     const prompt = aiPrompt;
@@ -11,12 +13,14 @@ const sendAi = async (aiPrompt: string, openAiApiKey: string) => {
     } else {
       const apiKey = openAiApiKey;
       const apiUrl = 'https://api.openai.com/v1/chat/completions';
-  
+      conversationHistory.push({ role: 'user', content: aiPrompt });
+
       const requestData = {
         model: 'gpt-3.5-turbo',
-        messages: [{ role: 'user', content: prompt }],
+        // messages: [{ role: 'user', content: prompt }],
+        messages: conversationHistory,
         temperature: 0.7,
-        max_tokens: 250,
+        max_tokens: 500,
       };
   
       const headers = {
@@ -29,6 +33,8 @@ const sendAi = async (aiPrompt: string, openAiApiKey: string) => {
   
         if (aiResponse.status === 200) {
           const aiResponseContent = aiResponse.data.choices[0].message.content;
+          conversationHistory.push({ role: 'system', content: aiResponseContent });
+          console.log('aiResponseContent', aiResponseContent);
           return aiResponseContent;
         } else {
           console.error('Failed to fetch AI. Status code:', aiResponse.status);

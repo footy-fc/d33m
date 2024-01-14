@@ -22,7 +22,7 @@ const sendCast = async (
         setNewPost("Loading AI... checking for your API key \u2198"); // TODO: change this to a spinner and error msg
         const openAiApiKey = getApiKeyFromLocalStorage();
         const responseAI = await sendAi(newPost, openAiApiKey||"");
-        setNewPost(responseAI)//
+        setNewPost(responseAI)// TODO move to it's own affordance
         setRemainingChars(CastLengthLimit-responseAI.length);
         return;
     }
