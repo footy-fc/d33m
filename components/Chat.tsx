@@ -32,11 +32,13 @@ import { useCommands } from './slashCommands';
 const IMGAGE_WIDTH = 20; 
 
 /* ICONS */
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleUser, faBuilding, faArrowAltCircleUp, faIdBadge } from '@fortawesome/free-regular-svg-icons';
+//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+//import { faCircleUser, faBuilding, faArrowAltCircleUp, faIdBadge } from '@fortawesome/free-regular-svg-icons';
 
-/* SIDE PANEL */
+/* Render Components */
 import SlideOutPanel from '../components/SlideOutPanel'; // Import the SlideOutPanel component
+import CastItem from './CastItem';
+import FooterNav from './FooterNav';
 
 interface UpdatedCast extends Message {
   fname: string;
@@ -90,8 +92,9 @@ const SocialMediaFeed = () => {
   const [token] = useToken(CLIENT_NAME, params, keys!);
   const [signer] = useSigner(CLIENT_NAME, token);
   const [apiKeyVisible, setApiKeyVisible] = useState(false); // Initialize as hidden
-  const [imageWidth, setImageWidth] = useState(IMGAGE_WIDTH); // Set the initial width
+  /* const [imageWidth, setImageWidth] = useState(IMGAGE_WIDTH); // Set the initial width
   const [imageHeight, setImageHeight] = useState(IMGAGE_WIDTH); // Set the initial height
+   */
   const [showDropdown, setShowDropdown] = useState(false);
   const {commands, setCommands, filteredCommands, setFilteredCommands} = useCommands();
   const [isPanelOpen, setIsPanelOpen] = useState(false);
@@ -168,13 +171,6 @@ const SocialMediaFeed = () => {
     const apiKey = getApiKeyFromLocalStorage();
     setApiKey(apiKey || ''); // Use an empty string as the default value or boom
   }, []);
-  
-  // Calculate the aspect ratio and update the height
-  useEffect(() => {
-    const aspectRatio = imageWidth / IMGAGE_WIDTH; // Assuming the original width is 20
-    const newHeight = IMGAGE_WIDTH / aspectRatio;
-    setImageHeight(newHeight);
-  }, [imageWidth]);
 
   // Adjust textarea height on window resize
   useEffect(() => {
@@ -352,39 +348,7 @@ const SocialMediaFeed = () => {
                 (url: any) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-deepPink">${'External Link'}</a>`
               );
               return (
-                <div key={index} className="flex bg-darkPurple p-2 ml-2 mr-2 items-start">
-                  <div className="relative min-w-8 mr-2">
-                    <Image
-                      src={updatedCast.pfp || '/assets/defifa_spinner.gif'}
-                      alt="Author Avatar"
-                      className="rounded-full w-8 h-8"
-                      width={24}
-                      height={24}
-                    />
-                    <Image
-                      src={"/assets/epl/" + updatedCast.teamLogo}
-                      alt="Overlay Team Logo"
-                      className="w-5 h-5 p-0.5 bg-deepPink rounded-full absolute right-0 top-0"
-                      style={{ transform: 'translate(40%, -40%)' }} // Adjusted to 20% overlap
-                      width={imageWidth}
-                      height={imageHeight}
-                      onLoad={(e) => {
-                        const imgElement = e.target as HTMLImageElement;
-                        setImageWidth(imgElement.width);
-                      }}
-                    />
-                  </div>
-                  <span className="text-sm ml-2 text-notWhite font-semibold">
-                    {typeof updatedCast.fname === 'object' ? updatedCast.fname : updatedCast.fname}
-                    {" "}
-                    <span
-                      className="text-sm text-lightPurple font-normal"
-                      dangerouslySetInnerHTML={{
-                        __html: textWithLinks ?? '',
-                      }}
-                    ></span>
-                  </span>
-                </div>
+                <CastItem key={index} updatedCast={updatedCast} index={index} />
               );
             })}
           </div>
@@ -469,62 +433,22 @@ const SocialMediaFeed = () => {
           </div>
           <p className="text-fontRed ml-2 text-sm mt-2 mb-2">{remainingChars} characters remaining ish</p>
           {/* FOOTER NAV */}  
-          <div className="flex justify-between items-center p-2 mb-2">
-            {/* TODO change to dynamic domain */}
-            <button
-              onClick={() => {
-                // Go to room
-                const inputVar = { target: { value: "/join " + DefaultChannelName } };
-                // Call your function here with inputVar
-                handlePostChange(inputVar);
-              }}
-              className="flex flex-col items-center" 
-            >
-              <FontAwesomeIcon icon={faBuilding}  style={{ color: '#C0B2F0', fontSize: '24px' }} />
-              <p className="text-xxs" style={{ color: '#C0B2F0' }}>Lobby</p>
-            </button>
-            <button
-              onClick={() => {
-                setIsModalVisible(true);
-                setShowDropdown(false); 
+          <FooterNav 
+            onLobbyClick={() => {
+              const inputVar = { target: { value: "/join " + DefaultChannelName } };
+              handlePostChange(inputVar);
+            }}
+            onBadgeClick={() => {
+              setIsModalVisible(true);
+              setShowDropdown(false); 
+            }}
+            onShareClick={() => copyToClipboardAndShare()}
+            onSetupClick={() => setApiKeyVisible(!apiKeyVisible)}
+            apiKeyVisible={apiKeyVisible}
+            openAiApiKey={openAiApiKey} // Passed as prop
+            handleApiKeyChange={handleApiKeyChange} // Passed as prop
 
-              }}
-              className="flex flex-col items-center" 
-            >
-              <FontAwesomeIcon icon={faIdBadge}  style={{ color: '#C0B2F0', fontSize: '24px' }} />
-              <p className="text-xxs" style={{ color: '#C0B2F0' }}>Badge</p>
-            </button>
-            <button className="text-md text-lightPurple font-semibold text-medium" onClick={() => copyToClipboardAndShare()}>
-              <FontAwesomeIcon icon={faArrowAltCircleUp} style={{ color: '#C0B2F0', fontSize: '24px' }} />
-              <p className="text-xxs" style={{ color: '#C0B2F0' }}>Share</p>
-            </button>
-            <div className={`flex ${apiKeyVisible ? 'flex-row' : 'flex-col'} items-center text-md`} style={{ color: '#C0B2F0' }}>
-              {/* Icon with click handler */}
-              <div
-                className="cursor-pointer flex flex-col items-center" // Apply flex-col and items-center here
-                onClick={() => {
-                  setApiKeyVisible(!apiKeyVisible);
-                }}
-              >
-                <FontAwesomeIcon icon={faCircleUser} style={{ color: '#C0B2F0', fontSize: '24px' }} />
-                {/* Text below the icon */}
-                <p className={`text-xxs ${apiKeyVisible ? 'ml-1 mr-1' : ''} text-center`}>
-                  Setup
-                </p>
-              </div>
-              {apiKeyVisible && (
-                <div className="text-md text-white mr-2">
-                  <input
-                    type="text"
-                    placeholder="Enter OpenAI APIKey"
-                    className="bg-transparent border-b border-white text-white text-sm focus:outline-none"
-                    value={openAiApiKey}
-                    onChange={handleApiKeyChange}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
+          />
         </div>
       </div>
     </>
@@ -583,39 +507,7 @@ const SocialMediaFeed = () => {
                  (url: any) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-deepPink">${'External Link'}</a>`
                );
                return (
-                  <div key={index} className="flex bg-darkPurple p-2 ml-2 mr-2 items-start">
-                  <div className="relative min-w-8 mr-2">
-                   <Image
-                     src={updatedCast.pfp || '/assets/defifa_spinner.gif'}
-                     alt="Author Avatar"
-                     className="rounded-full w-8 h-8"
-                     width={24}
-                     height={24}
-                   />
-                   <Image
-                     src={"/assets/epl/" + updatedCast.teamLogo}
-                     alt="Overlay Team Logo"
-                     className="w-5 h-5 p-0.5 bg-deepPink rounded-full absolute right-0 top-0"
-                     style={{ transform: 'translate(40%, -40%)' }} // Adjusted to 20% overlap
-                     width={imageWidth}
-                     height={imageHeight}
-                     onLoad={(e) => {
-                       const imgElement = e.target as HTMLImageElement;
-                       setImageWidth(imgElement.width);
-                     }}
-                   />
-                   </div>
-                   <span className="text-sm ml-2 text-notWhite font-semibold">
-                     {typeof updatedCast.fname === 'object' ? updatedCast.fname : updatedCast.fname}
-                     {" "}
-                     <span
-                       className="text-sm text-lightPurple font-normal"
-                       dangerouslySetInnerHTML={{
-                         __html: textWithLinks ?? '',
-                       }}
-                     ></span>
-                   </span>
-                 </div>
+                <CastItem key={index} updatedCast={updatedCast} index={index} />
                );
              })}
            </div>
