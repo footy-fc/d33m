@@ -19,7 +19,7 @@ const sendCast = async (
     };    
     const aiPost = /^\/ai\s/; 
     if (aiPost.test(newPost)) {
-        setNewPost("Loading AI... checking for your API key \u2198"); // TODO: change this to a spinner and error msg
+        setNewPost("Loading AI... checking for your API key \u2198"); // TODO: change this to a spinner
         const openAiApiKey = getApiKeyFromLocalStorage();
         const responseAI = await sendAi(newPost, openAiApiKey||"");
         setNewPost(responseAI)// TODO move to it's own affordance
@@ -52,3 +52,4 @@ const sendCast = async (
 };
 
 export default sendCast;
+
