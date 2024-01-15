@@ -1,6 +1,5 @@
 /* REACT */
 import { SetStateAction, useEffect, useRef, useState } from 'react';
-import QRCode from "react-qr-code";
 import { useRouter } from 'next/router';
 import Image from "next/image";
 import Link from "next/link";
@@ -10,7 +9,7 @@ import TeamsModal from './TeamLogos';
 import { useFetchUserDetails } from "./useFetchUserDetails";
 import { useFetchCastsParentUrl } from './useFetchCastsParentUrl';
 import fetchCastersDetails from './fetchCasterDetails';
-import sendCast from './sendCast'; // adjust the path to match your project structure
+import sendCast from './sendCast'; 
 
 /* FARCASTER */
 import { 
@@ -31,14 +30,15 @@ import { DefaultChannelDomain, FarcasterAppName, FarcasterHub, FarcasterAppFID, 
 import { useCommands } from './slashCommands';
 const IMGAGE_WIDTH = 20; 
 
-/* ICONS */
-//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-//import { faCircleUser, faBuilding, faArrowAltCircleUp, faIdBadge } from '@fortawesome/free-regular-svg-icons';
+/* Functions */
+import copyToClipboardAndShare from './copyToClipboardAndShare';
 
 /* Render Components */
 import SlideOutPanel from '../components/SlideOutPanel'; // Import the SlideOutPanel component
 import CastItem from './CastItem';
 import FooterNav from './FooterNav';
+import WarpcastLogin from './WarpcastLogin';
+import QRCode from './QRCodeMobile';
 
 interface UpdatedCast extends Message {
   fname: string;
@@ -92,9 +92,6 @@ const SocialMediaFeed = () => {
   const [token] = useToken(CLIENT_NAME, params, keys!);
   const [signer] = useSigner(CLIENT_NAME, token);
   const [apiKeyVisible, setApiKeyVisible] = useState(false); // Initialize as hidden
-  /* const [imageWidth, setImageWidth] = useState(IMGAGE_WIDTH); // Set the initial width
-  const [imageHeight, setImageHeight] = useState(IMGAGE_WIDTH); // Set the initial height
-   */
   const [showDropdown, setShowDropdown] = useState(false);
   const {commands, setCommands, filteredCommands, setFilteredCommands} = useCommands();
   const [isPanelOpen, setIsPanelOpen] = useState(false);
@@ -282,40 +279,7 @@ const SocialMediaFeed = () => {
     return <div>Loading...</div>;
   }
 
-  const copyToClipboardAndShare = () => {
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(targetUrl)
-        .then(() => {
-          console.log('Copied channel invite to clipboard');
-          //const newWindow = 'https://warpcast.com/~/compose?text=Hey+I%27m+in+this+pop-up+channel+talk%27n+smack+about+the+beautiful+game.%0A%0AClick+the+link+to+join+me%21%0A%0A'; // WC
-          const newWindow = 'https://twitter.com/intent/tweet?text=Hey+I%27m+in+this+pop-up+channel+talk%27n+smack+about+the+beautiful+game.%0A%0AClick+the+link+to+join+me%21%0A%0A';
-          const fullUrl = newWindow + targetUrl;
-         // window.open(fullUrl, '_blank');
-         // Check if the Web Share API is supported
-        if (navigator.share && isMobileDevice) {
-          // Define the data you want to share
-          const shareData = {
-              title: 'd33m room',
-              text: 'Join me in this pop-up channel and talk about the game.',
-              url: targetUrl
-          };
 
-          // Call the share API
-          navigator.share(shareData)
-              .then(() => console.log('Share was successful.'))
-              .catch((error) => console.error('Sharing failed', error));
-        } else {
-          console.log('Web Share API is not supported on this browser.');
-          window.open(fullUrl, '_blank');
-        }
-        })
-        .catch((error) => {
-          console.error('Error copying to clipboard:', error);
-        });
-    } else {
-      console.warn('Clipboard API not supported');
-    }
-  };
   // TODO make some components for this and use them in the panel
   // TODO slide out panel only closing on affordnace click, should close on click outside
   return isConnected ? (
@@ -442,7 +406,7 @@ const SocialMediaFeed = () => {
               setIsModalVisible(true);
               setShowDropdown(false); 
             }}
-            onShareClick={() => copyToClipboardAndShare()}
+            onShareClick={() => copyToClipboardAndShare(targetUrl, isMobileDevice)}
             onSetupClick={() => setApiKeyVisible(!apiKeyVisible)}
             apiKeyVisible={apiKeyVisible}
             openAiApiKey={openAiApiKey} // Passed as prop
@@ -476,29 +440,12 @@ const SocialMediaFeed = () => {
             </Link>
           </div>
           {!isMobileDevice && (
-            <div className="p-4 flex flex-col items-center justify-center">
-                <div style={{ height: "auto", margin: "0 auto", maxWidth: 150, width: "100%" }}>
-                  <QRCode
-                    size={256}
-                    style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-                    value={token.deepLink}
-                    viewBox={`0 0 256 256`}
-                  />
-                  <span className="block text-fontRed text-center text-lg mt-2">Login with Warpcast</span>
-                </div>
-            </div>
-          )}{isMobileDevice && (
-            <div className="p-4 flex-grow">
-              <Link href={token.deepLink}>
-                <button
-                  className="flex items-center gap-2 bg-deepPink text-white font-medium py-2 px-4 rounded-md mt-2"
-                >
-                  Connect with Warpcast
-                </button>
-              </Link>
-            </div>
+            <QRCode deepLink={token.deepLink} />
           )}
-             <div >
+          {isMobileDevice && (
+            <WarpcastLogin deepLink={token.deepLink} />
+          )}
+            <div >
              {updatedCasts?.map((updatedCast, index) => {
                const textWithLinks = updatedCast?.data?.castAddBody?.text.replace(
                  /(https?:\/\/[^\s]+)/g,
@@ -508,7 +455,7 @@ const SocialMediaFeed = () => {
                 <CastItem key={index} updatedCast={updatedCast} index={index} />
                );
              })}
-           </div>
+            </div>
         </div>
         {/* FOOTER */}  
         <div className="bg-purplePanel p-4"> 
@@ -551,60 +498,28 @@ const SocialMediaFeed = () => {
                       <span className="text-sm text-lightPurple font-semibold whitespace-nowrap">🤖 /{command}</span>
                       <span className="text-sm text-lightPurple font-normal text-left">{description}</span>
                       <span className="text-sm text-lightPurple font-normal justify-self-end">{botSource}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-              <textarea
-                ref={textareaRef}
-                className={`w-full text-white text-sm px-2 py-1 focus:outline-none border bg-darkPurple border-limeGreenOpacity resize-none overflow-hidden ${showDropdown ? 'rounded-b-lg' : 'rounded-lg'}`}
-                placeholder="Cast or / for 🤖 commands" 
-                //style="min-height: 1.5rem; line-height: 1.5rem;"
-                value={newPost}
-                onChange={handlePostChange}
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        sendCast(newPost, setNewPost, setRemainingChars, encryptedSigner!, hubAddress, CLIENT_NAME, targetUrl, selectedTeam);
-                      }
-                    else if (e.key === 'Tab' && showDropdown && filteredCommands.length > 0) {
-                      e.preventDefault(); // Prevent losing focus from the textarea
-                      const firstCommand = filteredCommands[0].command;
-                      setNewPost(`/${firstCommand}`);
-                      setShowDropdown(false); 
-                  }
-                }}
-                style={{ minHeight: '1rem', lineHeight: 'normal' }}> {/* Adjusted min-height and lineHeight */}
-              </textarea>
-            </div>
-            <button
-              className="mb-2 py-2 px-4 bg-deepPink hover:bg-pink-600 rounded-full flex items-center justify-center transition duration-300 ease-in-out shadow-md hover:shadow-lg text-lightPurple font-semibold text-medium"
-              onClick={() => {
-                sendCast(newPost, setNewPost, setRemainingChars, encryptedSigner!, hubAddress, CLIENT_NAME, targetUrl, selectedTeam);
-                const audioElement = new Audio('/assets/soccer-ball-kick-37625.mp3');
-                audioElement.play();
-              }}>
-              <img src="/favicon.ico" alt="Favicon" className="w-6 h-5" />
-
-            </button>
-          </div>
-          <p className="text-fontRed ml-2 text-sm mt-2 mb-2">{remainingChars} characters remaining ish</p>
-          {/* FOOTER NAV */}  
-          <FooterNav 
-            onLobbyClick={() => {
-              const inputVar = { target: { value: "/join " + DefaultChannelName } };
-              handlePostChange(inputVar);
-            }}
-            onBadgeClick={() => {
-              setIsModalVisible(true);
-              setShowDropdown(false); 
-            }}
-            onShareClick={() => copyToClipboardAndShare()}
-            onSetupClick={() => setApiKeyVisible(!apiKeyVisible)}
-            apiKeyVisible={apiKeyVisible}
-            openAiApiKey={openAiApiKey} // Passed as prop
-            handleApiKeyChange={handleApiKeyChange} // Passed as prop
-          />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>           
+        </div>
+        {/* FOOTER NAV */}  
+        <FooterNav 
+          onLobbyClick={() => {
+            const inputVar = { target: { value: "/join " + DefaultChannelName } };
+            handlePostChange(inputVar);
+          }}
+          onBadgeClick={() => {
+            setIsModalVisible(true);
+            setShowDropdown(false); 
+          }}
+          onShareClick={() => copyToClipboardAndShare(targetUrl, isMobileDevice)}
+          onSetupClick={() => setApiKeyVisible(!apiKeyVisible)}
+          apiKeyVisible={apiKeyVisible}
+          openAiApiKey={openAiApiKey} // Passed as prop
+          handleApiKeyChange={handleApiKeyChange} // Passed as prop
+        />
         </div>
       </div>
     </div>
