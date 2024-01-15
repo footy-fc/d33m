@@ -477,7 +477,6 @@ const SocialMediaFeed = () => {
           </div>
           {!isMobileDevice && (
             <div className="p-4 flex flex-col items-center justify-center">
-              <a href={token.deepLink} target="_blank" rel="noopener noreferrer">
                 <div style={{ height: "auto", margin: "0 auto", maxWidth: 150, width: "100%" }}>
                   <QRCode
                     size={256}
@@ -487,7 +486,6 @@ const SocialMediaFeed = () => {
                   />
                   <span className="block text-fontRed text-center text-lg mt-2">Login with Warpcast</span>
                 </div>
-              </a>
             </div>
           )}{isMobileDevice && (
             <div className="p-4 flex-grow">
@@ -511,6 +509,102 @@ const SocialMediaFeed = () => {
                );
              })}
            </div>
+        </div>
+        {/* FOOTER */}  
+        <div className="bg-purplePanel p-4"> 
+          <div className="flex items-end space-x-2">
+            {/* FOOTER PANEL SLIDE ?? */}  
+            <div className="relative flex-1"> {/* Adjust flex container */}
+              {isPanelOpen && (<SlideOutPanel 
+              isOpen={isPanelOpen} 
+              onClose={closePanel} 
+              setNewPost={setNewPost}
+              handlePostChange={handlePostChange}
+              /> )}
+              {isModalVisible && (
+                  <>
+                  <TeamsModal 
+                  isOpen={isModalVisible} 
+                  onRequestClose={() => setIsModalVisible(false)}
+                  onTeamSelect={handleTeamSelect}
+                />
+                </>
+                )}
+             {showDropdown && (
+              <div className="absolute bottom-full left-0 right-0 mt-1 border border-limeGreenOpacity bg-purplePanel shadow-lg z-10" style={{ width: '100%' }}>
+                {filteredCommands.map(({ command, description, botSource }, index) => (
+                  <div
+                    key={command}
+                    className={`grid grid-cols-[auto,1fr,auto] gap-2 px-4 py-2 hover:bg-darkPurple cursor-pointer ${index === filteredCommands.length - 1 ? '' : ''}`}
+                    onClick={() => {
+                        if (command === "football") {
+                          setNewPost(`/${command}`);
+                          setShowDropdown(false);
+                          handlePostChange({ target: { value: "/football" } }); // change rooms immediately
+                        } else {
+                          setNewPost(`/${command}`);
+                          setShowDropdown(false);
+                          textareaRef.current?.focus(); // Set focus back to the textarea
+                        }
+                      }}
+                    > 
+                      <span className="text-sm text-lightPurple font-semibold whitespace-nowrap">🤖 /{command}</span>
+                      <span className="text-sm text-lightPurple font-normal text-left">{description}</span>
+                      <span className="text-sm text-lightPurple font-normal justify-self-end">{botSource}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <textarea
+                ref={textareaRef}
+                className={`w-full text-white text-sm px-2 py-1 focus:outline-none border bg-darkPurple border-limeGreenOpacity resize-none overflow-hidden ${showDropdown ? 'rounded-b-lg' : 'rounded-lg'}`}
+                placeholder="Cast or / for 🤖 commands" 
+                //style="min-height: 1.5rem; line-height: 1.5rem;"
+                value={newPost}
+                onChange={handlePostChange}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendCast(newPost, setNewPost, setRemainingChars, encryptedSigner!, hubAddress, CLIENT_NAME, targetUrl, selectedTeam);
+                      }
+                    else if (e.key === 'Tab' && showDropdown && filteredCommands.length > 0) {
+                      e.preventDefault(); // Prevent losing focus from the textarea
+                      const firstCommand = filteredCommands[0].command;
+                      setNewPost(`/${firstCommand}`);
+                      setShowDropdown(false); 
+                  }
+                }}
+                style={{ minHeight: '1rem', lineHeight: 'normal' }}> {/* Adjusted min-height and lineHeight */}
+              </textarea>
+            </div>
+            <button
+              className="mb-2 py-2 px-4 bg-deepPink hover:bg-pink-600 rounded-full flex items-center justify-center transition duration-300 ease-in-out shadow-md hover:shadow-lg text-lightPurple font-semibold text-medium"
+              onClick={() => {
+                sendCast(newPost, setNewPost, setRemainingChars, encryptedSigner!, hubAddress, CLIENT_NAME, targetUrl, selectedTeam);
+                const audioElement = new Audio('/assets/soccer-ball-kick-37625.mp3');
+                audioElement.play();
+              }}>
+              <img src="/favicon.ico" alt="Favicon" className="w-6 h-5" />
+
+            </button>
+          </div>
+          <p className="text-fontRed ml-2 text-sm mt-2 mb-2">{remainingChars} characters remaining ish</p>
+          {/* FOOTER NAV */}  
+          <FooterNav 
+            onLobbyClick={() => {
+              const inputVar = { target: { value: "/join " + DefaultChannelName } };
+              handlePostChange(inputVar);
+            }}
+            onBadgeClick={() => {
+              setIsModalVisible(true);
+              setShowDropdown(false); 
+            }}
+            onShareClick={() => copyToClipboardAndShare()}
+            onSetupClick={() => setApiKeyVisible(!apiKeyVisible)}
+            apiKeyVisible={apiKeyVisible}
+            openAiApiKey={openAiApiKey} // Passed as prop
+            handleApiKeyChange={handleApiKeyChange} // Passed as prop
+          />
         </div>
       </div>
     </div>
