@@ -19,6 +19,7 @@ const CustomTextArea: FC<CustomTextAreaProps> = ({
   onKeyDown
 }) => {
   return (
+    <div > 
     <textarea
       ref={textareaRef}
       className={`w-full text-white text-sm px-2 py-1 focus:outline-none border bg-darkPurple border-limeGreenOpacity resize-none overflow-hidden ${showDropdown ? 'rounded-b-lg' : 'rounded-lg'}`}
@@ -28,6 +29,16 @@ const CustomTextArea: FC<CustomTextAreaProps> = ({
       onKeyDown={onKeyDown}
       style={{ minHeight: '1rem', lineHeight: 'normal' }}
     />
+     {newPost && (
+        <button
+          onClick={() => setNewPost('')}
+          className="absolute top-0 right-0 -mt-4 -mr-4 text-xs bg-purplePanel hover:bg-darkPurple rounded-full px-2 py-1 transition duration-300 ease-in-out shadow-md hover:shadow-lg text-lightPurple"
+          title="Clear text"
+        >
+          x
+        </button>
+      )}
+    </div>
   );
 };
 
