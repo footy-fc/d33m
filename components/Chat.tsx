@@ -39,7 +39,6 @@ import WarpcastLogin from './WarpcastLogin';
 import QRCode from './QRCodeMobile';
 import Header from './Header';
 import CommandDropdown from './CommandDropdown';
-import CustomTextarea from './UserInput';
 import CustomTextArea from './UserInput';
 
 interface UpdatedCast extends Message {
@@ -61,8 +60,6 @@ const params: RequestSignatureParameters = {
 
 const SocialMediaFeed = () => {
   const router = useRouter();
-
-  // Add a ref for the textarea
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   /* GET PARAMS FROM URL */
@@ -74,12 +71,10 @@ const SocialMediaFeed = () => {
   if (query.channel) {
     channelId = query.channel as string;
   } 
-
   const targetThis = DefaultChannelDomain+channelId;
-
-  /* Initialize scrollRef with the correct type */
   let scrollRef = useRef<HTMLDivElement>(null); 
-  
+  scrollRef = useRef(null);
+
   const [openAiApiKey, setApiKey] = useState(''); 
   const [hubAddress] = useState(FarcasterHub); 
   const [newPost, setNewPost] = useState("");
@@ -123,8 +118,6 @@ const SocialMediaFeed = () => {
         setNewPost(`/team ${casterBio} d33m:${teamName}`);
     }
   };
-
-  scrollRef = useRef(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -393,100 +386,100 @@ const SocialMediaFeed = () => {
       </div>
     </>
   ) : (
-      <div className="max-w-screen w-full mx-auto z-5000 flex flex-col h-screen">
-        {/* HEADER & BODY */}
-        <div className="flex-grow bg-purplePanel overflow-hidden"> {/* Apply overflow-hidden here */}
-          {/* HEADER */}
-          <Header
-            isConnected={isConnected}
-            openPanel={openPanel} 
-            casterFname={casterFname} 
-            targetUrl={targetUrl}
-          /> 
-          {!isMobileDevice && (
-            <QRCode deepLink={token.deepLink} />
-          )}
-          {isMobileDevice && (
-            <WarpcastLogin deepLink={token.deepLink} />
-          )}
-          {/* BODY */}
-          <div >
-            {updatedCasts?.map((updatedCast, index) => {
-              const textWithLinks = updatedCast?.data?.castAddBody?.text.replace(
-                /(https?:\/\/[^\s]+)/g,
-                (url: any) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-deepPink">${'External Link'}</a>`
-              );
-              return (
-              <CastItem key={index} updatedCast={updatedCast} index={index} />
-              );
-            })}
-          </div>
-        </div>
-        {/* FOOTER */}  
-        <div className="bg-purplePanel p-4"> 
-          <div className="flex items-end space-x-2">
-            {/* FOOTER PANEL SLIDE ?? */}  
-            <div className="relative flex-1"> {/* Adjust flex container */}
-              {isPanelOpen && (<SlideOutPanel 
-              isOpen={isPanelOpen} 
-              onClose={closePanel} 
-              setNewPost={setNewPost}
-              handlePostChange={handlePostChange}
-              /> )}
-              {isModalVisible && (
-                  <>
-                  <TeamsModal 
-                  isOpen={isModalVisible} 
-                  onRequestClose={() => setIsModalVisible(false)}
-                  onTeamSelect={handleTeamSelect}
-                />
-                </>
-                )}
-             {showDropdown && (
-              <div className="absolute bottom-full left-0 right-0 mt-1 border border-limeGreenOpacity bg-purplePanel shadow-lg z-10" style={{ width: '100%' }}>
-                {filteredCommands.map(({ command, description, botSource }, index) => (
-                  <div
-                    key={command}
-                    className={`grid grid-cols-[auto,1fr,auto] gap-2 px-4 py-2 hover:bg-darkPurple cursor-pointer ${index === filteredCommands.length - 1 ? '' : ''}`}
-                    onClick={() => {
-                        if (command === "football") {
-                          setNewPost(`/${command}`);
-                          setShowDropdown(false);
-                          handlePostChange({ target: { value: "/football" } }); // change rooms immediately
-                        } else {
-                          setNewPost(`/${command}`);
-                          setShowDropdown(false);
-                          textareaRef.current?.focus(); // Set focus back to the textarea
-                        }
-                      }}
-                    > 
-                      <span className="text-sm text-lightPurple font-semibold whitespace-nowrap">🤖 /{command}</span>
-                      <span className="text-sm text-lightPurple font-normal text-left">{description}</span>
-                      <span className="text-sm text-lightPurple font-normal justify-self-end">{botSource}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>           
-        </div>
-        {/* FOOTER NAV */}  
-        <FooterNav 
-          onLobbyClick={() => {
-            const inputVar = { target: { value: "/join " + DefaultChannelName } };
-            handlePostChange(inputVar);
-          }}
-          onBadgeClick={() => {
-            setIsModalVisible(true);
-            setShowDropdown(false); 
-          }}
-          onShareClick={() => copyToClipboardAndShare(targetUrl, isMobileDevice)}
-          onSetupClick={() => setApiKeyVisible(!apiKeyVisible)}
-          apiKeyVisible={apiKeyVisible}
-          openAiApiKey={openAiApiKey} // Passed as prop
-          handleApiKeyChange={handleApiKeyChange} // Passed as prop
-        />
+    <div className="max-w-screen w-full mx-auto z-5000 flex flex-col h-screen">
+      {/* HEADER & BODY */}
+      <div className="flex-grow bg-purplePanel overflow-hidden"> {/* Apply overflow-hidden here */}
+        {/* HEADER */}
+        <Header
+          isConnected={isConnected}
+          openPanel={openPanel} 
+          casterFname={casterFname} 
+          targetUrl={targetUrl}
+        /> 
+        {!isMobileDevice && (
+          <QRCode deepLink={token.deepLink} />
+        )}
+        {isMobileDevice && (
+          <WarpcastLogin deepLink={token.deepLink} />
+        )}
+        {/* BODY */}
+        <div >
+          {updatedCasts?.map((updatedCast, index) => {
+            const textWithLinks = updatedCast?.data?.castAddBody?.text.replace(
+              /(https?:\/\/[^\s]+)/g,
+              (url: any) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-deepPink">${'External Link'}</a>`
+            );
+            return (
+            <CastItem key={index} updatedCast={updatedCast} index={index} />
+            );
+          })}
         </div>
       </div>
+      {/* FOOTER */}  
+      <div className="bg-purplePanel p-4"> 
+        <div className="flex items-end space-x-2">
+          {/* FOOTER PANEL SLIDE ?? */}  
+          <div className="relative flex-1"> {/* Adjust flex container */}
+            {isPanelOpen && (<SlideOutPanel 
+            isOpen={isPanelOpen} 
+            onClose={closePanel} 
+            setNewPost={setNewPost}
+            handlePostChange={handlePostChange}
+            /> )}
+            {isModalVisible && (
+                <>
+                <TeamsModal 
+                isOpen={isModalVisible} 
+                onRequestClose={() => setIsModalVisible(false)}
+                onTeamSelect={handleTeamSelect}
+              />
+              </>
+              )}
+            {showDropdown && (
+            <div className="absolute bottom-full left-0 right-0 mt-1 border border-limeGreenOpacity bg-purplePanel shadow-lg z-10" style={{ width: '100%' }}>
+              {filteredCommands.map(({ command, description, botSource }, index) => (
+                <div
+                  key={command}
+                  className={`grid grid-cols-[auto,1fr,auto] gap-2 px-4 py-2 hover:bg-darkPurple cursor-pointer ${index === filteredCommands.length - 1 ? '' : ''}`}
+                  onClick={() => {
+                      if (command === "football") {
+                        setNewPost(`/${command}`);
+                        setShowDropdown(false);
+                        handlePostChange({ target: { value: "/football" } }); // change rooms immediately
+                      } else {
+                        setNewPost(`/${command}`);
+                        setShowDropdown(false);
+                        textareaRef.current?.focus(); // Set focus back to the textarea
+                      }
+                    }}
+                  > 
+                    <span className="text-sm text-lightPurple font-semibold whitespace-nowrap">🤖 /{command}</span>
+                    <span className="text-sm text-lightPurple font-normal text-left">{description}</span>
+                    <span className="text-sm text-lightPurple font-normal justify-self-end">{botSource}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>           
+      </div>
+      {/* FOOTER NAV */}  
+      <FooterNav 
+        onLobbyClick={() => {
+          const inputVar = { target: { value: "/join " + DefaultChannelName } };
+          handlePostChange(inputVar);
+        }}
+        onBadgeClick={() => {
+          setIsModalVisible(true);
+          setShowDropdown(false); 
+        }}
+        onShareClick={() => copyToClipboardAndShare(targetUrl, isMobileDevice)}
+        onSetupClick={() => setApiKeyVisible(!apiKeyVisible)}
+        apiKeyVisible={apiKeyVisible}
+        openAiApiKey={openAiApiKey} // Passed as prop
+        handleApiKeyChange={handleApiKeyChange} // Passed as prop
+      />
+      </div>
+    </div>
   );
 }
 export default SocialMediaFeed
