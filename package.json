@@ -12,6 +12,7 @@
     "ts:prune": "ts-prune"
   },
   "dependencies": {
+    "@altrx/gundb-react-hooks": "^0.9.7",
     "@farcaster/hub-web": "^0.3.6",
     "@farsign/hooks": "^2.3.1",
     "@farsign/utils": "^2.3.0",
