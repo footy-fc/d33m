@@ -23,8 +23,16 @@ import {
   UserDataType, 
 } from "@farcaster/hub-web";
 
+/* GUNDB */
+import Gun from 'gun';
+// import sea from 'gun/sea';
+import 'gun/lib/radix';
+import 'gun/lib/radisk';
+import 'gun/lib/store';
+import 'gun/lib/rindexed';
+
 /* CONSTANTS */
-import { DefaultChannelDomain, FarcasterAppName, FarcasterHub, FarcasterAppFID, FarcasterAppMneumonic, DefaultChannelName, CastLengthLimit } from '../constants/constants'
+import { DefaultChannelDomain, FarcasterAppName, FarcasterHub, FarcasterAppFID, FarcasterAppMneumonic, DefaultChannelName, CastLengthLimit, GunPeers } from '../constants/constants'
 import { useCommands } from './slashCommands';
 const IMGAGE_WIDTH = 20; 
 
@@ -109,14 +117,26 @@ const SocialMediaFeed = () => {
 
   const handleTeamSelect = (teamName: SetStateAction<string>) => {
     setSelectedTeam(teamName);
-    const d33mRegex = /d33m:[^\s]+/;
-    // Check if d33m:team tag already exists in casterBio
-    if (d33mRegex.test(casterBio.join(' '))) {
-        const updatedBio = casterBio.map(bio => bio.replace(d33mRegex, `d33m:${teamName}`)).join(' ');
-        setNewPost(`/team ${updatedBio}`);    
-    } else {
-        setNewPost(`/team ${casterBio} d33m:${teamName}`);
-    }
+      // Save data to GunDB
+
+      interface MyData {
+        message: string;
+      }
+
+      interface CasterFID {
+        casterFID: number;
+      }
+
+      const peers = GunPeers; 
+
+      const gun = Gun({
+        peers: peers,
+        localStorage: false, // Enable localStorage
+        radisk: true, // Use Radisk to persist data
+      });      
+      const parsedUrl = targetUrl.replace('https://', '');
+      gun.get(parsedUrl).get(casterFID).put({ message: teamName } as never);
+      console.log('Saved data to GunDB: ', casterFID ,teamName);
   };
 
   useEffect(() => {
@@ -297,8 +317,8 @@ const SocialMediaFeed = () => {
                 (url: any) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-deepPink">${'External Link'}</a>`
               );
               return (
-                <CastItem key={index} updatedCast={updatedCast} index={index} />
-              );
+                <CastItem key={index} updatedCast={updatedCast} index={index} room={targetUrl} />
+                );
             })}
           </div>
         </div>
@@ -410,7 +430,7 @@ const SocialMediaFeed = () => {
               (url: any) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-deepPink">${'External Link'}</a>`
             );
             return (
-            <CastItem key={index} updatedCast={updatedCast} index={index} />
+              <CastItem key={index} updatedCast={updatedCast} index={index} room={targetUrl} />
             );
           })}
         </div>
