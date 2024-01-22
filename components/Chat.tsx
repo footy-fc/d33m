@@ -135,7 +135,7 @@ const SocialMediaFeed = () => {
         radisk: true, // Use Radisk to persist data
       });      
       const parsedUrl = targetUrl.replace('https://', '');
-      gun.get(parsedUrl).get(casterFID).put({ message: teamName } as never);
+      gun.get(parsedUrl).get(casterFID.toString()).put({ message: teamName } as never);
       console.log('Saved data to GunDB: ', casterFID ,teamName);
   };
 
