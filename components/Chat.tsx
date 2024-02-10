@@ -101,8 +101,8 @@ const SocialMediaFeed = () => {
   const {commands, setCommands, filteredCommands, setFilteredCommands} = useCommands();
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [casterFID, setCasterFID] = useState<number>(FarcasterAppFID);
-  const { userResult: casterBio, loading1: loadingBio } = useFetchUserDetails(casterFID, FarcasterHub, UserDataType.BIO);
-  const { userResult: casterFname, loading1: loadingFname } = useFetchUserDetails(casterFID, FarcasterHub, UserDataType.FNAME);
+  const { userResult: casterBio, loading1: loadingBio } = useFetchUserDetails(casterFID, UserDataType.BIO.toString());
+  const { userResult: casterFname, loading1: loadingFname } = useFetchUserDetails(casterFID, UserDataType.FNAME.toString());
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState('');
 

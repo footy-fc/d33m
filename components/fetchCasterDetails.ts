@@ -26,36 +26,31 @@ const fetchCastersDetails = async (casts:  Message[], hubAddress: string, setUpd
   const getUserDataFromFid = async (
     fid: number,
     userDataType: UserDataType,
-    client: HubRpcClient
   ): Promise<string> => {
-    const result = await client.getUserData({ fid: fid, userDataType: userDataType });
-    if (result.isOk()) {
-      const userDataAddMessage = result.value as Message & {
-        data: UserDataAddData;
-        signatureScheme: SignatureScheme.ED25519;
-      };
-      if (isUserDataAddMessage(userDataAddMessage)) {
-        return userDataAddMessage.data.userDataBody.value;
+    const result = await fetch(`http://arena.wield.co:2281/v1/userDataByFid?fid=${fid}&userDataType=${userDataType}`);
+    if (result.ok) {
+      const userDataAddMessage = await result.json();
+      if (userDataAddMessage) {
+        return userDataAddMessage.messages[userDataType].data?.userDataBody?.value;
       } else {
         return "";
       }
     } else {
       // Handle the error case here
-      throw new Error(result.error.toString());
+      throw new Error(result.statusText);
     }
   };
+
   const updatedData = casts
     .filter((cast) => cast.data !== undefined)
     .map(async (cast) => {
     if (cast.data?.castAddBody) {
         const { fid } = cast.data;
-
         // Check cache first, if not present then fetch data
         if (!fidDetailsCache[fid]) {
-        const pfp = await getUserDataFromFid(fid, 1, client);
-        const fname = await getUserDataFromFid(fid, 2, client);
-        const bio = await getUserDataFromFid(fid, 3, client);
-
+        const pfp = await getUserDataFromFid(fid, 1);
+        const fname = await getUserDataFromFid(fid, 2);
+        const bio = await getUserDataFromFid(fid, 3);
         fidDetailsCache[fid] = { pfp, fname, bio }; // Store in cache
         }
 
@@ -94,7 +89,7 @@ const fetchCastersDetails = async (casts:  Message[], hubAddress: string, setUpd
     const extendedCasts = (await Promise.all(updatedData)).filter((cast) => cast !== null) as unknown as UpdatedCast[];
     extendedCasts.reverse();
     setUpdatedCasts(extendedCasts);
-  };
+};
 
 
 export default fetchCastersDetails;

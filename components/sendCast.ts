@@ -1,5 +1,5 @@
-import { FarcasterNetwork, NobleEd25519Signer } from "@farcaster/hub-web";
-import { makeCastAdd, getHubRpcClient } from "@farcaster/hub-web";
+import { FarcasterNetwork, Message, makeCastAdd, NobleEd25519Signer } from "@farcaster/core";
+import axios from "axios";
 import sendBio from './bioUpdate'; 
 import sendAi from './ai'; 
 import { CastLengthLimit } from "../constants/constants";
@@ -35,18 +35,34 @@ const sendCast = async (
         setNewPost(""); 
         return;
     }
-    const castBody = newPost;
-    const hub = getHubRpcClient(hubAddress); // works with open hub
-    const request = JSON.parse(localStorage.getItem("farsign-" + CLIENT_NAME)!);
-    const cast = (await makeCastAdd({
-        text: castBody,
-        parentUrl: targetUrl,
-        embeds: [],
-        embedsDeprecated: [],
-        mentions: [],
-        mentionsPositions: [],
-    }, { fid: request?.userFid, network: FarcasterNetwork.MAINNET }, (encryptedSigner as NobleEd25519Signer)))._unsafeUnwrap();
-    hub.submitMessage(cast); // w open hub this works
+    const submitMessage = async () => {
+        const request = JSON.parse(localStorage.getItem("farsign-" + CLIENT_NAME)!);
+        const server = hubAddress;
+        const url = `${server}/v1/submitMessage`;
+        const postConfig = {
+            headers: { "Content-Type": "application/octet-stream" }
+        };
+        const castBody =
+        {
+            text: newPost,
+            parentUrl: targetUrl,
+            embeds: [],
+            embedsDeprecated: [],
+            mentions: [],
+            mentionsPositions: [],
+        };
+        const castAdd = (await makeCastAdd(castBody, 
+          { fid: request?.userFid, network: FarcasterNetwork.MAINNET }, 
+          (encryptedSigner as NobleEd25519Signer)))._unsafeUnwrap();
+
+        const messageBytes = Buffer.from(Message.encode(castAdd).finish());
+        try {
+            const response = await axios.post(url, messageBytes, postConfig);
+        } catch (e:any) {
+            console.error("Error submitting message: ", e.response.data);
+        }
+    };
+    submitMessage();
     setNewPost("");
     setRemainingChars(CastLengthLimit);
 };
