@@ -10,3 +10,4 @@ export const FarcasterAppMneumonic = process.env.NEXT_PUBLIC_APP_MNEUMONIC;
 export const FarcasterHub = "https://hub.pinata.cloud";
 export const CastLengthLimit = 250; // TODO: change this to whatever it is and add length checks
 export const GunPeers = ['https://gun-manhattan.herokuapp.com/gun']; // TODO: add more peers
+export const NeynarAPI = "51B6B40B-A60C-4F6A-9790-E20C9CBF37A6";

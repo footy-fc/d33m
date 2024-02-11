@@ -2,7 +2,7 @@ import { FarcasterNetwork, Message, makeCastAdd, NobleEd25519Signer } from "@far
 import axios from "axios";
 import sendBio from './bioUpdate'; 
 import sendAi from './ai'; 
-import { CastLengthLimit } from "../constants/constants";
+import { CastLengthLimit, NeynarAPI } from "../constants/constants";
 
 const sendCast = async (
     newPost: string, 
@@ -40,7 +40,7 @@ const sendCast = async (
         const server = hubAddress;
         const url = `${server}/v1/submitMessage`;
         const postConfig = {
-            headers: { "Content-Type": "application/octet-stream" }
+            headers: { "Content-Type": "application/octet-stream", "api_key": NeynarAPI }
         };
         const castBody =
         {
