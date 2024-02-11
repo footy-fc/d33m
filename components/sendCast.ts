@@ -37,10 +37,11 @@ const sendCast = async (
     }
     const submitMessage = async () => {
         const request = JSON.parse(localStorage.getItem("farsign-" + CLIENT_NAME)!);
-        const server = hubAddress;
-        const url = `${server}/v1/submitMessage`;
+            const server = hubAddress;
+            const url = `${server}/v1/submitMessage`;
         const postConfig = {
-            headers: { "Content-Type": "application/octet-stream"
+            headers: {    "Content-Type": "application/json",
+            //    "Content-Type": "application/octet-stream"
             //, "api_key": NeynarAPI }
             }
         };
