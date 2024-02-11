@@ -40,7 +40,9 @@ const sendCast = async (
         const server = hubAddress;
         const url = `${server}/v1/submitMessage`;
         const postConfig = {
-            headers: { "Content-Type": "application/octet-stream", "api_key": NeynarAPI }
+            headers: { "Content-Type": "application/octet-stream"
+            //, "api_key": NeynarAPI }
+            }
         };
         const castBody =
         {
