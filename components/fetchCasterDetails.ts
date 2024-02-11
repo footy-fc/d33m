@@ -27,7 +27,8 @@ const fetchCastersDetails = async (casts:  Message[], hubAddress: string, setUpd
     fid: number,
     userDataType: UserDataType,
   ): Promise<string> => {
-    const result = await fetch(`http://arena.wield.co:2281/v1/userDataByFid?fid=${fid}&userDataType=${userDataType}`);
+    // const result = await fetch(`http://arena.wield.co:2281/v1/userDataByFid?fid=${fid}&userDataType=${userDataType}`);
+    const result = await fetch(`${hubAddress}/v1/userDataByFid?fid=${fid}&userDataType=${userDataType}`);
     if (result.ok) {
       const userDataAddMessage = await result.json();
       if (userDataAddMessage) {
