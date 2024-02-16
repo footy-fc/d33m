@@ -5,93 +5,88 @@ interface FidDetails {
   pfp: string;
   fname: string;
   bio: string;
-  // Add other fields as necessary
 }
 
 interface UpdatedCast extends Message {
-    fname: string;
-    pfp: string;
-    teamLogo: string;
-  }
-
-interface Cast {
-    data: undefined;
+  fname: string;
+  pfp: string;
+  teamLogo: string;
+  humanReadableTime: string;
 }
-interface UpdatedCast { /* define the structure of UpdatedCast object */ }
 
-const fetchCastersDetails = async (casts:  Message[], hubAddress: string, setUpdatedCasts: (casts: UpdatedCast[]) => void) => {
+interface UserDataMessage {
+  data: {
+    type: string;
+    fid: number;
+    timestamp: number;
+    network: string;
+    userDataBody: {
+      type: string;
+      value: string;
+    };
+  };
+  hash: string;
+  hashScheme: string;
+  signature: string;
+  signatureScheme: string;
+  signer: string;
+}
+
+const fetchCastersDetails = async (casts: Message[], hubAddress: string, setUpdatedCasts: (casts: UpdatedCast[]) => void) => {
   const client = getHubRpcClient(hubAddress);
   const fidDetailsCache: Record<number, FidDetails> = {};
 
-  const getUserDataFromFid = async (
-    fid: number,
-    userDataType: UserDataType,
-  ): Promise<string> => {
-    // const result = await fetch(`http://arena.wield.co:2281/v1/userDataByFid?fid=${fid}&userDataType=${userDataType}`);
-    const result = await fetch(`${hubAddress}/v1/userDataByFid?fid=${fid}&userDataType=${userDataType}`);
-    if (result.ok) {
-      const userDataAddMessage = await result.json();
-      if (userDataAddMessage) {
-        return userDataAddMessage.messages[userDataType].data?.userDataBody?.value;
-      } else {
-        return "";
+  const getUserDataFromFid = async (fid: number): Promise<FidDetails> => {
+    const result = await fetch(`${hubAddress}/v1/userDataByFid?fid=${fid}`);
+    if (!result.ok) throw new Error(`Failed to fetch user data: ${result.statusText}`);
+    
+    const response: { messages: UserDataMessage[], nextPageToken: string } = await result.json();
+    let pfp = '', fname = '', bio = '';
+    
+    response.messages.forEach((message) => {
+      const { userDataBody } = message.data; // Corrected access to 'data'
+      switch (userDataBody.type) { // Corrected access to 'type'
+        case "USER_DATA_TYPE_USERNAME":
+          fname = userDataBody.value;
+          break;
+        case "USER_DATA_TYPE_BIO":
+          bio = userDataBody.value;
+          break;
+        case "USER_DATA_TYPE_PFP":
+          pfp = userDataBody.value;
+          break;
       }
-    } else {
-      // Handle the error case here
-      throw new Error(result.statusText);
-    }
+    });
+    
+    return { pfp, fname, bio };
   };
 
-  const updatedData = casts
-    .filter((cast) => cast.data !== undefined)
-    .map(async (cast) => {
-    if (cast.data?.castAddBody) {
-        const { fid } = cast.data;
-        // Check cache first, if not present then fetch data
-        if (!fidDetailsCache[fid]) {
-        const pfp = await getUserDataFromFid(fid, 1);
-        const fname = await getUserDataFromFid(fid, 2);
-        const bio = await getUserDataFromFid(fid, 3);
-        fidDetailsCache[fid] = { pfp, fname, bio }; // Store in cache
-        }
-
-        const { pfp, fname, bio } = fidDetailsCache[fid]; // Retrieve from cache
-
-        let teamLogo = '';
-        const d33mIndex = bio.indexOf('d33m:');
-        if (d33mIndex !== -1) {
-        const substringFromD33m = bio.substring(d33mIndex);
-        const parts = substringFromD33m.split(':');
-        if (parts.length >= 2) {
-            const teamPart = parts[1];
-            const spaceIndex = teamPart.indexOf(' ');
-            const teamCode = spaceIndex === -1 ? teamPart : teamPart.substring(0, spaceIndex);
-            teamLogo = validTeamLogos.hasOwnProperty(teamCode)
-                        ? validTeamLogos[teamCode as keyof typeof validTeamLogos]
-                        : "defifa_spinner.gif";
-        }
-        } else {
-        teamLogo = "defifa_spinner.gif";
-        }
-
-        const humanReadableTime = new Date(cast.data.timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        return {
-        ...(cast as UpdatedCast),
-        pfp: pfp ?? '',
-        fname: fname ?? '',
-        teamLogo: teamLogo ?? '',
-        humanReadableTime: humanReadableTime ?? '',
-        };
-    } else {
-        return null;
+  const updatedData = await Promise.all(casts.filter(cast => cast.data?.castAddBody).map(async cast => {
+    if (!cast.data) return null; // Guard clause for 'data' being possibly 'undefined'
+    
+    const fid = cast.data.fid; // Access 'fid' after checking 'data' exists
+    if (!fidDetailsCache[fid]) {
+      fidDetailsCache[fid] = await getUserDataFromFid(fid);
     }
-    });
 
-    const extendedCasts = (await Promise.all(updatedData)).filter((cast) => cast !== null) as unknown as UpdatedCast[];
-    extendedCasts.reverse();
-    setUpdatedCasts(extendedCasts);
+    const { pfp, fname, bio } = fidDetailsCache[fid];
+    let teamLogo = "defifa_spinner.gif"; // Default logo
+
+    if (!cast.data) return null; // Additional check if necessary
+    const humanReadableTime = new Date(cast.data.timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    return {
+      ...cast,
+      fname,
+      pfp,
+      teamLogo,
+      humanReadableTime,
+    } as UpdatedCast;
+  }));
+
+  const extendedCasts = updatedData.filter(cast => cast !== null) as UpdatedCast[];
+  extendedCasts.reverse();
+  setUpdatedCasts(extendedCasts);
 };
 
-
 export default fetchCastersDetails;
-
