@@ -63,7 +63,7 @@ const CastItem: React.FC<CastItemProps> = ({ index, updatedCast, room }) => {
         <span className="text-sm ml-2 text-notWhite font-semibold">
           {updatedCast.fname}
           <span
-            className="text-sm text-lightPurple font-normal"
+            className="text-sm ml-2 text-lightPurple font-normal"
             dangerouslySetInnerHTML={{ __html: textWithLinks ?? '' }}
           ></span>
         </span>
