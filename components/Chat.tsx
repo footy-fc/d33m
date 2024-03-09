@@ -360,7 +360,8 @@ const SocialMediaFeed = () => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
                         if (encryptedSigner) {
-                          sendCast(newPost, setNewPost, setRemainingChars, encryptedSigner, hubAddress, CLIENT_NAME, targetUrl, selectedTeam);
+                          const concatenatedText = updatedCasts.map(cast => cast?.data?.castAddBody?.text).join('');
+                          sendCast(concatenatedText, newPost, setNewPost, setRemainingChars, encryptedSigner, hubAddress, CLIENT_NAME, targetUrl, selectedTeam);
                       } else {
                           console.error("encryptedSigner is undefined");
                           setNewPost("Signer is undefined. Please refresh the page and try again.");

@@ -5,6 +5,7 @@ import sendAi from './ai';
 import { CastLengthLimit, NeynarAPI } from "../constants/constants";
 
 const sendCast = async (
+    concatenatedText: string,
     newPost: string, 
     setNewPost: React.Dispatch<React.SetStateAction<string>>,
     setRemainingChars: React.Dispatch<React.SetStateAction<number>>,
@@ -19,6 +20,7 @@ const sendCast = async (
     };    
     const aiPost = /^\/ai\s/; 
     if (aiPost.test(newPost)) {
+        const newPost = "summarize text" + concatenatedText;
         setNewPost("Loading AI... checking for your API key \u2198"); // TODO: change this to a spinner
         const openAiApiKey = getApiKeyFromLocalStorage();
         const responseAI = await sendAi(newPost, openAiApiKey||"");
