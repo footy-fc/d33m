@@ -39,7 +39,7 @@ const sendCast = async (
               parent: targetUrl
             })
           };
-          
+          // @ts-ignore
           fetch('https://api.neynar.com/v2/farcaster/cast', options)
             .then(response => response.json())
             .then(response => console.log(response))
