@@ -156,11 +156,12 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
             const eventTime = new Date(event.date);
             const milTime = eventTime.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
             const formattedTime = convertTo12HourTime(milTime);
-            
+            const oneHourBeforeEventTime = new Date(eventTime.getTime() - 60 * 60 * 1000); // Subtract one hour in milliseconds
+
             const currentTime = new Date();
             let timeDisplay: JSX.Element | null = null;
             const roomId = ensureSixCharacters(homeTeam+awayTeam);
-            if (eventTime > currentTime) {
+            if (oneHourBeforeEventTime < currentTime) {
                 const milTime = eventTime.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
                 const formattedTime = convertTo12HourTime(milTime);
                 timeDisplay = <span className="ml-3 text-sm text-lightPurple font-semibold">{formattedTime}</span>;
