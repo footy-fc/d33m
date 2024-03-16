@@ -8,16 +8,7 @@ import { useFetchUserDetails } from "./useFetchUserDetails";
 import { useFetchCastsParentUrl } from './useFetchCastsParentUrl';
 import fetchCastersDetails from './fetchCasterDetails';
 import sendCast from './sendCast'; 
-
-/* FARCASTER */
-import { 
-  useCheckSigner, 
-  useToken, 
-  useSigner, 
-  useKeypair, 
-  RequestSignatureParameters 
-} from "@farsign/hooks";
-
+import useIsConnected from './useIsConnected';
 import { 
   Message, 
   UserDataType, 
@@ -43,8 +34,6 @@ import copyToClipboardAndShare from './copyToClipboardAndShare';
 import SlideOutPanel from '../components/SlideOutPanel'; // Import the SlideOutPanel component
 import CastItem from './CastItem';
 import FooterNav from './FooterNav';
-import WarpcastLogin from './WarpcastLogin';
-import QRCode from './QRCodeMobile';
 import Header from './Header';
 import CommandDropdown from './CommandDropdown';
 import CustomTextArea from './UserInput';
@@ -55,16 +44,6 @@ interface UpdatedCast extends Message {
   teamLogo: string;
 }
 
-/* used by @farsign/hooks */
-const DEADLINE = Math.floor(Date.now() / 1000) + 31536000; // signature is valid for 1 day you might want to extend this => I DON'T HAVE INFINITE MONEY KMAC!
-const CLIENT_NAME = FarcasterAppName;
-
-const params: RequestSignatureParameters = {
-  appFid: FarcasterAppFID,
-  appMnemonic: FarcasterAppMneumonic || "",
-  deadline: DEADLINE,
-  name: CLIENT_NAME
-}
 
 const SocialMediaFeed = () => {
   const router = useRouter();
@@ -92,20 +71,16 @@ const SocialMediaFeed = () => {
   const [isMobileDevice, setIsMobileDevice] = useState(false);
   const [remainingChars, setRemainingChars] = useState(CastLengthLimit);
   const [scrollPosition, setScrollPosition] = useState(0); // Store the scroll position
-  const [keys, encryptedSigner] = useKeypair(CLIENT_NAME);
-  const [isConnected, setIsConnected] = useCheckSigner(CLIENT_NAME);
-  const [token] = useToken(CLIENT_NAME, params, keys!);
-  const [signer] = useSigner(CLIENT_NAME, token);
+  const hookIsConnected = useIsConnected();
+  const [signer_uuid, setSigner_uuid] = useState('');
   const [apiKeyVisible, setApiKeyVisible] = useState(false); // Initialize as hidden
   const [showDropdown, setShowDropdown] = useState(false);
   const {commands, setCommands, filteredCommands, setFilteredCommands} = useCommands();
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [casterFID, setCasterFID] = useState<number>(FarcasterAppFID);
-  const { userResult: casterBio, loading1: loadingBio } = useFetchUserDetails(casterFID, UserDataType.BIO.toString());
   const { userResult: casterFname, loading1: loadingFname } = useFetchUserDetails(casterFID, UserDataType.FNAME.toString());
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState('');
-
   const openPanel = () => {
     setIsPanelOpen(true);
     setShowDropdown(false);
@@ -138,26 +113,18 @@ const SocialMediaFeed = () => {
       gun.get(parsedUrl).get(casterFID.toString()).put({ message: teamName } as never);
       console.log('Saved data to GunDB: ', casterFID ,teamName);
   };
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const request = JSON.parse(localStorage.getItem("farsign-" + CLIENT_NAME)!);
-      setCasterFID(request?.userFid || FarcasterAppFID);
-    }
-  }, []);
   
+  useEffect(() => {
+    setCasterFID(hookIsConnected.casterFID);
+    setSigner_uuid(hookIsConnected.signer_uuid);
+  }, [hookIsConnected]);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const isMobile = /Mobi/i.test(navigator.userAgent);
       setIsMobileDevice(isMobile);
     }
   }, []);
-
-  useEffect(() => {
-    if (typeof signer?.signerRequest == 'object') {
-      setIsConnected(true)
-    }
-  }, [signer])
 
   useEffect(() => {
     /*  Scroll to the bottom when casts change or new post is added ??
@@ -297,14 +264,14 @@ const SocialMediaFeed = () => {
 
   // TODO make some better components for this and use them in the panel
   // TODO slide out panel only closing on affordnace click, should close on click outside
-  return isConnected ? (
+  return (
     <>  
       <div className="flex flex-grow flex-col min-h-screen"> {/* FULL SCREEN */}
       {/* HEADER & BODY */}
         <div className="flex-grow bg-darkPurple overflow-hidden"> {/* Apply overflow-hidden here */}
           {/* HEADER */}
           <Header 
-              isConnected={isConnected}
+              isConnected={hookIsConnected.isConnected}
               openPanel={openPanel} 
               casterFname={casterFname} 
               targetUrl={targetUrl} 
@@ -359,12 +326,12 @@ const SocialMediaFeed = () => {
                 onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
-                        if (encryptedSigner) {
+                        if (hookIsConnected.isConnected) {
                           const concatenatedText = updatedCasts.map(cast => cast?.data?.castAddBody?.text).join('');
-                          sendCast(concatenatedText, newPost, setNewPost, setRemainingChars, encryptedSigner, hubAddress, CLIENT_NAME, targetUrl, selectedTeam);
+                          sendCast(newPost, setNewPost, setRemainingChars, signer_uuid, targetUrl, selectedTeam);
                       } else {
                           console.error("encryptedSigner is undefined");
-                          setNewPost("Signer is undefined. Please refresh the page and try again.");
+                          setNewPost("You must be signed in to chat or refresh the page and try again.");
                       }
                     }
                     else if (e.key === 'Tab' && showDropdown && filteredCommands.length > 0) {
@@ -379,7 +346,7 @@ const SocialMediaFeed = () => {
             <button
               className="mb-2 py-2 px-2 bg-deepPink hover:bg-pink-600 rounded-full flex items-center justify-center transition duration-300 ease-in-out shadow-md hover:shadow-lg text-lightPurple font-semibold text-medium"
               onClick={() => {
-                sendCast(newPost, setNewPost, setRemainingChars, encryptedSigner!, hubAddress, CLIENT_NAME, targetUrl, selectedTeam);
+                sendCast(newPost, setNewPost, setRemainingChars, signer_uuid, targetUrl, selectedTeam);
                 const audioElement = new Audio('/assets/soccer-ball-kick-37625.mp3');
                 audioElement.play();
               }}>
@@ -406,101 +373,6 @@ const SocialMediaFeed = () => {
         </div>
       </div>
     </>
-  ) : (
-    <div className="max-w-screen w-full mx-auto z-5000 flex flex-col h-screen">
-      {/* HEADER & BODY */}
-      <div className="flex-grow bg-purplePanel overflow-hidden"> {/* Apply overflow-hidden here */}
-        {/* HEADER */}
-        <Header
-          isConnected={isConnected}
-          openPanel={openPanel} 
-          casterFname={casterFname} 
-          targetUrl={targetUrl}
-        /> 
-        {!isMobileDevice && (
-          <QRCode deepLink={token.deepLink} />
-        )}
-        {isMobileDevice && (
-          <WarpcastLogin deepLink={token.deepLink} />
-        )}
-        {/* BODY */}
-        <div >
-          {updatedCasts?.map((updatedCast, index) => {
-            const textWithLinks = updatedCast?.data?.castAddBody?.text.replace(
-              /(https?:\/\/[^\s]+)/g,
-              (url: any) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-deepPink">${'External Link'}</a>`
-            );
-            return (
-              <CastItem key={index} updatedCast={updatedCast} index={index} room={targetUrl} />
-            );
-          })}
-        </div>
-      </div>
-      {/* FOOTER */}  
-      <div className="bg-purplePanel p-4"> 
-        <div className="flex items-end space-x-2">
-          {/* FOOTER PANEL SLIDE ?? */}  
-          <div className="relative flex-1"> {/* Adjust flex container */}
-            {isPanelOpen && (<SlideOutPanel 
-            isOpen={isPanelOpen} 
-            onClose={closePanel} 
-            setNewPost={setNewPost}
-            handlePostChange={handlePostChange}
-            /> )}
-            {isModalVisible && (
-                <>
-                <TeamsModal 
-                isOpen={isModalVisible} 
-                onRequestClose={() => setIsModalVisible(false)}
-                onTeamSelect={handleTeamSelect}
-              />
-              </>
-              )}
-            {showDropdown && (
-            <div className="absolute bottom-full left-0 right-0 mt-1 border border-limeGreenOpacity bg-purplePanel shadow-lg z-10" style={{ width: '100%' }}>
-              {filteredCommands.map(({ command, description, botSource }, index) => (
-                <div
-                  key={command}
-                  className={`grid grid-cols-[auto,1fr,auto] gap-2 px-4 py-2 hover:bg-darkPurple cursor-pointer ${index === filteredCommands.length - 1 ? '' : ''}`}
-                  onClick={() => {
-                      if (command === "football") {
-                        setNewPost(`/${command}`);
-                        setShowDropdown(false);
-                        handlePostChange({ target: { value: "/football" } }); // change rooms immediately
-                      } else {
-                        setNewPost(`/${command}`);
-                        setShowDropdown(false);
-                        textareaRef.current?.focus(); // Set focus back to the textarea
-                      }
-                    }}
-                  > 
-                    <span className="text-sm text-lightPurple font-semibold whitespace-nowrap">🤖 /{command}</span>
-                    <span className="text-sm text-lightPurple font-normal text-left">{description}</span>
-                    <span className="text-sm text-lightPurple font-normal justify-self-end">{botSource}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>           
-      </div>
-      {/* FOOTER NAV */}  
-      <FooterNav 
-        onLobbyClick={() => {
-          const inputVar = { target: { value: "/join " + DefaultChannelName } };
-          handlePostChange(inputVar);
-        }}
-        onBadgeClick={() => {
-          setIsModalVisible(true);
-          setShowDropdown(false); 
-        }}
-        onShareClick={() => copyToClipboardAndShare(targetUrl, isMobileDevice)}
-        onSetupClick={() => setApiKeyVisible(!apiKeyVisible)}
-        apiKeyVisible={apiKeyVisible}
-        openAiApiKey={openAiApiKey} // Passed as prop
-        handleApiKeyChange={handleApiKeyChange} // Passed as prop
-      />
-      </div>
-    </div>
-  );
+  ) 
 }
 export default SocialMediaFeed
