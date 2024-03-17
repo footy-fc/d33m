@@ -21,15 +21,28 @@ interface SlideOutPanelProps {
 
 interface Event {
     competitions: {
-      competitors: {
-        team: {
-          id: number;
-          name: string;
-          logo: string;
-          score: number;
+        status: {
+            clock: number;
+            displayClock: string;
+            type: {
+                id: string;
+                name: string;
+                state: string;
+                completed: boolean;
+                description: string;
+                detail: string;
+                shortDetail: string;
+            };
         };
-        score: number;
-      }[];
+        competitors: {
+            team: {
+                id: number;
+                name: string;
+                logo: string;
+                score: number;
+            };
+            score: number;
+        }[];
     }[];
     id: string;
     date: string;
@@ -37,19 +50,20 @@ interface Event {
     // Add other properties as needed
 }
 
+
 type EventsArray = Event[];
 
 const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, handlePostChange }) => {  
     const [eventsEpl, setEventsEpl] = useState<EventsArray>([]);
     const [eventsUcl, setEventsUcl] = useState<EventsArray>([]);
     const [eventsFac, setEventsFac] = useState<EventsArray>([]);
-    const [eventsNfl, setEventsNfl] = useState<EventsArray>([]);
+    const [eventsUel, setEventsUel] = useState<EventsArray>([]);
 
     const [isAffordanceClicked, setIsAffordanceClicked] = useState(true);
     const [isEplDropdownOpen, setIsEplDropdownOpen] = useState(true);
     const [isUclDropdownOpen, setIsUclDropdownOpen] = useState(true);
     const [isFacDropdownOpen, setIsFacDropdownOpen] = useState(true);
-    const [isNflDropdownOpen, setIsNflDropdownOpen] = useState(true);
+    const [isUelDropdownOpen, setIsUelDropdownOpen] = useState(true);
 
     // Create a ref to the panel element
     const panelRef = useRef<HTMLDivElement>(null);
@@ -69,7 +83,7 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
                 setIsFacDropdownOpen(!isFacDropdownOpen);
                 break;
             case 'nfl':
-                setIsNflDropdownOpen(!isNflDropdownOpen);
+                setIsUelDropdownOpen(!isUelDropdownOpen);
                 break;
             default:
                 setIsEplDropdownOpen(!isEplDropdownOpen);
@@ -135,15 +149,20 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
     const fetchedEventsEpl = useEventsData("epl");
     const fetchedEventsUcl = useEventsData("ucl");
     const fetchedEventsFac = useEventsData("fac");
-    const fetchedEventsNfl = useEventsData("nfl");
+    const fetchedEventsUel = useEventsData("uel");
 
     // Update the state with the fetched data
     useEffect(() => {
-        setEventsEpl(fetchedEventsEpl);
+        const filteredEvents = (fetchedEventsEpl as Event[]).filter(event => {
+            return !event.competitions.some(competition => {
+                return competition.status?.type?.name === "STATUS_POSTPONED";
+            });
+        });
+        setEventsEpl(filteredEvents);
         setEventsUcl(fetchedEventsUcl);
         setEventsFac(fetchedEventsFac);
-        setEventsNfl(fetchedEventsNfl);
-    }, [fetchedEventsEpl,fetchedEventsFac, fetchedEventsNfl]);
+        setEventsUel(fetchedEventsUel);
+    }, [fetchedEventsEpl,fetchedEventsFac, fetchedEventsUel]);
     
     const combinedEvents = [...eventsEpl, ...eventsUcl];
 
@@ -280,6 +299,22 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
                                 {isUclDropdownOpen ? "\u25B2" : "\u25BC"} {/* Up arrow for close, down arrow for open */}
                             </span>
                       
+                        </button>
+                        {isUclDropdownOpen && (
+                            <div className="dropdown-content">
+                                {eventsUcl.map((event) => renderImages(event))}
+                            </div>
+                        )}
+                    </div>
+                    <div className="sidebarUel">
+                        <button onClick={() => toggleDropdown("uel")} className="dropdown-button cursor-pointer flex items-center mb-2 w-full">
+                        <span className="mt-2 mb-2 flex flex-grow items-center ml-2 text-notWhite">
+                            <Image src="/assets/uel/uel.png" alt="UEL Logo" className="rounded-full w-8 h-8" width={20} height={20} />
+                            Europa League 
+                            </span>
+                            <span className="ml-3 text-notWhite">
+                                {isUelDropdownOpen ? "\u25B2" : "\u25BC"}
+                            </span>
                         </button>
                         {isUclDropdownOpen && (
                             <div className="dropdown-content">

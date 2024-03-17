@@ -13,8 +13,8 @@ function useEventsData(sport: string) {
     case 'nba':
         apiUrl = 'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard';
         break;
-    case 'nfl':
-        apiUrl = 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard';
+    case 'uel':
+        apiUrl = 'https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard';
         break;
     case 'fac':
         apiUrl = 'https://site.api.espn.com/apis/site/v2/sports/soccer/eng.fa/scoreboard';
