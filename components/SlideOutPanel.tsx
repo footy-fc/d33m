@@ -82,7 +82,7 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
             case 'nba':
                 setIsFacDropdownOpen(!isFacDropdownOpen);
                 break;
-            case 'nfl':
+            case 'uel':
                 setIsUelDropdownOpen(!isUelDropdownOpen);
                 break;
             default:
@@ -162,9 +162,9 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
         setEventsUcl(fetchedEventsUcl);
         setEventsFac(fetchedEventsFac);
         setEventsUel(fetchedEventsUel);
-    }, [fetchedEventsEpl,fetchedEventsFac, fetchedEventsUel]);
+    }, [fetchedEventsEpl,fetchedEventsFac, fetchedEventsUel, fetchedEventsUcl]);
     
-    const combinedEvents = [...eventsEpl, ...eventsUcl];
+    //const combinedEvents = [...eventsEpl, ...eventsUcl, ...eventsFac, ...eventsUel];
 
     // Function to get the team logos from the shortName
     const renderImages = (event: Event) => {
@@ -316,9 +316,9 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
                                 {isUelDropdownOpen ? "\u25B2" : "\u25BC"}
                             </span>
                         </button>
-                        {isUclDropdownOpen && (
+                        {isUelDropdownOpen && (
                             <div className="dropdown-content">
-                                {eventsUcl.map((event) => renderImages(event))}
+                                {eventsUel.map((event) => renderImages(event))}
                             </div>
                         )}
                     </div>
