@@ -10,7 +10,6 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Modal from 'react-modal';
 import { AppProps } from 'next/app';
-import {PrivyProvider} from '@privy-io/react-auth';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -18,21 +17,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     // Assuming your root element has the ID 'root'. Adjust if it's different.
     Modal.setAppElement('#__next');
   }, []);
-  return (
-    <PrivyProvider
-      appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID || ''}
-      onSuccess={() => router.push('/?channel=lobby1')}
-      
-      config={{
-        loginMethods: ['farcaster'],
-        embeddedWallets: {
-          createOnLogin: 'all-users',
-        },
-      }}
-    >
-      <Component {...pageProps} />
-    </PrivyProvider>
-  )
+  return <Component {...pageProps} />;
 }
 
 export default MyApp;

@@ -7,13 +7,12 @@ import TeamsModal from './TeamLogos';
 import { useFetchUserDetails } from "./useFetchUserDetails";
 import { useFetchCastsParentUrl } from './useFetchCastsParentUrl';
 import fetchCastersDetails from './fetchCasterDetails';
-import sendAI from './sendAI'; 
+import sendCast from './sendCast'; 
 import useIsConnected from './useIsConnected';
 import { 
   Message, 
   UserDataType, 
 } from "@farcaster/hub-web";
-import { useExperimentalFarcasterSigner, usePrivy } from '@privy-io/react-auth';
 
 /* GUNDB */
 import Gun from 'gun';
@@ -82,9 +81,6 @@ const SocialMediaFeed = () => {
   const { userResult: casterFname, loading1: loadingFname } = useFetchUserDetails(casterFID, UserDataType.FNAME.toString());
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState('');
-  const { ready, authenticated, user, logout } = usePrivy();
-  const {submitCast} = useExperimentalFarcasterSigner();
-  
   const openPanel = () => {
     setIsPanelOpen(true);
     setShowDropdown(false);
@@ -119,8 +115,8 @@ const SocialMediaFeed = () => {
   };
   
   useEffect(() => {
-    setCasterFID(user?.farcaster?.fid || 2);
-   // setSigner_uuid(user?.farcaster?.signerPublicKey || '');
+    setCasterFID(hookIsConnected.casterFID);
+    setSigner_uuid(hookIsConnected.signer_uuid);
   }, [hookIsConnected]);
 
   useEffect(() => {
@@ -275,7 +271,7 @@ const SocialMediaFeed = () => {
         <div className="flex-grow bg-darkPurple overflow-hidden"> {/* Apply overflow-hidden here */}
           {/* HEADER */}
           <Header 
-              isConnected={ready}
+              isConnected={hookIsConnected.isConnected}
               openPanel={openPanel} 
               casterFname={casterFname} 
               targetUrl={targetUrl} 
@@ -330,20 +326,13 @@ const SocialMediaFeed = () => {
                 onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
-                        const aiPost = /^\/ai\s/; 
-                        if (aiPost.test(newPost)) {
-                          sendAI(newPost, setNewPost, setRemainingChars, targetUrl, selectedTeam);
-                        return;
-                        }
-                        if (ready && authenticated) {
-                          submitCast({text: newPost, parentUrl: targetUrl});
-                          setNewPost("");
-                          setRemainingChars(CastLengthLimit);
-                        
-                        } else {
-                            console.error("User not authenticated.");
-                            setNewPost("Sign-in to chat ↑");
-                          }
+                        if (hookIsConnected.isConnected) {
+                          const concatenatedText = updatedCasts.map(cast => cast?.data?.castAddBody?.text).join('');
+                          sendCast(newPost, setNewPost, setRemainingChars, signer_uuid, targetUrl, selectedTeam);
+                      } else {
+                          console.error("encryptedSigner is undefined");
+                          setNewPost("You must be signed in to chat or refresh the page and try again.");
+                      }
                     }
                     else if (e.key === 'Tab' && showDropdown && filteredCommands.length > 0) {
                         e.preventDefault(); // Prevent losing focus from the textarea
@@ -357,22 +346,9 @@ const SocialMediaFeed = () => {
             <button
               className="mb-2 py-2 px-2 bg-deepPink hover:bg-pink-600 rounded-full flex items-center justify-center transition duration-300 ease-in-out shadow-md hover:shadow-lg text-lightPurple font-semibold text-medium"
               onClick={() => {
-                const aiPost = /^\/ai\s/; 
-                  if (aiPost.test(newPost)) {
-                    sendAI(newPost, setNewPost, setRemainingChars, targetUrl, selectedTeam);
-                    // const audioElement = new Audio('/assets/soccer-ball-kick-37625.mp3');
-                    // audioElement.play();
-                  return;
-                  }
-                  if (ready && authenticated) {
-                    submitCast({text: newPost, parentUrl: targetUrl});
-                    setNewPost("");
-                    setRemainingChars(CastLengthLimit);
-                  
-                  } else {
-                      console.error("User not authenticated.");
-                      setNewPost("Sign-in to chat ↑");
-                    }
+                sendCast(newPost, setNewPost, setRemainingChars, signer_uuid, targetUrl, selectedTeam);
+                const audioElement = new Audio('/assets/soccer-ball-kick-37625.mp3');
+                audioElement.play();
               }}>
               <img src="/favicon.ico" alt="Favicon" className="w-6 h-5" />
             </button>
