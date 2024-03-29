@@ -5,7 +5,7 @@
 // pages/_app.js
 
 import 'tailwindcss/tailwind.css';
-import 'styles/globals.css';
+//import 'styles/globals.css';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Modal from 'react-modal';

@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { useExperimentalFarcasterSigner, usePrivy } from "@privy-io/react-auth";
+import CreateWalletButton from "./CreateWalletButton";
 
 const Privy = () => {
   const {login} = usePrivy();
-  const { ready, authenticated, user, logout } = usePrivy();
+  const { ready, authenticated, user, logout, createWallet } = usePrivy();
   const { requestFarcasterSigner } = useExperimentalFarcasterSigner();
   
   const farcasterAccount = user?.linkedAccounts.find((account) => account.type === 'farcaster');
@@ -32,9 +33,9 @@ const Privy = () => {
        </div>
      </div>
       ) : (ready && authenticated) ? (
-        <div className="p-4 flex flex-col items-center justify-center">
-          <div style={{ height: "auto", margin: "0 auto", maxWidth: 190, width: "100%" }}>
-           {/*  <div className="mt-6 flex justify-center text-center">
+        <div className="flex items-center justify-center">
+          <div>
+           <div className="flex justify-center text-center">   {/*  <div className="mt-6 flex justify-center text-center">
               <button
                 className="bg-violet-600 hover:bg-violet-700 py-3 px-6 text-white rounded-lg"
                 onClick={logout}
@@ -45,23 +46,20 @@ const Privy = () => {
             
             {// @ts-ignore
             !farcasterAccount || !farcasterAccount?.signerPublicKey && (
+              <div>
               <button 
-                className="bg-fontRed text-white font-semibold py-2 px-4 rounded-lg" 
-                onClick={() => requestFarcasterSigner()}
+              className="hover:bg-darkPurple py-2 px-4 text-lightPurple text-md font-semibold rounded-lg transition-all duration-200 ease-in-out"
+              onClick={() => requestFarcasterSigner()}
                 // @ts-ignore
                 disabled={!farcasterAccount || farcasterAccount?.signerPublicKey}
               >
-                Authorize Farcaster
+                [ Authorize Farcaster ]
               </button>
+              <CreateWalletButton />
+              </div>
             )}
-            {/* <button 
-              className="bg-fontRed text-white font-semibold py-2 px-4 rounded-lg" 
-              disabled={!(ready && authenticated)} 
-              onClick={createWallet}
-            >
-              Create a wallet
-            </button> */}
           </div>
+        </div>
         </div>
       ) : null}
     </>
