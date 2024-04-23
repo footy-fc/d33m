@@ -30,7 +30,8 @@ const sendCast = async (
             method: 'POST',
             headers: {
               accept: 'application/json',
-              api_key: getApiKeyFromEnv(),
+              //api_key: getApiKeyFromEnv(),
+              "x-airstack-hubs": "18c933b177db0481294b63138fe69648d",
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -40,7 +41,8 @@ const sendCast = async (
             })
           };
           // @ts-ignore
-          fetch('https://api.neynar.com/v2/farcaster/cast', options)
+          // fetch('https://api.neynar.com/v2/farcaster/cast', options)
+          fetch('https://hubs.airstack.xyz/v2/farcaster/cast', options)
             .then(response => response.json())
             .then(response => console.log(response))
             .catch(err => console.error(err));
@@ -51,4 +53,3 @@ const sendCast = async (
 };
 
 export default sendCast;
-

@@ -254,7 +254,13 @@ const SocialMediaFeed = () => {
           break;
 
         case 'ai':
+            setShowDropdown(false);
             break;
+        
+        case 'tip':
+            setShowDropdown(false);
+            sendTip(newPost, setNewPost, setRemainingChars, ready, user?.wallet?.address, sendTransaction, notify);
+            break;    
 
         default:
           // Handle unrecognized commands or provide a default action
@@ -340,8 +346,8 @@ const SocialMediaFeed = () => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
                         const aiPost = /^\/ai\s/; 
-                        const tipPost = /^\/tip\s/;
-                        console.log("newPost: ", newPost);
+                        const tipPost = /^\/tip/;
+                        //console.log("newPost: ", newPost);
                         if (aiPost.test(newPost)) {
                           sendAI(newPost, setNewPost, setRemainingChars, targetUrl, selectedTeam);
                         return;
@@ -349,10 +355,12 @@ const SocialMediaFeed = () => {
                         if (tipPost.test(newPost)) {
                           if(ready && user?.wallet?.address) {
                             sendTip(newPost, setNewPost, setRemainingChars, ready, user?.wallet?.address, sendTransaction, notify);
+                            return;
                           }
-                        return;
+                          return;
                         }
                         if (ready && authenticated) {
+                          console.log("shouldn't be here: ", newPost, tipPost.test(newPost));
                           submitCast({text: newPost, parentUrl: targetUrl});
                           setNewPost("");
                           setRemainingChars(CastLengthLimit);
@@ -383,13 +391,14 @@ const SocialMediaFeed = () => {
                     sendAI(newPost, setNewPost, setRemainingChars, targetUrl, selectedTeam);
                     // const audioElement = new Audio('/assets/soccer-ball-kick-37625.mp3');
                     // audioElement.play();
-                  return;
+                    return;
                   }
                   if (tipPost.test(newPost)) {
                     if(ready && user?.wallet?.address) {
                       sendTip(newPost, setNewPost, setRemainingChars, ready, user?.wallet?.address, sendTransaction, notify);
+                      return;
                     }
-                  return;
+                    return;
                   }
                   if (ready && authenticated) {
                     submitCast({text: newPost, parentUrl: targetUrl});

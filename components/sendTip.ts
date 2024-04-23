@@ -10,7 +10,7 @@ const sendTip = async (
     setNewPost: React.Dispatch<React.SetStateAction<string>>,
     setRemainingChars: React.Dispatch<React.SetStateAction<number>>,
     ready: boolean,
-    address: string,
+    address: string|undefined,
     sendTransaction: any,
     notify: (message: string | number | boolean | null | undefined) => void, // Pass notify function as an argument
 ) => {
@@ -23,7 +23,7 @@ const sendTip = async (
         await setup();
         if (txReceipt) {
             console.log("sendTip: txReceipt: ", txReceipt);
-            const castThis = "I tipped 30 DEGEN to the d33m team. " + `https://basescan.org/tx/${txReceipt.transactionHash}` + "https://d33m.com";
+            const castThis = "I tipped 30 DEGEN to the d33m team. " + `https://basescan.org/tx/${txReceipt.transactionHash}` + " https://d33m.com";
             setNewPost(castThis)
             setRemainingChars(CastLengthLimit);  
         } else {

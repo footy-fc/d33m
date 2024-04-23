@@ -6,7 +6,7 @@ let conversationHistory: { role: string; content: any; }[] = [];
 
 const sendAi = async (aiPrompt: string, openAiApiKey: string) => {
     const prompt = aiPrompt;
-    console.log('prompt in sendAi', prompt, openAiApiKey);
+    //console.log('prompt in sendAi', prompt, openAiApiKey);
     const notify = (message: string | number | boolean | null | undefined) => toast(message);
 
     if (openAiApiKey === '') {
@@ -47,7 +47,7 @@ const sendAi = async (aiPrompt: string, openAiApiKey: string) => {
           // Check if the error response is available and has data
           if (error.response && error.response.data) {
             const errorMessage = error.response.data.error.message;
-            console.error('Error Message:', errorMessage);
+            //console.error('Error Message:', errorMessage);
             notify(errorMessage);
             return '';
           } else {

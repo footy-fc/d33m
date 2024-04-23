@@ -3,9 +3,7 @@ import { useExperimentalFarcasterSigner, usePrivy } from "@privy-io/react-auth";
 import CreateWalletButton from "./CreateWalletButton";
 import ExportWalletButton from "./ExportWalletButton";
 import CreateLoginButton from "./CreateLoginButton";
-import CopyPublicKeyButton from "./CopyPublicKeyButton";
 import GetBalance from "./GetBalance";
-import { useEffect, useState } from "react";
 import SetupAI from "./SetupAI";
 import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
@@ -14,34 +12,8 @@ import Withdraw from "./Withdraw";
 const Privy = () => {
   const { ready, authenticated, user, logout, sendTransaction } = usePrivy();
   const { requestFarcasterSigner } = useExperimentalFarcasterSigner();
-  const [openAiApiKey, setApiKey] = useState(''); 
-  const [apiKeyVisible, setApiKeyVisible] = useState(false); // Initialize as hidden
 
-  useEffect(() => {
-    const apiKey = getApiKeyFromLocalStorage();
-    setApiKey(apiKey || ''); // Use an empty string as the default value or boom
-  }, []);
 
-  useEffect(() => {
-    const storedApiKey = getApiKeyFromLocalStorage();
-    if (storedApiKey) {
-      setApiKey(storedApiKey);
-    }
-  }, []);
-
-  const setApiKeyToLocalStorage = (apiKey: string) => {
-    localStorage.setItem('chatgpt-api-key', apiKey);
-  };
-
-  const getApiKeyFromLocalStorage = () => {
-    return localStorage.getItem('chatgpt-api-key');
-  };
-
-  const handleApiKeyChange = (e: { target: { value: any; }; }) => {
-    const newApiKey = e.target.value;
-    setApiKey(newApiKey);
-    setApiKeyToLocalStorage(newApiKey);
-  };
   
   const farcasterAccount = user?.linkedAccounts.find((account) => account.type === 'farcaster');
   return (
