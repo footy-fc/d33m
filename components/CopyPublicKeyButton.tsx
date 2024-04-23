@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
-import { size } from 'lodash';
 
 const CopyPublicKeyButton = () => {
   const { ready, authenticated, user } = usePrivy();
