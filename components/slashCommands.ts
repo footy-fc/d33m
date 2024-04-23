@@ -11,22 +11,27 @@ const initialCommands = [
   { 
     command: 'football', 
     description: 'join channel formerly known as soccer', 
-    botSource: 'Built-in' 
+    botSource: 'd33m' 
   },
   { 
     command: 'join', 
-    description: 'a room by entering ID or create using any 6 characters', 
-    botSource: 'Built-in'
+    description: 'enter a room ID or create with any 6 characters', 
+    botSource: 'd33m'
   },
   { 
-    command: 'mint', 
-    description: 'predict match outcomes, collect points (coming soon)', 
+    command: 'play', 
+    description: 'predict match outcomes, earn tokens (coming soon)', 
     botSource: 'Defifa' 
   },
   { 
     command: 'start', 
-    description: 'deploy a prediction game (coming soon)', 
+    description: 'a prediction game (coming soon)', 
     botSource: 'Defifa' 
+  },
+  { 
+    command: 'tip', 
+    description: '30 DEGEN to d33m team', 
+    botSource: 'd33m' 
   },
 ];
 

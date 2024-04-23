@@ -1,14 +1,17 @@
 import axios, { AxiosError } from 'axios';
+import { ToastContainer, ToastContentProps, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 let conversationHistory: { role: string; content: any; }[] = [];
 
 const sendAi = async (aiPrompt: string, openAiApiKey: string) => {
     const prompt = aiPrompt;
     console.log('prompt in sendAi', prompt, openAiApiKey);
+    const notify = (message: string | number | boolean | null | undefined) => toast(message);
+
     if (openAiApiKey === '') {
-      console.error('OpenAI API Key is missing');
-      const inputVar = "OpenAI API Key is missing";
-      return inputVar;
+      notify('OpenAI API Key is missing. Please add it in the Account settings.');
+      return "";
     } else {
       const apiKey = openAiApiKey;
       const apiUrl = 'https://api.openai.com/v1/chat/completions';
@@ -34,8 +37,7 @@ const sendAi = async (aiPrompt: string, openAiApiKey: string) => {
           console.log('aiResponseContent', aiResponseContent);
           return aiResponseContent;
         } else {
-          console.error('Failed to fetch AI. Status code:', aiResponse.status);
-          return 'Failed to fetch AI. Status code:' + aiResponse.status;
+          notify('Failed to fetch AI. Status code:' + aiResponse.status);
         }
       } catch (error) {
         console.error('Error while fetching AI:', error);
@@ -46,12 +48,13 @@ const sendAi = async (aiPrompt: string, openAiApiKey: string) => {
           if (error.response && error.response.data) {
             const errorMessage = error.response.data.error.message;
             console.error('Error Message:', errorMessage);
-            return 'Error while fetching AI: ' + errorMessage;
+            notify(errorMessage);
+            return '';
           } else {
-            return 'An unknown error occurred while fetching AI.';
+            notify('An unknown error occurred while fetching AI.');
           }
         } else {
-          return 'An unexpected error occurred.';
+          notify('An unexpected error occurred.');
         }
      };
     }

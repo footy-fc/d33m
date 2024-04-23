@@ -7,13 +7,14 @@ interface FooterNavProps {
   onLobbyClick: () => void;
   onBadgeClick: () => void;
   onShareClick: () => void;
+  onWalletClick: () => void;
   onSetupClick: () => void;
   apiKeyVisible: boolean;
   openAiApiKey: string;
   handleApiKeyChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
-const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onShareClick, onSetupClick, apiKeyVisible, openAiApiKey,handleApiKeyChange}) => {
+const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onShareClick, onWalletClick, onSetupClick}) => {
       
     return (
     <div className="flex justify-between items-center p-2 mb-2">
@@ -27,15 +28,15 @@ const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onShareClic
         <p className="text-xxs" style={{ color: '#C0B2F0' }}>Badge</p>
       </button>
 
-      <button onClick={onShareClick} className="text-md text-lightPurple font-semibold text-medium">
+      <button onClick={onShareClick} className="flex flex-col items-center">
         <FontAwesomeIcon icon={faArrowAltCircleUp} style={{ color: '#C0B2F0', fontSize: '24px' }} />
         <p className="text-xxs" style={{ color: '#C0B2F0' }}>Share</p>
       </button>
 
-      <div className={`flex ${apiKeyVisible ? 'flex-row' : 'flex-col'} items-center text-md`} style={{ color: '#C0B2F0' }}>
+{/*       <div className={`flex ${apiKeyVisible ? 'flex-row' : 'flex-col'} items-center text-md`} style={{ color: '#C0B2F0' }}>
         <div onClick={onSetupClick} className="cursor-pointer flex flex-col items-center">
           <FontAwesomeIcon icon={faCircleUser} style={{ color: '#C0B2F0', fontSize: '24px' }} />
-          <p className={`text-xxs ${apiKeyVisible ? 'ml-1 mr-1' : ''} text-center`}>Setup</p>
+          <p className={`text-xxs ${apiKeyVisible ? 'ml-1 mr-1' : ''} text-center`}>Setup AI</p>
         </div>
         {apiKeyVisible && (
             <div className="text-md text-white mr-2">
@@ -48,7 +49,13 @@ const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onShareClic
                 />
             </div>
         )}      
-      </div>
+      </div> */}
+
+      <button onClick={onWalletClick} className="flex flex-col items-center">
+        <FontAwesomeIcon icon={faCircleUser} style={{ color: '#C0B2F0', fontSize: '24px' }} />
+        <p className="text-xxs" style={{ color: '#C0B2F0' }}>Account</p>
+      </button>
+
     </div>
   );
 };

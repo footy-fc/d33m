@@ -1,5 +1,6 @@
-import { HubRpcClient, Message, SignatureScheme, UserDataAddData, UserDataType, getHubRpcClient, isUserDataAddMessage } from "@farcaster/hub-web";
+import { Message, UserDataType } from "@farcaster/hub-web";
 import validTeamLogos from '../public/validTeams.json';
+import axios from 'axios';
 
 interface FidDetails {
   pfp: string;
@@ -33,17 +34,20 @@ interface UserDataMessage {
 }
 
 const fetchCastersDetails = async (casts: Message[], hubAddress: string, setUpdatedCasts: (casts: UpdatedCast[]) => void) => {
-  const client = getHubRpcClient(hubAddress);
   const fidDetailsCache: Record<number, FidDetails> = {};
 
   const getUserDataFromFid = async (fid: number): Promise<FidDetails> => {
-    const result = await fetch(`${hubAddress}/v1/userDataByFid?fid=${fid}`);
-    if (!result.ok) throw new Error(`Failed to fetch user data: ${result.statusText}`);
+      const server = "https://hubs.airstack.xyz";
+      const result = await axios.get(`${server}/v1/userDataByFid?fid=${fid}`, {
+        headers: {
+          "Content-Type": "application/json",
+          "x-airstack-hubs": "18c933b177db0481294b63138fe69648d"
+          //process.env.AIRSTACK_API_KEY as string,
+        },
+      });
+      let pfp = '', fname = '', bio = '';  
     
-    const response: { messages: UserDataMessage[], nextPageToken: string } = await result.json();
-    let pfp = '', fname = '', bio = '';
-    
-    response.messages.forEach((message) => {
+    result.data.messages.forEach((message: { data: { userDataBody: any; }; }) => {
       const { userDataBody } = message.data; // Corrected access to 'data'
       switch (userDataBody.type) { // Corrected access to 'type'
         case "USER_DATA_TYPE_USERNAME":

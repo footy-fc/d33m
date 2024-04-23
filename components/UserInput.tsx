@@ -22,7 +22,7 @@ const CustomTextArea: FC<CustomTextAreaProps> = ({
     <div > 
     <textarea
       ref={textareaRef}
-      className={`w-full text-white text-sm px-2 py-1 focus:outline-none border bg-darkPurple border-limeGreenOpacity resize-none overflow-hidden ${showDropdown ? 'rounded-b-lg' : 'rounded-lg'}`}
+      className={`w-full caret-limeGreenOpacity text-white text-sm px-2 py-1 focus:outline-none border bg-darkPurple border-limeGreenOpacity resize-none overflow-hidden ${showDropdown ? 'rounded-b-lg' : 'rounded-lg'}`}
       placeholder="Cast or / for 🤖 commands"
       value={newPost}
       onChange={handlePostChange}

@@ -27,7 +27,7 @@ const CommandDropdown: React.FC<CommandDropdownProps> = ({ filteredCommands, set
               }
             }}
           > 
-            <span className="text-sm text-lightPurple font-semibold whitespace-nowrap">🤖 /{command}</span>
+            <span className="text-sm text-lightPurple font-bold whitespace-nowrap">🤖 /{command}</span>
             <span className="text-sm text-lightPurple font-normal text-left">{description}</span>
             <span className="text-sm text-lightPurple font-normal justify-self-end">{botSource}</span>
           </div>

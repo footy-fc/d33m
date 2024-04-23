@@ -1,10 +1,12 @@
 /* REACT */
+import React from 'react';
 import { SetStateAction, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import TeamsModal from './TeamLogos';
+import { ToastContainer, ToastContentProps, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 /* HOOKS */
-import { useFetchUserDetails } from "./useFetchUserDetails";
 import { useFetchCastsParentUrl } from './useFetchCastsParentUrl';
 import fetchCastersDetails from './fetchCasterDetails';
 import sendAI from './sendAI'; 
@@ -38,6 +40,8 @@ import FooterNav from './FooterNav';
 import Header from './Header';
 import CommandDropdown from './CommandDropdown';
 import CustomTextArea from './UserInput';
+import WalletModal from './WalletSetup';
+import sendTip from './sendTip';
 
 interface UpdatedCast extends Message {
   fname: string;
@@ -74,15 +78,14 @@ const SocialMediaFeed = () => {
   const [scrollPosition, setScrollPosition] = useState(0); // Store the scroll position
   const hookIsConnected = useIsConnected();
   const [signer_uuid, setSigner_uuid] = useState('');
-  const [apiKeyVisible, setApiKeyVisible] = useState(false); // Initialize as hidden
   const [showDropdown, setShowDropdown] = useState(false);
   const {commands, setCommands, filteredCommands, setFilteredCommands} = useCommands();
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [casterFID, setCasterFID] = useState<number>(FarcasterAppFID);
-  const { userResult: casterFname, loading1: loadingFname } = useFetchUserDetails(casterFID, UserDataType.FNAME.toString());
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isWalletModalVisible, setIsWalletModalVisible] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState('');
-  const { ready, authenticated, user, logout } = usePrivy();
+  const { ready, authenticated, user, logout, sendTransaction } = usePrivy();
   const {submitCast} = useExperimentalFarcasterSigner();
   
   const openPanel = () => {
@@ -255,7 +258,7 @@ const SocialMediaFeed = () => {
 
         default:
           // Handle unrecognized commands or provide a default action
-          console.log("Unrecognized command:", command);
+          //console.log("Unrecognized command:", command);
           break;
       }
     }
@@ -264,6 +267,8 @@ const SocialMediaFeed = () => {
   if (loading) {
     return <div>Loading...</div>;
   }
+
+  const notify = (message: string | number | boolean | null | undefined) => toast(message);
 
 
   // TODO make some better components for this and use them in the panel
@@ -277,7 +282,6 @@ const SocialMediaFeed = () => {
           <Header 
               isConnected={ready}
               openPanel={openPanel} 
-              casterFname={casterFname} 
               targetUrl={targetUrl} 
             />
           {/* BODY */}
@@ -311,6 +315,11 @@ const SocialMediaFeed = () => {
                 onRequestClose={() => setIsModalVisible(false)}
                 onTeamSelect={handleTeamSelect}
               /> )}
+              {isWalletModalVisible && (
+              <WalletModal 
+                isOpen={isWalletModalVisible} 
+                onRequestClose={() => setIsWalletModalVisible(false)}
+              /> )}
               {showDropdown && (
                 <CommandDropdown 
                   filteredCommands={filteredCommands}
@@ -331,18 +340,29 @@ const SocialMediaFeed = () => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
                         const aiPost = /^\/ai\s/; 
+                        const tipPost = /^\/tip\s/;
+                        console.log("newPost: ", newPost);
                         if (aiPost.test(newPost)) {
                           sendAI(newPost, setNewPost, setRemainingChars, targetUrl, selectedTeam);
+                        return;
+                        }
+                        if (tipPost.test(newPost)) {
+                          if(ready && user?.wallet?.address) {
+                            sendTip(newPost, setNewPost, setRemainingChars, ready, user?.wallet?.address, sendTransaction, notify);
+                          }
                         return;
                         }
                         if (ready && authenticated) {
                           submitCast({text: newPost, parentUrl: targetUrl});
                           setNewPost("");
                           setRemainingChars(CastLengthLimit);
-                        
                         } else {
                             console.error("User not authenticated.");
-                            setNewPost("Sign-in to chat ↑");
+                            setNewPost("");
+                            setRemainingChars(CastLengthLimit);
+                            notify("Authenticate your Account to chat.");
+                            setIsWalletModalVisible(true);
+                            setShowDropdown(false); 
                           }
                     }
                     else if (e.key === 'Tab' && showDropdown && filteredCommands.length > 0) {
@@ -358,10 +378,17 @@ const SocialMediaFeed = () => {
               className="mb-2 py-2 px-2 bg-deepPink hover:bg-pink-600 rounded-full flex items-center justify-center transition duration-300 ease-in-out shadow-md hover:shadow-lg text-lightPurple font-semibold text-medium"
               onClick={() => {
                 const aiPost = /^\/ai\s/; 
+                const tipPost = /^\/tip\s/;
                   if (aiPost.test(newPost)) {
                     sendAI(newPost, setNewPost, setRemainingChars, targetUrl, selectedTeam);
                     // const audioElement = new Audio('/assets/soccer-ball-kick-37625.mp3');
                     // audioElement.play();
+                  return;
+                  }
+                  if (tipPost.test(newPost)) {
+                    if(ready && user?.wallet?.address) {
+                      sendTip(newPost, setNewPost, setRemainingChars, ready, user?.wallet?.address, sendTransaction, notify);
+                    }
                   return;
                   }
                   if (ready && authenticated) {
@@ -371,9 +398,19 @@ const SocialMediaFeed = () => {
                   
                   } else {
                       console.error("User not authenticated.");
-                      setNewPost("Sign-in to chat ↑");
+                      setNewPost("");
+                      setRemainingChars(CastLengthLimit);
+                      notify("Authenticate your Account to chat.");
+                      setIsWalletModalVisible(true);
+                      setShowDropdown(false); 
                     }
               }}>
+              <ToastContainer
+                position="top-center"
+                autoClose={2000}
+                pauseOnFocusLoss={false}
+                hideProgressBar={true}
+              />
               <img src="/favicon.ico" alt="Favicon" className="w-6 h-5" />
             </button>
           </div>
@@ -383,17 +420,20 @@ const SocialMediaFeed = () => {
             onLobbyClick={() => {
               const inputVar = { target: { value: "/join " + DefaultChannelName } };
               handlePostChange(inputVar);
-            }}
+            } }
             onBadgeClick={() => {
               setIsModalVisible(true);
-              setShowDropdown(false); 
-            }}
+              setShowDropdown(false);
+            } }
             onShareClick={() => copyToClipboardAndShare(targetUrl, isMobileDevice)}
-            onSetupClick={() => setApiKeyVisible(!apiKeyVisible)}
-            apiKeyVisible={apiKeyVisible}
-            openAiApiKey={openAiApiKey} // Passed as prop
-            handleApiKeyChange={handleApiKeyChange} 
-          />
+            onWalletClick={() => {
+              setIsWalletModalVisible(true);
+              setShowDropdown(false);
+            } } onSetupClick={function (): void {
+              throw new Error('Function not implemented.');
+            } } apiKeyVisible={false} openAiApiKey={''} handleApiKeyChange={function (event: React.ChangeEvent<HTMLInputElement>): void {
+              throw new Error('Function not implemented.');
+            } }          />
         </div>
       </div>
     </>

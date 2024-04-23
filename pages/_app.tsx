@@ -1,5 +1,3 @@
-
-
 //import "../public/assets/fonts/Capsules.woff2"; // Replace with the actual CSS file path
 //import "../public/assets/fonts/ChicagoFLF.woff"; // Replace with the actual CSS file path
 // pages/_app.js
@@ -25,8 +23,14 @@ function MyApp({ Component, pageProps }: AppProps) {
       
       config={{
         loginMethods: ['farcaster'],
+        appearance: {
+          theme: `#${'181424'}`, 
+        },  
+
         embeddedWallets: {
-          createOnLogin: 'all-users',
+          createOnLogin: 'users-without-wallets',
+          // waitForTransactionConfirmation: false,
+          // noPromptOnSignature: true,
         },
       }}
     >

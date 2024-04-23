@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { getHubRpcClient, HubRpcClient, Message } from '@farcaster/hub-web';
 import axios from "axios";
 import { FarcasterAppFID } from '../constants/constants';
+import { config } from "dotenv";
+
+config();
 
 // TODO: Move to Neynar. 
 /*  const options = {   method: 'GET',
@@ -21,19 +24,29 @@ export function useFetchCastsParentUrl(url: string, FarcasterHub: string, pageSi
     const fetchCasts = async () => {
       //const client: HubRpcClient = getHubRpcClient(FarcasterHub);
       try {
-        const castsResult:any = await axios.get(`${FarcasterHub}/v1/castsByParent?pageSize=${pageSize}&reverse=1&url=${url}`);
+        //const castsResult:any = await axios.get(`${FarcasterHub}/v1/castsByParent?pageSize=${pageSize}&reverse=1&url=${url}`);
         //const castsResult:any = await axios.get(`${client}/v1/castsByParent?pageSize=10&reverse=1&url=${url}`);
-        if (castsResult.status === 200) {
-          setCasts(castsResult.data.messages);
-        } else {
-          console.error('Failed to fetch casts:', castsResult.isErr());
-        }
-      } catch (error) {
-        console.error('Failed to fetch casts:', error);
-      } finally {
-        setLoading(false);
-      }
+          const server = "https://hubs.airstack.xyz";
+            const castsResult = await axios.get(`${server}/v1/castsByParent?pageSize=10&reverse=1&url=${url}`, {
+              headers: {
+                "Content-Type": "application/json",
+                "x-airstack-hubs": "18c933b177db0481294b63138fe69648d"
+                //process.env.AIRSTACK_API_KEY as string,
+              },
+            });
+          
+            if (castsResult.status === 200) {
+              setCasts(castsResult.data.messages);
+            } else {
+              console.error('Failed to fetch casts:', castsResult.statusText);
+            }
+          } catch (e) {
+            console.error('Failed to fetch casts:', e);
+          } finally {
+            setLoading(false);
+          }
     };
+  
 
     fetchCasts();
     const intervalId = setInterval(fetchCasts, 1000);
