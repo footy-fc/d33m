@@ -19,17 +19,17 @@ const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onShareClic
     return (
     <div className="flex justify-between items-center p-2 mb-2">
       <button onClick={onLobbyClick} className="flex flex-col items-center">
-        <FontAwesomeIcon icon={faBuilding} style={{ color: '#C0B2F0', fontSize: '24px' }} />
+        <FontAwesomeIcon className="h-6 w-6" icon={faBuilding} style={{ color: '#C0B2F0'}} />
         <p className="text-xxs" style={{ color: '#C0B2F0' }}>Lobby</p>
       </button>
 
       <button onClick={onBadgeClick} className="flex flex-col items-center">
-        <FontAwesomeIcon icon={faIdBadge} style={{ color: '#C0B2F0', fontSize: '24px' }} />
+        <FontAwesomeIcon className="h-6 w-6" icon={faIdBadge} style={{ color: '#C0B2F0' }} />
         <p className="text-xxs" style={{ color: '#C0B2F0' }}>Badge</p>
       </button>
 
       <button onClick={onShareClick} className="flex flex-col items-center">
-        <FontAwesomeIcon icon={faArrowAltCircleUp} style={{ color: '#C0B2F0', fontSize: '24px' }} />
+        <FontAwesomeIcon className="h-6 w-6" icon={faArrowAltCircleUp} style={{ color: '#C0B2F0' }} />
         <p className="text-xxs" style={{ color: '#C0B2F0' }}>Share</p>
       </button>
 
@@ -52,7 +52,7 @@ const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onShareClic
       </div> */}
 
       <button onClick={onWalletClick} className="flex flex-col items-center">
-        <FontAwesomeIcon icon={faCircleUser} style={{ color: '#C0B2F0', fontSize: '24px' }} />
+        <FontAwesomeIcon className="h-6 w-6" icon={faCircleUser} style={{ color: '#C0B2F0' }} />
         <p className="text-xxs" style={{ color: '#C0B2F0' }}>Account</p>
       </button>
 
