@@ -4,7 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 let conversationHistory: { role: string; content: any; }[] = [];
 
-const sendAi = async (aiPrompt: string, openAiApiKey: string) => {
+const sendOpenAi = async (aiPrompt: string, openAiApiKey: string) => {
     const prompt = aiPrompt;
     //console.log('prompt in sendAi', prompt, openAiApiKey);
     const notify = (message: string | number | boolean | null | undefined) => toast(message);
@@ -58,6 +58,6 @@ const sendAi = async (aiPrompt: string, openAiApiKey: string) => {
         }
      };
     }
-  };  
-  export default sendAi;
+  };
+  export default sendOpenAi;
   

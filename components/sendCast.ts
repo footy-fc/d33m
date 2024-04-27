@@ -1,4 +1,4 @@
-import sendAi from './ai'; 
+import sendOpenAi from './sendOpenAi'; 
 import { CastLengthLimit } from "../constants/constants";
 
 const sendCast = async (
@@ -16,7 +16,7 @@ const sendCast = async (
     if (aiPost.test(newPost)) {
         setNewPost("Loading AI... checking for your API key \u2198"); // TODO: change this to a spinner
         const openAiApiKey = getApiKeyFromLocalStorage();
-        const responseAI = await sendAi(newPost, openAiApiKey||"");
+        const responseAI = await sendOpenAi(newPost, openAiApiKey||"");
         setNewPost(responseAI)// TODO move to it's own affordance
         setRemainingChars(CastLengthLimit-responseAI.length);
         return;
