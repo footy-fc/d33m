@@ -1,3 +1,4 @@
+// Privy has submit cast so not currently using this when using privy Hub call
 import sendOpenAi from './sendOpenAi'; 
 import { CastLengthLimit } from "../constants/constants";
 
