@@ -58,12 +58,14 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
     const [eventsUcl, setEventsUcl] = useState<EventsArray>([]);
     const [eventsFac, setEventsFac] = useState<EventsArray>([]);
     const [eventsUel, setEventsUel] = useState<EventsArray>([]);
+    const [eventsEur, setEventsEur] = useState<EventsArray>([]);
 
     const [isAffordanceClicked, setIsAffordanceClicked] = useState(true);
     const [isEplDropdownOpen, setIsEplDropdownOpen] = useState(true);
     const [isUclDropdownOpen, setIsUclDropdownOpen] = useState(true);
     const [isFacDropdownOpen, setIsFacDropdownOpen] = useState(true);
     const [isUelDropdownOpen, setIsUelDropdownOpen] = useState(true);
+    const [isEurDropdownOpen, setIsEurDropdownOpen] = useState(true);
 
     // Create a ref to the panel element
     const panelRef = useRef<HTMLDivElement>(null);
@@ -84,6 +86,9 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
                 break;
             case 'uel':
                 setIsUelDropdownOpen(!isUelDropdownOpen);
+                break;
+            case 'eur':
+                setIsEurDropdownOpen(!isEurDropdownOpen);
                 break;
             default:
                 setIsEplDropdownOpen(!isEplDropdownOpen);
@@ -150,6 +155,7 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
     const fetchedEventsUcl = useEventsData("ucl");
     const fetchedEventsFac = useEventsData("fac");
     const fetchedEventsUel = useEventsData("uel");
+    const fetchedEventsEur = useEventsData("eur");
 
     // Update the state with the fetched data
     useEffect(() => {
@@ -162,7 +168,8 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
         setEventsUcl(fetchedEventsUcl);
         setEventsFac(fetchedEventsFac);
         setEventsUel(fetchedEventsUel);
-    }, [fetchedEventsEpl,fetchedEventsFac, fetchedEventsUel, fetchedEventsUcl]);
+        setEventsEur(fetchedEventsEur);
+    }, [fetchedEventsEpl,fetchedEventsFac, fetchedEventsUel, fetchedEventsUcl, fetchedEventsEur]);
     
     //const combinedEvents = [...eventsEpl, ...eventsUcl, ...eventsFac, ...eventsUel];
 
@@ -255,14 +262,14 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
                     </button>
                 </div>
                 <div className="p-4 overflow-auto max-h-[90vh]">
-                    <div className="sidebarEPL`">
+     {/*                <div className="sidebarEPL`">
                         <button onClick={() => toggleDropdown("epl")} className="dropdown-button cursor-pointer flex items-center mb-2 w-full">
                         <span className="mt-2 mb-2 flex flex-grow items-center ml-2 text-notWhite">
                             <Image src="/assets/epl/epl.png" alt="EPL Logo" className="rounded-full w-8 h-8" width={20} height={20} />
                             Premier League
                             </span>
                             <span className="ml-2 text-notWhite">
-                                {isEplDropdownOpen ? "\u25B2" : "\u25BC"} {/* Up arrow for close, down arrow for open */}
+                                {isEplDropdownOpen ? "\u25B2" : "\u25BC"} 
                             </span>
                      
                         </button>
@@ -279,7 +286,7 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
                             FA Cup
                             </span>
                             <span className="ml-3 text-notWhite">
-                                {isFacDropdownOpen ? "\u25B2" : "\u25BC"} {/* Up arrow for close, down arrow for open */}
+                                {isFacDropdownOpen ? "\u25B2" : "\u25BC"}
                             </span>
                       
                         </button>
@@ -296,7 +303,7 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
                             Champions League 
                             </span>
                             <span className="ml-3 text-notWhite">
-                                {isUclDropdownOpen ? "\u25B2" : "\u25BC"} {/* Up arrow for close, down arrow for open */}
+                                {isUclDropdownOpen ? "\u25B2" : "\u25BC"} 
                             </span>
                       
                         </button>
@@ -321,7 +328,23 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
                                 {eventsUel.map((event) => renderImages(event))}
                             </div>
                         )}
-                    </div>
+                    </div> */}
+                    <div className="sidebarEur">
+                        <button onClick={() => toggleDropdown("eur")} className="dropdown-button cursor-pointer flex items-center mb-2 w-full">
+                        <span className="mt-2 mb-2 flex flex-grow items-center ml-2 mr-2 text-notWhite">
+                            <Image src="/assets/eur/eur.png" alt="Euro Logo" className="rounded-full w-8 h-8" width={20} height={20} style={{ marginRight: '8px' }} />
+                            The Euros
+                            </span>
+                            <span className="ml-3 text-notWhite">
+                                {isEurDropdownOpen ? "\u25B2" : "\u25BC"}
+                            </span>
+                        </button>
+                        {isEurDropdownOpen && (
+                            <div className="dropdown-content">
+                                {eventsEur.map((event) => renderImages(event))}
+                            </div>
+                        )}
+                        </div>
                 </div>
             </div>
         </div>

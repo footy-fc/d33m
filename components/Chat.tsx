@@ -17,6 +17,10 @@ import {
 } from "@farcaster/hub-web";
 import { useExperimentalFarcasterSigner, usePrivy } from '@privy-io/react-auth';
 
+import submitCastPrivy from './sendCastPrivy';
+import { ExternalEd25519Signer } from '@standard-crypto/farcaster-js';
+
+
 /* GUNDB */
 import Gun from 'gun';
 // import sea from 'gun/sea';
@@ -86,8 +90,10 @@ const SocialMediaFeed = () => {
   const [isWalletModalVisible, setIsWalletModalVisible] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState('');
   const { ready, authenticated, user, logout, sendTransaction } = usePrivy();
-  const {submitCast} = useExperimentalFarcasterSigner();
-  
+  //const {submitCast} = useExperimentalFarcasterSigner();
+  const {getFarcasterSignerPublicKey, signFarcasterMessage} = useExperimentalFarcasterSigner();
+  const privySigner = new ExternalEd25519Signer(signFarcasterMessage, getFarcasterSignerPublicKey);
+
   const openPanel = () => {
     setIsPanelOpen(true);
     setShowDropdown(false);
@@ -276,7 +282,6 @@ const SocialMediaFeed = () => {
 
   const notify = (message: string | number | boolean | null | undefined) => toast(message);
 
-
   // TODO make some better components for this and use them in the panel
   // TODO slide out panel only closing on affordnace click, should close on click outside
   return (
@@ -361,7 +366,7 @@ const SocialMediaFeed = () => {
                         }
                         if (ready && authenticated) {
                           console.log("shouldn't be here: ", newPost, tipPost.test(newPost));
-                          submitCast({text: newPost, parentUrl: targetUrl});
+                          submitCastPrivy(casterFID, newPost, targetUrl, privySigner);
                           setNewPost("");
                           setRemainingChars(CastLengthLimit);
                         } else {
@@ -401,7 +406,7 @@ const SocialMediaFeed = () => {
                     return;
                   }
                   if (ready && authenticated) {
-                    submitCast({text: newPost, parentUrl: targetUrl});
+                    submitCastPrivy(casterFID, newPost, targetUrl, privySigner);
                     setNewPost("");
                     setRemainingChars(CastLengthLimit);
                   

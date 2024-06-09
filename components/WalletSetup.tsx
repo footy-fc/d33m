@@ -12,9 +12,9 @@ type WalletModalProps = {
 };
 
 const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onRequestClose }) => {
-    const {login} = usePrivy();
+    //const {login} = usePrivy();
     const { ready, authenticated, user, logout, createWallet } = usePrivy();
-    const { requestFarcasterSigner } = useExperimentalFarcasterSigner();
+    const { requestFarcasterSignerFromWarpcast } = useExperimentalFarcasterSigner();
     const farcasterAccount = user?.linkedAccounts.find((account) => account.type === 'farcaster');
     const [copySuccess, setCopySuccess] = useState(false);
     const getPublicKey = () => {

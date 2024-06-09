@@ -22,7 +22,7 @@ const TeamsModal: React.FC<TeamsModalProps> = ({ isOpen, onRequestClose, onTeamS
     };
 
 
-    const rows = Array.from({ length: 7 }); 
+    const rows = Array.from({ length: 6 }); 
     const columns = Array.from({ length: 4 }); 
 
     return (
@@ -35,9 +35,10 @@ const TeamsModal: React.FC<TeamsModalProps> = ({ isOpen, onRequestClose, onTeamS
                                 {columns.map((_, colIndex) => {
                                     const teamIndex = rowIndex * 4 + colIndex;
                                     const team = teamArray[teamIndex];
+                                    console.log(teamArray[teamIndex], team);
                                     return (
                                         <td key={colIndex} className="cursor-pointer p-2" onClick={() => handleTeamClick(team.name)}>
-                                            <img src={"assets/epl/" + team.logo} alt={team.name}  />
+                                            <img src={"assets/eur/" + team.logo} alt={team.name}  />
                                         </td>
                                     );
                                 })}
@@ -52,3 +53,39 @@ const TeamsModal: React.FC<TeamsModalProps> = ({ isOpen, onRequestClose, onTeamS
 
 
 export default TeamsModal;
+
+{/*
+   "ars": "ars.png",
+    "avl": "avl.png",
+    "bha": "bha.png",
+    "bou": "bou.png",
+    "bre": "bre.png",
+    "bur": "bur.png",
+    "che": "che.png",
+    "cry": "cry.png",   
+    "eve": "eve.png",
+    "ful": "ful.png",
+    "liv": "liv.png",
+    "lut": "lut.png",
+    "mci": "mci.png",
+    "mun": "mun.png",
+    "new": "new.png",
+    "nfo": "nfo.png",
+    "sfu": "sfu.png",
+    "tot": "tot.png",
+    "whu": "whu.png",
+    "wol": "wol.png",
+    "fcb": "fcb.png",
+    "rma": "rma.png",
+    "sev": "sev.png",
+    "bvb": "bvb.png",
+    "bay": "bay.png",
+    "int": "int.png",
+    "acm": "acm.png",
+    "juv": "juv.png",
+    "nap": "nap.png",
+    "gal": "gal.png",
+    "fen": "fen.png",
+    "psg": "psg.png",
+    "ajx": "ajx.png"
+  */}

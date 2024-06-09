@@ -22,13 +22,21 @@ function MyApp({ Component, pageProps }: AppProps) {
       onSuccess={() => router.push('/?channel=lobby1')}
       
       config={{
-        loginMethods: ['farcaster'],
         appearance: {
           theme: `#${'181424'}`, 
-        },  
+          loginMethods: ['farcaster'],
+          walletList: ['coinbase_wallet'], 
 
+        },  
+        externalWallets: { 
+          coinbaseWallet: { 
+            // Valid connection options include 'eoaOnly' (default), 'smartWalletOnly', or 'all'
+            connectionOptions: 'all', 
+          }, 
+        }, 
         embeddedWallets: {
           createOnLogin: 'users-without-wallets',
+          //showWalletLoginFirst: false,
           // waitForTransactionConfirmation: false,
           // noPromptOnSignature: true,
         },

@@ -23,7 +23,7 @@ const CastItem: React.FC<CastItemProps> = ({ index, updatedCast, room }) => {
 
   // Use the hook at the top level
   const profileData = useCustomProfileData(parsedUrl, updatedCast?.data?.fid ?? 2); // 2 is @v lol now the default
-  const imageSrc = profileData ? "/assets/epl/" + profileData + ".png" : "/assets/epl/defifa_spinner.gif";
+  const imageSrc = profileData ? "/assets/eur/" + profileData + ".png" : "/assets/eur/defifa_spinner.gif";
 
   useEffect(() => {
     const aspectRatio = imageWidth / IMGAGE_WIDTH;
@@ -50,7 +50,7 @@ const CastItem: React.FC<CastItemProps> = ({ index, updatedCast, room }) => {
           <Image
             src={imageSrc}
             alt="Overlay Team Logo"
-            className="w-5 h-5 p-0.5 bg-deepPink rounded-full absolute right-0 top-0"
+            className="w-5 h-5 p-0.5  rounded-full absolute right-0 top-0"
             style={{ transform: 'translate(40%, -40%)' }}
             width={imageWidth}
             height={imageHeight}

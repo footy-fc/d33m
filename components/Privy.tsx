@@ -11,7 +11,7 @@ import Withdraw from "./Withdraw";
 
 const Privy = () => {
   const { ready, authenticated, user, logout, sendTransaction } = usePrivy();
-  const { requestFarcasterSigner } = useExperimentalFarcasterSigner();
+  const { requestFarcasterSignerFromWarpcast } = useExperimentalFarcasterSigner();
 
 
   
@@ -70,7 +70,7 @@ const Privy = () => {
         <div>
           <button 
             className="bg-darkPurple py-2 px-4 text-lightPurple text-md font-semibold rounded-lg transition-all duration-200 ease-in-out"
-            onClick={() => requestFarcasterSigner()}
+            onClick={() => requestFarcasterSignerFromWarpcast()}
             // @ts-ignore
             disabled={!farcasterAccount || farcasterAccount?.signerPublicKey}
           >
