@@ -25,7 +25,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         appearance: {
           theme: `#${'181424'}`, 
         },  
-        loginMethods: ['farcaster'],
+        loginMethods: ['farcaster']
 
        /*  externalWallets: { 
           coinbaseWallet: { 
