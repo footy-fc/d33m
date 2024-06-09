@@ -35,7 +35,6 @@ const TeamsModal: React.FC<TeamsModalProps> = ({ isOpen, onRequestClose, onTeamS
                                 {columns.map((_, colIndex) => {
                                     const teamIndex = rowIndex * 4 + colIndex;
                                     const team = teamArray[teamIndex];
-                                    console.log(teamArray[teamIndex], team);
                                     return (
                                         <td key={colIndex} className="cursor-pointer p-2" onClick={() => handleTeamClick(team.name)}>
                                             <img src={"assets/eur/" + team.logo} alt={team.name}  />

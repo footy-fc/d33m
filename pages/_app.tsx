@@ -24,22 +24,21 @@ function MyApp({ Component, pageProps }: AppProps) {
       config={{
         appearance: {
           theme: `#${'181424'}`, 
-          loginMethods: ['farcaster'],
-          walletList: ['coinbase_wallet'], 
-
         },  
-        externalWallets: { 
+        loginMethods: ['farcaster'],
+
+       /*  externalWallets: { 
           coinbaseWallet: { 
             // Valid connection options include 'eoaOnly' (default), 'smartWalletOnly', or 'all'
             connectionOptions: 'all', 
           }, 
-        }, 
-        embeddedWallets: {
+        },  */
+       /*  embeddedWallets: {
           createOnLogin: 'users-without-wallets',
           //showWalletLoginFirst: false,
           // waitForTransactionConfirmation: false,
           // noPromptOnSignature: true,
-        },
+        }, */
       }}
     >
       <Component {...pageProps} />
