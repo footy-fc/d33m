@@ -17,7 +17,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onRequestClose }) => 
     const { requestFarcasterSignerFromWarpcast } = useExperimentalFarcasterSigner();
     const farcasterAccount = user?.linkedAccounts.find((account) => account.type === 'farcaster');
     const [copySuccess, setCopySuccess] = useState(false);
-    const getPublicKey = () => {
+    const GetPublicKey = () => {
       const publicKey = user?.wallet?.address || '';
         // useEffect to reset copySuccess after a brief moment
         useEffect(() => {
