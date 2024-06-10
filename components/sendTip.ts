@@ -1,8 +1,8 @@
 
 import { CastLengthLimit } from "../constants/constants";
-import { useEffect, useState } from 'react';
-import { parseEther, parseUnits } from 'viem';
-import { ethers } from "ethers";
+//import { useEffect, useState } from 'react';
+import { parseUnits } from 'viem';
+//import { ethers } from "ethers";
 
 
 const sendTip = async (

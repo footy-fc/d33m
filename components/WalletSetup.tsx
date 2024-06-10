@@ -15,7 +15,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onRequestClose }) => 
     //const {login} = usePrivy();
     const { ready, authenticated, user, logout, createWallet } = usePrivy();
     const { requestFarcasterSignerFromWarpcast } = useExperimentalFarcasterSigner();
-    const farcasterAccount = user?.linkedAccounts.find((account) => account.type === 'farcaster');
+    const farcasterAccount = user?.linkedAccounts.find((account: { type: string; }) => account.type === 'farcaster');
     const [copySuccess, setCopySuccess] = useState(false);
     const GetPublicKey = () => {
       const publicKey = user?.wallet?.address || '';
@@ -30,7 +30,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onRequestClose }) => 
           return () => {
             if (timer) clearTimeout(timer);
           };
-        }, [copySuccess]);
+        }, []);
       return ` ${publicKey.substring(0, 5)}....${publicKey.substring(publicKey.length - 4)}`;
     };
 

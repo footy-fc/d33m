@@ -148,7 +148,7 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
         return () => {
             document.removeEventListener('click', handleClickOutside);
         };
-    }, [isOpen]); // Only add/remove the listener when the panel's open state changes
+    }, [handleClickOutside, isOpen]); // Only add/remove the listener when the panel's open state changes
 
     // Fetch events data using the useEventsData hook
     const fetchedEventsEpl = useEventsData("epl");

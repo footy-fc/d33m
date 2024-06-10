@@ -365,7 +365,7 @@ const SocialMediaFeed = () => {
                           return;
                         }
                         if (ready && authenticated) {
-                          console.log("shouldn't be here: ", newPost, tipPost.test(newPost));
+                          // console.log("shouldn't be here: ", newPost, tipPost.test(newPost));
                           submitCastPrivy(casterFID, newPost, targetUrl, privySigner);
                           setNewPost("");
                           setRemainingChars(CastLengthLimit);

@@ -48,7 +48,7 @@ function useEventsData(sport: string) {
     }
 
     fetchEventsData();
-  }, []);
+  }, [apiUrl]);
 
   return events;
 }
