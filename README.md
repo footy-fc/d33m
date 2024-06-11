@@ -52,3 +52,40 @@ This project is licensed under the MIT License.
 - farsign is using localstorage and if cleared a new signer is needed. Maybe using Neynar sign-in here would be better?
 - going for that irc vibe so adding time/moment to the left column ??
 - add a "loading" indicator when fetching messages and AI suggestions
+
+
+{/*
+   "ars": "ars.png",
+    "avl": "avl.png",
+    "bha": "bha.png",
+    "bou": "bou.png",
+    "bre": "bre.png",
+    "bur": "bur.png",
+    "che": "che.png",
+    "cry": "cry.png",   
+    "eve": "eve.png",
+    "ful": "ful.png",
+    "liv": "liv.png",
+    "lut": "lut.png",
+    "mci": "mci.png",
+    "mun": "mun.png",
+    "new": "new.png",
+    "nfo": "nfo.png",
+    "sfu": "sfu.png",
+    "tot": "tot.png",
+    "whu": "whu.png",
+    "wol": "wol.png",
+    "fcb": "fcb.png",
+    "rma": "rma.png",
+    "sev": "sev.png",
+    "bvb": "bvb.png",
+    "bay": "bay.png",
+    "int": "int.png",
+    "acm": "acm.png",
+    "juv": "juv.png",
+    "nap": "nap.png",
+    "gal": "gal.png",
+    "fen": "fen.png",
+    "psg": "psg.png",
+    "ajx": "ajx.png"
+  */}
