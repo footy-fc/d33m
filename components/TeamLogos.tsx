@@ -24,10 +24,10 @@ const TeamsModal: React.FC<TeamsModalProps> = ({ isOpen, onRequestClose, onTeamS
 
     const rows = Array.from({ length: 6 }); 
     const columns = Array.from({ length: 4 }); 
-
+    // removed overflow-y-auto to test
     return (
         <Modal isOpen={isOpen} onRequestClose={onRequestClose}>
-            <div className="flex flex-col items-center bg-deepPink text-white font-semibold text-medium p-2 rounded-lg h-full overflow-y-auto">
+            <div className="flex flex-col items-center bg-deepPink text-white font-semibold text-medium p-2 rounded-lg h-full">
                 <table>
                     <tbody>
                         {rows.map((_, rowIndex) => (
