@@ -37,7 +37,8 @@ const fetchCastersDetails = async (casts: Message[], hubAddress: string, setUpda
   const fidDetailsCache: Record<number, FidDetails> = {};
 
   const getUserDataFromFid = async (fid: number): Promise<FidDetails> => {
-      const server = "https://hubs.airstack.xyz";
+      const server = "https://hub.farcaster.standardcrypto.vc:2281";
+      //const server = "https://hubs.airstack.xyz";
       const result = await axios.get(`${server}/v1/userDataByFid?fid=${fid}`, {
         headers: {
           "Content-Type": "application/json",
@@ -48,8 +49,8 @@ const fetchCastersDetails = async (casts: Message[], hubAddress: string, setUpda
       let pfp = '', fname = '', bio = '';  
     
     result.data.messages.forEach((message: { data: { userDataBody: any; }; }) => {
-      const { userDataBody } = message.data; // Corrected access to 'data'
-      switch (userDataBody.type) { // Corrected access to 'type'
+      const { userDataBody } = message.data; 
+      switch (userDataBody.type) { 
         case "USER_DATA_TYPE_USERNAME":
           fname = userDataBody.value;
           break;

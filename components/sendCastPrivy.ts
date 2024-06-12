@@ -10,6 +10,7 @@ const sendCastPrivy = async (
     privySigner: ExternalEd25519Signer,
     ) => {
       const client = new HubRestAPIClient({
+        //hubUrl: 'https://hubs-grpc.airstack.xyz:2281', needs header apikey ??
         hubUrl: 'https://hub.farcaster.standardcrypto.vc:2281',
       });
       if (privySigner === undefined) {
