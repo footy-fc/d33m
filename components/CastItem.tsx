@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { Message } from "@farcaster/hub-web";
+import { Message } from "@farcaster/core";
 import useCustomProfileData from './useCustomProfileData';
 
 interface UpdatedCast extends Message {

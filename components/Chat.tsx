@@ -11,14 +11,12 @@ import { useFetchCastsParentUrl } from './useFetchCastsParentUrl';
 import fetchCastersDetails from './fetchCasterDetails';
 import sendAI from './sendAI'; 
 import useIsConnected from './useIsConnected';
-import { 
-  Message, 
-  UserDataType, 
-} from "@farcaster/hub-web";
-import { useExperimentalFarcasterSigner, usePrivy } from '@privy-io/react-auth';
 
+/* FC and PRIVY stuff */
+import { Message } from "@farcaster/core";
+import { useExperimentalFarcasterSigner, usePrivy } from '@privy-io/react-auth';
 import submitCastPrivy from './sendCastPrivy';
-import { ExternalEd25519Signer } from '@standard-crypto/farcaster-js';
+import { ExternalEd25519Signer } from '@standard-crypto/farcaster-js-hub-rest';
 
 
 /* GUNDB */
@@ -52,7 +50,6 @@ interface UpdatedCast extends Message {
   pfp: string;
   teamLogo: string;
 }
-
 
 const SocialMediaFeed = () => {
   const router = useRouter();

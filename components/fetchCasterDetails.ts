@@ -1,4 +1,4 @@
-import { Message, UserDataType } from "@farcaster/hub-web";
+import { Message } from "@farcaster/core";
 import validTeamLogos from '../public/validTeams.json';
 import axios from 'axios';
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { getHubRpcClient, HubRpcClient, Message } from '@farcaster/hub-web';
+//import { getHubRpcClient, HubRpcClient, Message } from '@farcaster/hub-web';
+import { Message } from '@farcaster/core';
 import axios from "axios";
 import { FarcasterAppFID } from '../constants/constants';
 import { config } from "dotenv";

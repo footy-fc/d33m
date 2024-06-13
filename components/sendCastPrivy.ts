@@ -1,7 +1,7 @@
 //import sendOpenAi from './sendOpenAi'; 
 //import { CastLengthLimit } from "../constants/constants";
 //import { usePrivy, useExperimentalFarcasterSigner, useWallets } from '@privy-io/react-auth';
-import { ExternalEd25519Signer, HubRestAPIClient } from '@standard-crypto/farcaster-js';
+import { ExternalEd25519Signer, HubRestAPIClient } from '@standard-crypto/farcaster-js-hub-rest';
 
 const sendCastPrivy = async (
     casterFID: number,
@@ -22,7 +22,6 @@ const sendCastPrivy = async (
         casterFID,
         privySigner,
       );
-      //console.log('submitCastResponse', submitCastResponse);
 };
 
 export default sendCastPrivy;
