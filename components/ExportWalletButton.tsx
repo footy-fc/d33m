@@ -22,7 +22,7 @@ const ExportWalletButton = () => {
     ) : (
     <button onClick={exportWallet} 
         disabled={!isAuthenticated || !hasEmbeddedWallet}
-    className="hover:bg-darkPurple py-2 px-4 text-lightPurple text-md font-semibold rounded-lg transition-all duration-200 ease-in-out"
+    className="max-w-xs w-ful hover:bg-darkPurple text-lightPurple text-md font-semibold rounded-lg transition-all duration-200 ease-in-out"
     >
      [ Copy Private Key ]
     </button>

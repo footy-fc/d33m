@@ -53,7 +53,6 @@ const Privy = () => {
       <div className="bg-darkPurple py-2 px-4 text-lightPurple text-md font-semibold rounded-lg transition-all duration-200 ease-in-out mb-4">
           <p>
           <button
-            className="mt-2 mb-2"
             onClick={logout}
           >
             [ Logout {user?.farcaster?.displayName} ]

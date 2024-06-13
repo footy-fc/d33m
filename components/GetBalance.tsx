@@ -32,7 +32,7 @@ const GetBalance = () => {
           params: [embedWallet.address, 'latest']
         });
 
-        const formattedBalance = Number(walletBalance) / 10 ** 18;
+        const formattedBalance = (Number(walletBalance) / 10 ** 18).toFixed(5);
         setWalletBalance(formattedBalance);
         setEmbeddedWallet(embedWallet);
       }
