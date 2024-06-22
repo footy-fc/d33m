@@ -11,6 +11,7 @@ import { useFetchCastsParentUrl } from './useFetchCastsParentUrl';
 import fetchCastersDetails from './fetchCasterDetails';
 import sendAI from './sendAI'; 
 import useIsConnected from './useIsConnected';
+import fillGameContext from './fillGameContext';
 
 /* FC and PRIVY stuff */
 import { Message } from "@farcaster/core";
@@ -124,6 +125,7 @@ const SocialMediaFeed = () => {
       console.log('Saved data to GunDB: ', casterFID ,teamName);
   };
   
+
   useEffect(() => {
     setCasterFID(user?.farcaster?.fid || 2);
    // setSigner_uuid(user?.farcaster?.signerPublicKey || '');
@@ -203,7 +205,7 @@ const SocialMediaFeed = () => {
     setApiKeyToLocalStorage(newApiKey);
   };
   
-  const handlePostChange = (event: { target: { value: any; }; }) => {
+  const handlePostChange = async (event: { target: { value: any; }; }) => {
     const inputValue = event.target.value;
     setNewPost(inputValue);
     const count = CastLengthLimit - inputValue.length; // TODO jut guessing here
@@ -239,6 +241,7 @@ const SocialMediaFeed = () => {
               setTargetUrl(DefaultChannelDomain + sixCharacterString);
               setNewPost(""); // Clear the message
               setRemainingChars(CastLengthLimit);
+              await fillGameContext(sixCharacterString);
             }
             // If it's a valid URL, set targetUrl as the provided URL
             else if (joinMatch[0]) {
@@ -436,7 +439,9 @@ const SocialMediaFeed = () => {
               setIsModalVisible(true);
               setShowDropdown(false);
             } }
-            onShareClick={() => copyToClipboardAndShare(targetUrl, isMobileDevice)}
+            // onShareClick={() => copyToClipboardAndShare(targetUrl, isMobileDevice)}
+            onShareClick={() => sendAI("/ai Summarize the match data. Do not exceed 320 characters when replying.", setNewPost, setRemainingChars, targetUrl, selectedTeam)}
+            
             onWalletClick={() => {
               setIsWalletModalVisible(true);
               setShowDropdown(false);

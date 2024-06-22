@@ -1,7 +1,7 @@
 // FooterNav.js
 import React, { FC, ChangeEvent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBuilding, faArrowAltCircleUp, faIdBadge, faCircleUser } from '@fortawesome/free-regular-svg-icons';
+import { faBuilding, faArrowAltCircleUp, faIdBadge, faCircleUser, faLightbulb } from '@fortawesome/free-regular-svg-icons';
 
 interface FooterNavProps {
   onLobbyClick: () => void;
@@ -28,10 +28,10 @@ const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onShareClic
         <p className="text-xxs" style={{ color: '#C0B2F0' }}>Badge</p>
       </button>
 
-      <button onClick={onShareClick} className="flex flex-col items-center">
+{/*       <button onClick={onShareClick} className="flex flex-col items-center">
         <FontAwesomeIcon className="h-6 w-6" icon={faArrowAltCircleUp} style={{ color: '#C0B2F0' }} />
         <p className="text-xxs" style={{ color: '#C0B2F0' }}>Share</p>
-      </button>
+      </button> */}
 
 {/*       <div className={`flex ${apiKeyVisible ? 'flex-row' : 'flex-col'} items-center text-md`} style={{ color: '#C0B2F0' }}>
         <div onClick={onSetupClick} className="cursor-pointer flex flex-col items-center">
@@ -50,6 +50,11 @@ const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onShareClic
             </div>
         )}      
       </div> */}
+
+      <button onClick={onShareClick} className="flex flex-col items-center">
+        <FontAwesomeIcon className="h-6 w-6" icon={faLightbulb} style={{ color: '#C0B2F0' }} />
+        <p className="text-xxs" style={{ color: '#C0B2F0' }}>AI Summary</p>
+      </button>
 
       <button onClick={onWalletClick} className="flex flex-col items-center">
         <FontAwesomeIcon className="h-6 w-6" icon={faCircleUser} style={{ color: '#C0B2F0' }} />

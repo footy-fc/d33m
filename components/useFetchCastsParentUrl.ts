@@ -27,7 +27,9 @@ export function useFetchCastsParentUrl(url: string, FarcasterHub: string, pageSi
       try {
         //const castsResult:any = await axios.get(`${FarcasterHub}/v1/castsByParent?pageSize=${pageSize}&reverse=1&url=${url}`);
         //const castsResult:any = await axios.get(`${client}/v1/castsByParent?pageSize=10&reverse=1&url=${url}`);
-          const server = "https://hubs.airstack.xyz";
+        const server = "https://hub.farcaster.standardcrypto.vc:2281";
+  
+        //const server = "https://hubs.airstack.xyz";
             const castsResult = await axios.get(`${server}/v1/castsByParent?pageSize=10&reverse=1&url=${url}`, {
               headers: {
                 "Content-Type": "application/json",
