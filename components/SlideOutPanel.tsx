@@ -59,6 +59,7 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
     const [eventsFac, setEventsFac] = useState<EventsArray>([]);
     const [eventsUel, setEventsUel] = useState<EventsArray>([]);
     const [eventsEur, setEventsEur] = useState<EventsArray>([]);
+    const [eventsCon, setEventsCon] = useState<EventsArray>([]);
 
     const [isAffordanceClicked, setIsAffordanceClicked] = useState(true);
     const [isEplDropdownOpen, setIsEplDropdownOpen] = useState(true);
@@ -66,6 +67,7 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
     const [isFacDropdownOpen, setIsFacDropdownOpen] = useState(true);
     const [isUelDropdownOpen, setIsUelDropdownOpen] = useState(true);
     const [isEurDropdownOpen, setIsEurDropdownOpen] = useState(true);
+    const [isConDropdownOpen, setIsConDropdownOpen] = useState(true);
 
     // Create a ref to the panel element
     const panelRef = useRef<HTMLDivElement>(null);
@@ -89,6 +91,9 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
                 break;
             case 'eur':
                 setIsEurDropdownOpen(!isEurDropdownOpen);
+                break;
+            case 'con':
+                setIsConDropdownOpen(!isConDropdownOpen);
                 break;
             default:
                 setIsEplDropdownOpen(!isEplDropdownOpen);
@@ -156,6 +161,7 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
     const fetchedEventsFac = useEventsData("fac");
     const fetchedEventsUel = useEventsData("uel");
     const fetchedEventsEur = useEventsData("eur");
+    const fetchedEventsCon = useEventsData("con");
 
     // Update the state with the fetched data
     useEffect(() => {
@@ -169,7 +175,8 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
         setEventsFac(fetchedEventsFac);
         setEventsUel(fetchedEventsUel);
         setEventsEur(fetchedEventsEur);
-    }, [fetchedEventsEpl,fetchedEventsFac, fetchedEventsUel, fetchedEventsUcl, fetchedEventsEur]);
+        setEventsCon(fetchedEventsCon);
+    }, [fetchedEventsEpl,fetchedEventsFac, fetchedEventsUel, fetchedEventsUcl, fetchedEventsEur, fetchedEventsCon]);
     
     //const combinedEvents = [...eventsEpl, ...eventsUcl, ...eventsFac, ...eventsUel];
 
@@ -181,13 +188,13 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
             const awayTeam = event.shortName.split('@')[0].trim().toLowerCase();
             const eventTime = new Date(event.date);
             const milTime = eventTime.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
-            const formattedTime = convertTo12HourTime(milTime);
+            //const formattedTime = convertTo12HourTime(milTime);
             const oneHourBeforeEventTime = new Date(eventTime.getTime() - 60 * 60 * 1000); // Subtract one hour in milliseconds
 
             const currentTime = new Date();
             let timeDisplay: JSX.Element | null = null;
             const roomId = ensureSixCharacters(homeTeam+awayTeam);
-            if (oneHourBeforeEventTime < currentTime) {
+            if (oneHourBeforeEventTime > currentTime) {
                 const milTime = eventTime.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
                 const formattedTime = convertTo12HourTime(milTime);
                 timeDisplay = <span className="ml-3 text-sm text-lightPurple font-semibold">{formattedTime}</span>;
@@ -342,6 +349,22 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
                         {isEurDropdownOpen && (
                             <div className="dropdown-content">
                                 {eventsEur.map((event) => renderImages(event))}
+                            </div>
+                        )}
+                        </div>
+                        <div className="sidebarCon">
+                        <button onClick={() => toggleDropdown("con")} className="dropdown-button cursor-pointer flex items-center mb-2 w-full">
+                        <span className="mt-2 mb-2 flex flex-grow items-center ml-2 mr-2 text-notWhite">
+                            <Image src="/assets/con/con.png" alt="Copa America Logo" className="rounded-full w-8 h-8" width={20} height={20} style={{ marginRight: '8px' }} />
+                            Copa America
+                            </span>
+                            <span className="ml-3 text-notWhite">
+                                {isConDropdownOpen ? "\u25B2" : "\u25BC"}
+                            </span>
+                        </button>
+                        {isConDropdownOpen && (
+                            <div className="dropdown-content">
+                                {eventsCon.map((event) => renderImages(event))}
                             </div>
                         )}
                         </div>
