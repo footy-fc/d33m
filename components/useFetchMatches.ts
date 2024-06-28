@@ -21,7 +21,7 @@ function useEventsData(sport: string) {
         break;
     case 'eur':
         apiUrl = 'https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.euro/scoreboard';
-        break;conmebol.america
+        break;
     case 'con':
         apiUrl = 'https://site.api.espn.com/apis/site/v2/sports/soccer/conmebol.america/scoreboard';
         break;    
