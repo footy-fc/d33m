@@ -1,6 +1,8 @@
 import React, { FC, useRef, useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import useEventsData from './useFetchMatches';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBuilding } from '@fortawesome/free-regular-svg-icons';
 
 /* TYPES */
 interface TeamLogos {
@@ -369,6 +371,15 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
                         )}
                         </div>
                 </div>
+                <button className="absolute bottom-6 left-6 p-1 text-lightPurple font-semibold"
+                onClick={() => {
+                    setIsAffordanceClicked(true); // Set the flag when the affordance is clicked
+                    closePanel(); // Close the panel
+                    onClose(); // Close the panel
+                }}>
+                <FontAwesomeIcon className="h-6 w-6" icon={faBuilding} style={{ color: '#C0B2F0'}} />
+                <p className="text-xxs" style={{ color: '#C0B2F0' }}>Close</p>
+            </button>
             </div>
         </div>
     </div>

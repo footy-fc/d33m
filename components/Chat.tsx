@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import TeamsModal from './TeamLogos';
 import { ToastContainer, ToastContentProps, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 /* HOOKS */
 import { useFetchCastsParentUrl } from './useFetchCastsParentUrl';
@@ -45,6 +46,7 @@ import CommandDropdown from './CommandDropdown';
 import CustomTextArea from './UserInput';
 import WalletModal from './WalletSetup';
 import sendTip from './sendTip';
+import { faFaceGrinStars } from '@fortawesome/free-regular-svg-icons';
 
 interface UpdatedCast extends Message {
   fname: string;
@@ -298,10 +300,10 @@ const SocialMediaFeed = () => {
           {/* BODY */}
           <div ref={scrollRef} className="flex-grow overflow-y-auto max-h-[calc(100vh-235px)]"> {/* Apply max height here */}
             {updatedCasts?.map((updatedCast, index) => {
-              const textWithLinks = updatedCast?.data?.castAddBody?.text.replace(
+             /*  const textWithLinks = updatedCast?.data?.castAddBody?.text.replace(
                 /(https?:\/\/[^\s]+)/g,
                 (url: any) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-deepPink">${'External Link'}</a>`
-              );
+              ); */
               return (
                 <CastItem key={index} updatedCast={updatedCast} index={index} room={targetUrl} />
                 );
@@ -386,6 +388,7 @@ const SocialMediaFeed = () => {
                     }
                 }}
               />
+       
             </div>
             <button
               className="mb-2 py-2 px-2 bg-deepPink hover:bg-pink-600 rounded-full flex items-center justify-center transition duration-300 ease-in-out shadow-md hover:shadow-lg text-lightPurple font-semibold text-medium"
@@ -433,14 +436,20 @@ const SocialMediaFeed = () => {
           <FooterNav 
             onLobbyClick={() => {
               const inputVar = { target: { value: "/join " + DefaultChannelName } };
-              handlePostChange(inputVar);
+              //handlePostChange(inputVar);
+              if (!isPanelOpen) {
+                openPanel();
+              } else {
+                closePanel();
+              } 
+
             } }
             onBadgeClick={() => {
               setIsModalVisible(true);
               setShowDropdown(false);
             } }
             // onShareClick={() => copyToClipboardAndShare(targetUrl, isMobileDevice)}
-            onShareClick={() => sendAI("/ai Summarize the match data. Do not exceed 320 characters when replying.", setNewPost, setRemainingChars, targetUrl, selectedTeam)}
+            onAIClick={() => sendAI("/ai Summarize the match data. Do not exceed 320 characters when replying.", setNewPost, setRemainingChars, targetUrl, selectedTeam)}
             
             onWalletClick={() => {
               setIsWalletModalVisible(true);

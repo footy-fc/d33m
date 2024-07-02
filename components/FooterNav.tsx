@@ -6,7 +6,7 @@ import { faBuilding, faArrowAltCircleUp, faIdBadge, faCircleUser, faLightbulb } 
 interface FooterNavProps {
   onLobbyClick: () => void;
   onBadgeClick: () => void;
-  onShareClick: () => void;
+  onAIClick: () => void;
   onWalletClick: () => void;
   onSetupClick: () => void;
   apiKeyVisible: boolean;
@@ -14,13 +14,13 @@ interface FooterNavProps {
   handleApiKeyChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
-const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onShareClick, onWalletClick, onSetupClick}) => {
+const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onAIClick, onWalletClick, onSetupClick}) => {
       
     return (
     <div className="flex justify-between items-center p-2 mb-2">
       <button onClick={onLobbyClick} className="flex flex-col items-center">
         <FontAwesomeIcon className="h-6 w-6" icon={faBuilding} style={{ color: '#C0B2F0'}} />
-        <p className="text-xxs" style={{ color: '#C0B2F0' }}>Lobby</p>
+        <p className="text-xxs" style={{ color: '#C0B2F0' }}>Rooms</p>
       </button>
 
       <button onClick={onBadgeClick} className="flex flex-col items-center">
@@ -50,8 +50,8 @@ const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onShareClic
             </div>
         )}      
       </div> */}
-
-      <button onClick={onShareClick} className="flex flex-col items-center">
+      
+      <button onClick={onAIClick} className="flex flex-col items-center">
         <FontAwesomeIcon className="h-6 w-6" icon={faLightbulb} style={{ color: '#C0B2F0' }} />
         <p className="text-xxs" style={{ color: '#C0B2F0' }}>AI Summary</p>
       </button>

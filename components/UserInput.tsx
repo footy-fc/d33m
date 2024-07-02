@@ -1,4 +1,6 @@
 // CustomTextArea.tsx
+import { faFaceGrinStars } from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { FC } from 'react';
 
 interface CustomTextAreaProps {
@@ -29,6 +31,16 @@ const CustomTextArea: FC<CustomTextAreaProps> = ({
       onKeyDown={onKeyDown}
       style={{ minHeight: '1rem', lineHeight: 'normal' }}
     />
+        
+   {/*      <button
+              className="mb-2 py-2 px-2 bg-deepPink hover:bg-pink-600 rounded-full flex items-center justify-center transition duration-300 ease-in-out shadow-md hover:shadow-lg text-lightPurple font-semibold text-medium"
+              onClick={() => {
+                    setNewPost(newPost + "🤖");
+                  // setRemainingChars(CastLengthLimit);    
+              }}>
+              <FontAwesomeIcon className="h-6 w-6" icon={faFaceGrinStars} style={{ color: '#C0B2F0' }} />
+              <p className="text-xxs ml-2" style={{ color: '#C0B2F0' }}>Reactions</p>
+            </button> */}
      {newPost && (
         <button
           onClick={() => setNewPost('')}

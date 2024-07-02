@@ -15,6 +15,10 @@ interface CastItemProps {
   room: string;
 }
 
+interface CustomEmojis {
+  [key: string]: string;
+}
+
 const CastItem: React.FC<CastItemProps> = ({ index, updatedCast, room }) => {
   const parsedUrl = room.replace('https://', '');
   const IMGAGE_WIDTH = 20;
@@ -31,12 +35,29 @@ const CastItem: React.FC<CastItemProps> = ({ index, updatedCast, room }) => {
     setImageHeight(newHeight);
   }, [imageWidth]);
 
+  // Define your list of custom emojis
+  const customEmojis: CustomEmojis = {
+    '::12::': '<img src="/assets/defifa_spinner.gif" alt="custom emoji" class="inline-block w-6 h-6" />',
+    '::13::': '<img src="/assets/mbappe-happy.png" alt="custom emoji" class="inline-block w-6 h-6" />',
+    '::14::': '<img src="/assets/banana_soccer.gif" alt="custom emoji" class="inline-block w-6 h-6" />',
+    '::15::': '<img src="/assets/netherlands.gif" alt="custom emoji" class="inline-block w-6 h-6" />',
+    '::16::': '<img src="/assets/lfg.gif" alt="custom emoji" class="inline-block w-6 h-6" />',
+    // Add more custom emoji mappings as needed
+  };
+
+  const replaceCustomEmojis = (text: string | undefined) => {
+    return text?.replace(/::\d+::/g, (match) => {
+      return customEmojis[match] || match;
+    });
+  };
     // Logic for processing cast data
-    const textWithLinks = updatedCast?.data?.castAddBody?.text.replace(
+    let textWithLinks = updatedCast?.data?.castAddBody?.text.replace(
       /(https?:\/\/[^\s]+)/g,
       (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-deepPink">${'External Link'}</a>`
     );
   
+    textWithLinks = replaceCustomEmojis(textWithLinks);
+
     return (
       <div key={index} className="flex bg-darkPurple p-2 ml-2 mr-2 items-start">
         <div className="relative min-w-8 mr-2">
