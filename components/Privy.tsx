@@ -66,12 +66,13 @@ const Privy = () => {
 
       {// @ts-ignore
       !farcasterAccount || !farcasterAccount?.signerPublicKey && (
-        <div>
+        <div className="text-notWhite text-md font-semibold mb-4 mt-10"> 
+          Step 2: Authorize Farcaster in order to Cast
           <button 
             className="bg-darkPurple py-2 px-4 text-lightPurple text-md font-semibold rounded-lg transition-all duration-200 ease-in-out"
             onClick={() => requestFarcasterSignerFromWarpcast()}
             // @ts-ignore
-            disabled={!farcasterAccount || farcasterAccount?.signerPublicKey}
+            disabled={true}
           >
             [ Authorize Farcaster ]
           </button>
