@@ -326,45 +326,51 @@ const SocialMediaFeed = () => {
     <>  
       <div className="flex flex-grow flex-col min-h-screen"> {/* FULL SCREEN */}
         {/* HEADER & BODY */}
-        <div className="flex-grow bg-darkPurple overflow-hidden"> {/* Apply overflow-hidden here */}
+        <div className="flex-grow bg-darkPurple overflow-hidden relative"> {/* Apply overflow-hidden here */}
           {/* HEADER */}
           <Header 
-              isConnected={ready}
-              openPanel={openPanel} 
-              targetUrl={targetUrl} 
-            />
+            isConnected={ready}
+            openPanel={openPanel} 
+            targetUrl={targetUrl} 
+          />
           {/* BODY */}
           <div ref={scrollRef} className="flex-grow overflow-y-auto max-h-[calc(100vh-235px)]"> {/* Apply max height here */}
             {updatedCasts?.map((updatedCast, index) => {
               return (
                 <CastItem key={index} updatedCast={updatedCast} index={index} room={targetUrl} />
-                );
+              );
             })}
           </div>
         </div>
         {/* FOOTER */}  
-        <div className="bg-purplePanel p-4"> 
-          <div className="flex items-end space-x-2">
+        <div className="bg-purplePanel p-4 relative z-10"> 
+          <div className="flex items-end space-x-2 relative z-10">
             {/* FOOTER PANEL SLIDE OUT ?? */}  
             <div className="relative flex-1"> {/* Adjust flex container */}
               {isPanelOpen && (
-              <SlideOutPanel 
-                isOpen={isPanelOpen} 
-                onClose={closePanel} 
-                setNewPost={setNewPost}
-                handlePostChange={handlePostChange}
-              /> )}
+                <SlideOutPanel 
+                  isOpen={isPanelOpen} 
+                  onClose={closePanel} 
+                  setNewPost={setNewPost}
+                  handlePostChange={handlePostChange}
+                  className="z-30"
+                /> 
+              )}
               {isModalVisible && (
-              <TeamsModal 
-                isOpen={isModalVisible} 
-                onRequestClose={() => setIsModalVisible(false)}
-                onTeamSelect={handleTeamSelect}
-              /> )}
+                <TeamsModal 
+                  isOpen={isModalVisible} 
+                  onRequestClose={() => setIsModalVisible(false)}
+                  onTeamSelect={handleTeamSelect}
+                  className="z-30"
+                /> 
+              )}
               {isWalletModalVisible && (
-              <WalletModal 
-                isOpen={isWalletModalVisible} 
-                onRequestClose={() => setIsWalletModalVisible(false)}
-              /> )}
+                <WalletModal 
+                  isOpen={isWalletModalVisible} 
+                  onRequestClose={() => setIsWalletModalVisible(false)}
+                  className="z-30"
+                /> 
+              )}
               {showDropdown && (
                 <CommandDropdown 
                   filteredCommands={filteredCommands}
@@ -372,6 +378,7 @@ const SocialMediaFeed = () => {
                   setNewPost={setNewPost}
                   handlePostChange={handlePostChange}
                   textareaRef={textareaRef} 
+                  className="z-30"
                 />
               )}
               {/* UserInput */}  
@@ -382,69 +389,26 @@ const SocialMediaFeed = () => {
                 setNewPost={setNewPost}
                 handlePostChange={handlePostChange}
                 onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        const aiPost = /^\/ai\s/; 
-                        const tipPost = /^\/tip/;
-                        //console.log("newPost: ", newPost);
-                        if (aiPost.test(newPost)) {
-                          sendAI(newPost, setNewPost, setRemainingChars, targetUrl, selectedTeam);
-                        return;
-                        }
-                        if (tipPost.test(newPost)) {
-                          if(ready && user?.wallet?.address) {
-                            sendTip(newPost, setNewPost, setRemainingChars, ready, user?.wallet?.address, sendTransaction, notify);
-                            return;
-                          }
-                          return;
-                        }
-                        if (ready && authenticated) {
-                          // console.log("shouldn't be here: ", newPost, tipPost.test(newPost));
-                          submitCastPrivy(casterFID, newPost, targetUrl, privySigner);
-                          setNewPost("");
-                          setRemainingChars(CastLengthLimit);
-                        } else {
-                            console.error("User not authenticated.");
-                            setNewPost("");
-                            setRemainingChars(CastLengthLimit);
-                            notify("Authenticate your Account to chat.");
-                            setIsWalletModalVisible(true);
-                            setShowDropdown(false); 
-                          }
-                    }
-                    else if (e.key === 'Tab' && showDropdown && filteredCommands.length > 0) {
-                        e.preventDefault(); // Prevent losing focus from the textarea
-                        const firstCommand = filteredCommands[0].command;
-                        setNewPost(`/${firstCommand}`);
-                        setShowDropdown(false); 
-                    }
-                }}
-              />
-            </div>
-            <button
-              className="mb-2 py-2 px-2 bg-deepPink hover:bg-pink-600 rounded-full flex items-center justify-center transition duration-300 ease-in-out shadow-md hover:shadow-lg text-lightPurple font-semibold text-medium"
-              onClick={() => {
-                const aiPost = /^\/ai\s/; 
-                const tipPost = /^\/tip\s/;
-                  if (aiPost.test(newPost)) {
-                    sendAI(newPost, setNewPost, setRemainingChars, targetUrl, selectedTeam);
-                    // const audioElement = new Audio('/assets/soccer-ball-kick-37625.mp3');
-                    // audioElement.play();
-                    return;
-                  }
-                  if (tipPost.test(newPost)) {
-                    if(ready && user?.wallet?.address) {
-                      sendTip(newPost, setNewPost, setRemainingChars, ready, user?.wallet?.address, sendTransaction, notify);
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const aiPost = /^\/ai\s/; 
+                    const tipPost = /^\/tip/;
+                    if (aiPost.test(newPost)) {
+                      sendAI(newPost, setNewPost, setRemainingChars, targetUrl, selectedTeam);
                       return;
                     }
-                    return;
-                  }
-                  if (ready && authenticated) {
-                    submitCastPrivy(casterFID, newPost, targetUrl, privySigner);
-                    setNewPost("");
-                    setRemainingChars(CastLengthLimit);
-                  
-                  } else {
+                    if (tipPost.test(newPost)) {
+                      if(ready && user?.wallet?.address) {
+                        sendTip(newPost, setNewPost, setRemainingChars, ready, user?.wallet?.address, sendTransaction, notify);
+                        return;
+                      }
+                      return;
+                    }
+                    if (ready && authenticated) {
+                      submitCastPrivy(casterFID, newPost, targetUrl, privySigner);
+                      setNewPost("");
+                      setRemainingChars(CastLengthLimit);
+                    } else {
                       console.error("User not authenticated.");
                       setNewPost("");
                       setRemainingChars(CastLengthLimit);
@@ -452,6 +416,44 @@ const SocialMediaFeed = () => {
                       setIsWalletModalVisible(true);
                       setShowDropdown(false); 
                     }
+                  }
+                  else if (e.key === 'Tab' && showDropdown && filteredCommands.length > 0) {
+                    e.preventDefault(); // Prevent losing focus from the textarea
+                    const firstCommand = filteredCommands[0].command;
+                    setNewPost(`/${firstCommand}`);
+                    setShowDropdown(false); 
+                  }
+                }}
+              />
+            </div>
+            <button
+              className="mb-2 py-2 px-2 bg-deepPink hover:bg-pink-600 rounded-full flex items-center justify-center transition duration-300 ease-in-out shadow-md hover:shadow-lg text-lightPurple font-semibold text-medium z-20"
+              onClick={() => {
+                const aiPost = /^\/ai\s/; 
+                const tipPost = /^\/tip\s/;
+                if (aiPost.test(newPost)) {
+                  sendAI(newPost, setNewPost, setRemainingChars, targetUrl, selectedTeam);
+                  return;
+                }
+                if (tipPost.test(newPost)) {
+                  if(ready && user?.wallet?.address) {
+                    sendTip(newPost, setNewPost, setRemainingChars, ready, user?.wallet?.address, sendTransaction, notify);
+                    return;
+                  }
+                  return;
+                }
+                if (ready && authenticated) {
+                  submitCastPrivy(casterFID, newPost, targetUrl, privySigner);
+                  setNewPost("");
+                  setRemainingChars(CastLengthLimit);
+                } else {
+                  console.error("User not authenticated.");
+                  setNewPost("");
+                  setRemainingChars(CastLengthLimit);
+                  notify("Authenticate your Account to chat.");
+                  setIsWalletModalVisible(true);
+                  setShowDropdown(false); 
+                }
               }}>
               <ToastContainer
                 position="top-center"
@@ -462,18 +464,17 @@ const SocialMediaFeed = () => {
               <img src="/favicon.ico" alt="Favicon" className="w-6 h-5" />
             </button>
           </div>
-          <div className="flex items-center space-x-2 mt-1">
+          <div className="flex items-center space-x-2 mt-1 relative z-0">
             {/* Reactions Button and Emojis */}
-            <div className="relative inline-block">
+            <div className="relative z-0">
               <button
                 className="py-2 px-2 bg-deepPink hover:bg-pink-600 rounded-full flex items-center justify-center transition duration-300 ease-in-out shadow-md hover:shadow-lg text-lightPurple font-semibold text-medium"
                 onClick={() => setShowEmojis(!showEmojis)}
               >
-                {/* <FontAwesomeIcon className="h-4 w-4" icon={faFaceGrinStars} style={{ color: '#C0B2F0' }} /> */}
                 <p className="text-xxs ml-2" style={{ color: '#C0B2F0' }}>\o/ Reactions</p>
               </button>
               {showEmojis && (
-                <div className="absolute top-0 left-full ml-2 flex space-x-1">
+                <div className="absolute top-0 left-full ml-2 flex space-x-1 z-0">
                   {emojis.map((emoji, index) => {
                     const processedEmoji = replaceEmojiId(emoji);
                     return (
@@ -484,43 +485,45 @@ const SocialMediaFeed = () => {
                       >
                         {processEmoji(emoji)}
                       </button>
-                      );
-                    })}
+                    );
+                  })}
                 </div>
               )}
             </div>
           </div>
-          <p className="text-fontRed ml-2 text-sm mt-1 mb-1">{remainingChars} characters remaining ish</p>
+          <p className="text-fontRed ml-2 text-sm mt-1 mb-1 relative z-0">{remainingChars} characters remaining ish</p>
           {/* FOOTER NAV */}  
           <FooterNav 
             onLobbyClick={() => {
               const inputVar = { target: { value: "/join " + DefaultChannelName } };
-              //handlePostChange(inputVar);
               if (!isPanelOpen) {
                 openPanel();
               } else {
                 closePanel();
               } 
-
-            } }
+            }}
             onBadgeClick={() => {
               setIsModalVisible(true);
               setShowDropdown(false);
-            } }
-            // onShareClick={() => copyToClipboardAndShare(targetUrl, isMobileDevice)}
+            }}
             onAIClick={() => sendAI("/ai Summarize the match data. Do not exceed 320 characters when replying.", setNewPost, setRemainingChars, targetUrl, selectedTeam)}
-            
             onWalletClick={() => {
               setIsWalletModalVisible(true);
               setShowDropdown(false);
-            } } onSetupClick={function (): void {
+            }}
+            onSetupClick={function (): void {
               throw new Error('Function not implemented.');
-            } } apiKeyVisible={false} openAiApiKey={''} handleApiKeyChange={function (event: React.ChangeEvent<HTMLInputElement>): void {
+            }}
+            apiKeyVisible={false}
+            openAiApiKey={''}
+            handleApiKeyChange={function (event: React.ChangeEvent<HTMLInputElement>): void {
               throw new Error('Function not implemented.');
-            } }          />
+            }}
+          />
         </div>
       </div>
     </>
-  ) 
+  )
+  
 }
 export default SocialMediaFeed

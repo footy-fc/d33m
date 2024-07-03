@@ -18,7 +18,7 @@ const CustomTextArea: FC<CustomTextAreaProps> = ({
   onKeyDown
 }) => {
   return (
-    <div className="relative">
+    <div >
       <textarea
         ref={textareaRef}
         className={`w-full caret-limeGreenOpacity text-white text-sm px-2 py-1 focus:outline-none border bg-darkPurple border-limeGreenOpacity resize-none overflow-hidden ${showDropdown ? 'rounded-b-lg' : 'rounded-lg'}`}
