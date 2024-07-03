@@ -33,6 +33,7 @@ import 'gun/lib/rindexed';
 import { DefaultChannelDomain, FarcasterAppName, FarcasterHub, FarcasterAppFID, FarcasterAppMneumonic, DefaultChannelName, CastLengthLimit, GunPeers } from '../constants/constants'
 import { useCommands } from './slashCommands';
 const IMGAGE_WIDTH = 20; 
+import { customEmojis } from '../constants/customEmojis'; // Adjust the import path as necessary
 
 /* Functions */
 import copyToClipboardAndShare from './copyToClipboardAndShare';
@@ -93,6 +94,7 @@ const SocialMediaFeed = () => {
   //const {submitCast} = useExperimentalFarcasterSigner();
   const {getFarcasterSignerPublicKey, signFarcasterMessage} = useExperimentalFarcasterSigner();
   const privySigner = new ExternalEd25519Signer(signFarcasterMessage, getFarcasterSignerPublicKey);
+  const [showEmojis, setShowEmojis] = useState(false);
 
   const openPanel = () => {
     setIsPanelOpen(true);
@@ -282,6 +284,40 @@ const SocialMediaFeed = () => {
     return <div>Loading...</div>;
   }
 
+  // const predefinedEmojis: string[] = ['\\o_[🟥] ', '\\o_[🟨] ', '[●➡️] ', '\\o/ '];
+  const predefinedEmojis: never[] = [];//['\\o_[🟥] ', '\\o_[🟨] ', '[●➡️] ', '\\o/ '];
+  const customEmojiKeys = Object.keys(customEmojis);
+  const emojis = [...predefinedEmojis, ...customEmojiKeys];
+
+
+  const replaceEmojiId = (emoji: string) => {
+    const match = emoji.match(/:(\d+):/);
+    if (match) {
+      const id = `:${match[1]}:`; // Construct the full key, e.g., :12:
+      if (customEmojis[id]) {
+        return <span dangerouslySetInnerHTML={{ __html: customEmojis[id] }} />;
+      }
+    }
+    return emoji;
+  };
+
+  const processEmoji = (emoji: string) => {
+    const replaced = replaceEmojiId(emoji);
+    return typeof replaced === 'string'
+      ? replaced
+      : replaced;
+  };
+
+  const addEmoji = (emoji: string) => {
+    setNewPost(prevPost => {
+      const newPost = prevPost + emoji;
+      setRemainingChars(CastLengthLimit - newPost.length);
+      return newPost;
+    });
+    setShowEmojis(false);
+  };
+  
+  
   const notify = (message: string | number | boolean | null | undefined) => toast(message);
 
   // TODO make some better components for this and use them in the panel
@@ -289,7 +325,7 @@ const SocialMediaFeed = () => {
   return (
     <>  
       <div className="flex flex-grow flex-col min-h-screen"> {/* FULL SCREEN */}
-      {/* HEADER & BODY */}
+        {/* HEADER & BODY */}
         <div className="flex-grow bg-darkPurple overflow-hidden"> {/* Apply overflow-hidden here */}
           {/* HEADER */}
           <Header 
@@ -300,10 +336,6 @@ const SocialMediaFeed = () => {
           {/* BODY */}
           <div ref={scrollRef} className="flex-grow overflow-y-auto max-h-[calc(100vh-235px)]"> {/* Apply max height here */}
             {updatedCasts?.map((updatedCast, index) => {
-             /*  const textWithLinks = updatedCast?.data?.castAddBody?.text.replace(
-                /(https?:\/\/[^\s]+)/g,
-                (url: any) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-deepPink">${'External Link'}</a>`
-              ); */
               return (
                 <CastItem key={index} updatedCast={updatedCast} index={index} room={targetUrl} />
                 );
@@ -388,7 +420,6 @@ const SocialMediaFeed = () => {
                     }
                 }}
               />
-       
             </div>
             <button
               className="mb-2 py-2 px-2 bg-deepPink hover:bg-pink-600 rounded-full flex items-center justify-center transition duration-300 ease-in-out shadow-md hover:shadow-lg text-lightPurple font-semibold text-medium"
@@ -431,7 +462,35 @@ const SocialMediaFeed = () => {
               <img src="/favicon.ico" alt="Favicon" className="w-6 h-5" />
             </button>
           </div>
-          <p className="text-fontRed ml-2 text-sm mt-2 mb-2">{remainingChars} characters remaining ish</p>
+          <div className="flex items-center space-x-2 mt-1">
+            {/* Reactions Button and Emojis */}
+            <div className="relative inline-block">
+              <button
+                className="py-2 px-2 bg-deepPink hover:bg-pink-600 rounded-full flex items-center justify-center transition duration-300 ease-in-out shadow-md hover:shadow-lg text-lightPurple font-semibold text-medium"
+                onClick={() => setShowEmojis(!showEmojis)}
+              >
+                {/* <FontAwesomeIcon className="h-4 w-4" icon={faFaceGrinStars} style={{ color: '#C0B2F0' }} /> */}
+                <p className="text-xxs ml-2" style={{ color: '#C0B2F0' }}>\o/ Reactions</p>
+              </button>
+              {showEmojis && (
+                <div className="absolute top-0 left-full ml-2 flex space-x-1">
+                  {emojis.map((emoji, index) => {
+                    const processedEmoji = replaceEmojiId(emoji);
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => addEmoji(emoji)}
+                        className="w-10 h-6 bg-purplePanel hover:bg-darkPurple rounded-full p-2 transition duration-300 ease-in-out shadow-md hover:shadow-lg text-white"
+                      >
+                        {processEmoji(emoji)}
+                      </button>
+                      );
+                    })}
+                </div>
+              )}
+            </div>
+          </div>
+          <p className="text-fontRed ml-2 text-sm mt-1 mb-1">{remainingChars} characters remaining ish</p>
           {/* FOOTER NAV */}  
           <FooterNav 
             onLobbyClick={() => {

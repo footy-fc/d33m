@@ -1,6 +1,3 @@
-// CustomTextArea.tsx
-import { faFaceGrinStars } from '@fortawesome/free-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { FC } from 'react';
 
 interface CustomTextAreaProps {
@@ -21,27 +18,18 @@ const CustomTextArea: FC<CustomTextAreaProps> = ({
   onKeyDown
 }) => {
   return (
-    <div > 
-    <textarea
-      ref={textareaRef}
-      className={`w-full caret-limeGreenOpacity text-white text-sm px-2 py-1 focus:outline-none border bg-darkPurple border-limeGreenOpacity resize-none overflow-hidden ${showDropdown ? 'rounded-b-lg' : 'rounded-lg'}`}
-      placeholder="Cast or / for 🤖 commands"
-      value={newPost}
-      onChange={handlePostChange}
-      onKeyDown={onKeyDown}
-      style={{ minHeight: '1rem', lineHeight: 'normal' }}
-    />
-        
-   {/*      <button
-              className="mb-2 py-2 px-2 bg-deepPink hover:bg-pink-600 rounded-full flex items-center justify-center transition duration-300 ease-in-out shadow-md hover:shadow-lg text-lightPurple font-semibold text-medium"
-              onClick={() => {
-                    setNewPost(newPost + "🤖");
-                  // setRemainingChars(CastLengthLimit);    
-              }}>
-              <FontAwesomeIcon className="h-6 w-6" icon={faFaceGrinStars} style={{ color: '#C0B2F0' }} />
-              <p className="text-xxs ml-2" style={{ color: '#C0B2F0' }}>Reactions</p>
-            </button> */}
-     {newPost && (
+    <div className="relative">
+      <textarea
+        ref={textareaRef}
+        className={`w-full caret-limeGreenOpacity text-white text-sm px-2 py-1 focus:outline-none border bg-darkPurple border-limeGreenOpacity resize-none overflow-hidden ${showDropdown ? 'rounded-b-lg' : 'rounded-lg'}`}
+        placeholder="Cast or / for 🤖 commands"
+        value={newPost}
+        onChange={handlePostChange}
+        onKeyDown={onKeyDown}
+        style={{ minHeight: '1rem', lineHeight: 'normal' }}
+      />
+
+      {newPost && (
         <button
           onClick={() => setNewPost('')}
           className="absolute top-0 right-0 -mt-4 -mr-4 text-xs bg-purplePanel hover:bg-darkPurple rounded-full px-2 py-1 transition duration-300 ease-in-out shadow-md hover:shadow-lg text-lightPurple"

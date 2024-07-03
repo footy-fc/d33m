@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { Message } from "@farcaster/core";
 import useCustomProfileData from './useCustomProfileData';
+import { customEmojis } from '../constants/customEmojis'; // Adjust the import path as necessary
 
 interface UpdatedCast extends Message {
   fname: string;
@@ -35,18 +36,8 @@ const CastItem: React.FC<CastItemProps> = ({ index, updatedCast, room }) => {
     setImageHeight(newHeight);
   }, [imageWidth]);
 
-  // Define your list of custom emojis
-  const customEmojis: CustomEmojis = {
-    '::12::': '<img src="/assets/defifa_spinner.gif" alt="custom emoji" class="inline-block w-6 h-6" />',
-    '::13::': '<img src="/assets/mbappe-happy.png" alt="custom emoji" class="inline-block w-6 h-6" />',
-    '::14::': '<img src="/assets/banana_soccer.gif" alt="custom emoji" class="inline-block w-6 h-6" />',
-    '::15::': '<img src="/assets/netherlands.gif" alt="custom emoji" class="inline-block w-6 h-6" />',
-    '::16::': '<img src="/assets/lfg.gif" alt="custom emoji" class="inline-block w-6 h-6" />',
-    // Add more custom emoji mappings as needed
-  };
-
   const replaceCustomEmojis = (text: string | undefined) => {
-    return text?.replace(/::\d+::/g, (match) => {
+    return text?.replace(/:\d+:/g, (match) => {
       return customEmojis[match] || match;
     });
   };

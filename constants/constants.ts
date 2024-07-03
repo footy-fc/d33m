@@ -11,5 +11,5 @@ export const FarcasterAppMneumonic = process.env.NEXT_PUBLIC_APP_MNEUMONIC;
 //export const FarcasterHub = "http://arena.wield.co:2281";
 export const FarcasterHub = "https://hub.pinata.cloud";
 //export const FarcasterHub = "https://dabf44.hubs.neynar.com:2283";
-export const CastLengthLimit = 250; // TODO: change this to whatever it is and add length checks
+export const CastLengthLimit = 350; // TODO: change this to whatever it is and add length checks
 export const GunPeers = ['https://gun-manhattan.herokuapp.com/gun']; // TODO: add more peers
