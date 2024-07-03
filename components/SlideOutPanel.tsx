@@ -271,6 +271,23 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
                     </button>
                 </div>
                 <div className="p-4 overflow-auto max-h-[90vh]">
+                    <div className="sidebarEur">
+                        <button onClick={() => {
+                                setNewPost("gantry"||'');
+                                handlePostChange({
+                                    target: {
+                                        value: '/join ' + "gantry",
+                                    },
+                                });
+                                closePanel();
+                                onClose();
+                            }} className="dropdown-button cursor-pointer flex items-center mb-2 w-full">
+                            <span className="mt-2 mb-2 flex flex-grow items-center ml-2 mr-2 text-notWhite">
+                                <Image src="/assets/defifa_spinner.gif" alt="Gantry Logo" className="rounded-full w-8 h-8" width={20} height={20} style={{ marginRight: '8px' }} />
+                                Gantry
+                            </span>
+                        </button>
+                    </div>
      {/*                <div className="sidebarEPL`">
                         <button onClick={() => toggleDropdown("epl")} className="dropdown-button cursor-pointer flex items-center mb-2 w-full">
                         <span className="mt-2 mb-2 flex flex-grow items-center ml-2 text-notWhite">
@@ -353,12 +370,12 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
                                 {eventsEur.map((event) => renderImages(event))}
                             </div>
                         )}
-                        </div>
-                        <div className="sidebarCon">
+                    </div>
+                    <div className="sidebarCon">
                         <button onClick={() => toggleDropdown("con")} className="dropdown-button cursor-pointer flex items-center mb-2 w-full">
-                        <span className="mt-2 mb-2 flex flex-grow items-center ml-2 mr-2 text-notWhite">
-                            <Image src="/assets/con/con.png" alt="Copa America Logo" className="rounded-full w-8 h-8" width={20} height={20} style={{ marginRight: '8px' }} />
-                            Copa America
+                            <span className="mt-2 mb-2 flex flex-grow items-center ml-2 mr-2 text-notWhite">
+                                <Image src="/assets/con/con.png" alt="Copa America Logo" className="rounded-full w-8 h-8" width={20} height={20} style={{ marginRight: '8px' }} />
+                                Copa America
                             </span>
                             <span className="ml-3 text-notWhite">
                                 {isConDropdownOpen ? "\u25B2" : "\u25BC"}
@@ -369,7 +386,7 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
                                 {eventsCon.map((event) => renderImages(event))}
                             </div>
                         )}
-                        </div>
+                    </div>
                 </div>
                 <button className="absolute bottom-6 left-6 p-1 text-lightPurple font-semibold"
                 onClick={() => {

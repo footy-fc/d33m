@@ -326,7 +326,7 @@ const SocialMediaFeed = () => {
     <>  
       <div className="flex flex-grow flex-col min-h-screen"> {/* FULL SCREEN */}
         {/* HEADER & BODY */}
-        <div className="flex-grow bg-darkPurple overflow-hidden relative"> {/* Apply overflow-hidden here */}
+        <div className="flex-grow bg-darkPurple overflow-hidden"> {/* Apply overflow-hidden here */}
           {/* HEADER */}
           <Header 
             isConnected={ready}
@@ -353,7 +353,7 @@ const SocialMediaFeed = () => {
                   onClose={closePanel} 
                   setNewPost={setNewPost}
                   handlePostChange={handlePostChange}
-                  className="z-30"
+                  
                 /> 
               )}
               {isModalVisible && (
@@ -361,14 +361,14 @@ const SocialMediaFeed = () => {
                   isOpen={isModalVisible} 
                   onRequestClose={() => setIsModalVisible(false)}
                   onTeamSelect={handleTeamSelect}
-                  className="z-30"
+                  
                 /> 
               )}
               {isWalletModalVisible && (
                 <WalletModal 
                   isOpen={isWalletModalVisible} 
                   onRequestClose={() => setIsWalletModalVisible(false)}
-                  className="z-30"
+                  
                 /> 
               )}
               {showDropdown && (
@@ -378,7 +378,7 @@ const SocialMediaFeed = () => {
                   setNewPost={setNewPost}
                   handlePostChange={handlePostChange}
                   textareaRef={textareaRef} 
-                  className="z-30"
+                  
                 />
               )}
               {/* UserInput */}  

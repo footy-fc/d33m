@@ -33,7 +33,7 @@ export function useFetchCastsParentUrl(url: string, FarcasterHub: string, pageSi
             const castsResult = await axios.get(`${server}/v1/castsByParent?pageSize=10&reverse=1&url=${url}`, {
               headers: {
                 "Content-Type": "application/json",
-                "x-airstack-hubs": "18c933b177db0481294b63138fe69648d"
+                //"x-airstack-hubs": "18c933b177db0481294b63138fe69648d"
                 //process.env.AIRSTACK_API_KEY as string,
               },
             });
