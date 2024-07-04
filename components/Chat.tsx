@@ -281,7 +281,15 @@ const SocialMediaFeed = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-darkPurple">
+        <img
+          src="/assets/defifa_spinner.gif"
+          alt="Loading spinner"
+          className="w-24 h-24"
+        />
+      </div>
+    );
   }
 
   // const predefinedEmojis: string[] = ['\\o_[🟥] ', '\\o_[🟨] ', '[●➡️] ', '\\o/ '];

@@ -19,7 +19,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <PrivyProvider
       appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID || ''}
-      onSuccess={() => router.push('/?channel=lobby1')}
+      onSuccess={() => router.push('/?channel=gantry')}
       
       config={{
         appearance: {
