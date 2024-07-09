@@ -286,7 +286,7 @@ const SocialMediaFeed = () => {
         <img
           src="/assets/defifa_spinner.gif"
           alt="Loading spinner"
-          className="w-24 h-24"
+          className="w-32 h-32"
         />
       </div>
     );
@@ -351,8 +351,8 @@ const SocialMediaFeed = () => {
           </div>
         </div>
         {/* FOOTER */}  
-        <div className="bg-purplePanel p-4 relative z-10"> 
-          <div className="flex items-end space-x-2 relative z-10">
+        <div className="bg-purplePanel p-4 relative z-1"> 
+          <div className="flex items-end space-x-2 relative z-1">
             {/* FOOTER PANEL SLIDE OUT ?? */}  
             <div className="relative flex-1"> {/* Adjust flex container */}
               {isPanelOpen && (
@@ -435,7 +435,7 @@ const SocialMediaFeed = () => {
               />
             </div>
             <button
-              className="mb-2 py-2 px-2 bg-deepPink hover:bg-pink-600 rounded-full flex items-center justify-center transition duration-300 ease-in-out shadow-md hover:shadow-lg text-lightPurple font-semibold text-medium z-20"
+              className="mb-2 py-2 px-2 bg-deepPink hover:bg-pink-600 rounded-full flex items-center justify-center transition duration-300 ease-in-out shadow-md hover:shadow-lg text-lightPurple font-semibold text-medium z-1"
               onClick={() => {
                 const aiPost = /^\/ai\s/; 
                 const tipPost = /^\/tip\s/;
