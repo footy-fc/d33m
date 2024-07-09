@@ -351,8 +351,8 @@ const SocialMediaFeed = () => {
           </div>
         </div>
         {/* FOOTER */}  
-        <div className="bg-purplePanel p-4 relative z-1"> 
-          <div className="flex items-end space-x-2 relative z-1">
+        <div className="bg-purplePanel p-4 relative z-10"> 
+          <div className="flex items-end space-x-2 relative z-10">
             {/* FOOTER PANEL SLIDE OUT ?? */}  
             <div className="relative flex-1"> {/* Adjust flex container */}
               {isPanelOpen && (
