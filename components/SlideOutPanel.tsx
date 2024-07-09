@@ -283,7 +283,7 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
                                 onClose();
                             }} className="dropdown-button cursor-pointer flex items-center mb-2 w-full">
                             <span className="mt-2 mb-2 flex flex-grow items-center ml-2 mr-2 text-notWhite">
-                                <Image src="/assets/defifa_spinner.gif" alt="Gantry Logo" className="rounded-full w-8 h-8" width={20} height={20} style={{ marginRight: '8px' }} />
+                                <Image src="/assets/defifa_spinner.gif" alt="Gantry Logo" className="w-8 h-8" width={20} height={20} style={{ marginRight: '8px' }} />
                                 The Gantry
                             </span>
                         </button>

@@ -11,6 +11,15 @@ type WalletModalProps = {
     onRequestClose: () => void;
 };
 
+const customStyles = {
+  overlay: {
+      zIndex: 15
+  },
+  content: {
+      zIndex: 15,
+  }
+};
+
 const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onRequestClose }) => {
     //const {login} = usePrivy();
     const { ready, authenticated, user, logout, createWallet } = usePrivy();
@@ -51,7 +60,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onRequestClose }) => 
     };
 
     return (
-        <Modal isOpen={isOpen} onRequestClose={onRequestClose}>
+        <Modal isOpen={isOpen} onRequestClose={onRequestClose} style={customStyles}>
           <div className=" bg-deepPink text-white font-semibold text-medium p-2 rounded-lg h-full overflow-y-auto">
             <button className="absolute top-0 right-0 text-lightPurple" onClick={onRequestClose}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
