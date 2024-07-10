@@ -186,6 +186,12 @@ const SocialMediaFeed = () => {
     }
   }, []);
   
+  useEffect(() => {
+    if (!showEmojis && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [showEmojis]);
+
   // FUNCTIONS
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
@@ -322,7 +328,15 @@ const SocialMediaFeed = () => {
       setRemainingChars(CastLengthLimit - newPost.length);
       return newPost;
     });
-    setShowEmojis(false);
+    
+    // Focus on the textarea after adding the emoji
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  };
+  
+  const toggleShowEmojis = () => {
+    setShowEmojis(prevState => !prevState);
   };
   
   
@@ -477,8 +491,8 @@ const SocialMediaFeed = () => {
             <div className="relative z-0">
               <button
                 className="py-2 px-2 bg-deepPink hover:bg-pink-600 rounded-full flex items-center justify-center transition duration-300 ease-in-out shadow-md hover:shadow-lg text-lightPurple font-semibold text-medium"
-                onClick={() => setShowEmojis(!showEmojis)}
-              >
+                onClick={toggleShowEmojis}
+                >
                 <p className="text-xxs ml-2" style={{ color: '#C0B2F0' }}>\o/ Reactions</p>
               </button>
               {showEmojis && (
