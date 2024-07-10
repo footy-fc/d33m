@@ -1,28 +1,12 @@
 {
-  "alb": "alb.png",
-  "aut": "aut.png",
-  "bel": "bel.png",
-  "cro": "cro.png",
-  "cze": "cze.png",
-  "den": "den.png",
+  "arg": "arg.png",
+  "col": "col.png",
+  "uru": "uru.png",
+  "can": "can.png",
   "eng": "eng.png",
-  "esp": "esp.png",
-  "fra": "fra.png",
-  "geo": "geo.png",
-  "ger": "ger.png",
-  "hun": "hun.png",
-  "ita": "ita.png",
   "ned": "ned.png",
-  "pol": "pol.png",
-  "por": "por.png",
-  "rom": "rom.png",
-  "sba": "sba.png",
-  "sco": "sco.png",
-  "sui": "sui.png",
-  "svn": "svn.png",
-  "svk": "svk.png",
-  "tur": "tur.png",
-  "ukr": "ukr.png"
+  "esp": "esp.png",
+  "fra": "fra.png"
   }
 
   

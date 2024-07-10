@@ -28,7 +28,7 @@ const TeamsModal: React.FC<TeamsModalProps> = ({ isOpen, onRequestClose, onTeamS
         onRequestClose();
     };
 
-    const rows = Array.from({ length: 6 });
+    const rows = Array.from({ length: 2 });
     const columns = Array.from({ length: 4 });
 
     return (
