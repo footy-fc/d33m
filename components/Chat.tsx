@@ -6,18 +6,16 @@ import TeamsModal from './TeamLogos';
 import FrameModal from './FrameModal';
 import { ToastContainer, ToastContentProps, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 /* HOOKS */
 import { useFetchCastsParentUrl } from './useFetchCastsParentUrl';
 import fetchCastersDetails from './fetchCasterDetails';
 import sendAI from './sendAI'; 
-import useIsConnected from './useIsConnected';
 import fillGameContext from './fillGameContext';
 
 /* FC and PRIVY stuff */
 import { Message } from "@farcaster/core";
-import { useExperimentalFarcasterSigner, usePrivy } from '@privy-io/react-auth';
+import { useFarcasterSigner, usePrivy } from '@privy-io/react-auth';
 import submitCastPrivy from './sendCastPrivy';
 import { ExternalEd25519Signer } from '@standard-crypto/farcaster-js-hub-rest';
 
@@ -36,9 +34,6 @@ import { useCommands } from './slashCommands';
 const IMGAGE_WIDTH = 20; 
 import { customEmojis } from '../constants/customEmojis'; // Adjust the import path as necessary
 
-/* Functions */
-import copyToClipboardAndShare from './copyToClipboardAndShare';
-
 /* Render Components */
 import SlideOutPanel from '../components/SlideOutPanel'; // Import the SlideOutPanel component
 import CastItem from './CastItem';
@@ -48,7 +43,6 @@ import CommandDropdown from './CommandDropdown';
 import CustomTextArea from './UserInput';
 import WalletModal from './WalletSetup';
 import sendTip from './sendTip';
-import { faFaceGrinStars } from '@fortawesome/free-regular-svg-icons';
 
 interface UpdatedCast extends Message {
   fname: string;
@@ -73,17 +67,13 @@ const SocialMediaFeed = () => {
   let scrollRef = useRef<HTMLDivElement>(null); 
   scrollRef = useRef(null);
 
-  const [openAiApiKey, setApiKey] = useState(''); 
   const [hubAddress] = useState(FarcasterHub); 
   const [newPost, setNewPost] = useState("");
   const [targetUrl, setTargetUrl] = useState(targetThis);
   const {casts, loading} = useFetchCastsParentUrl(targetUrl, hubAddress);
   const [updatedCasts, setUpdatedCasts] = useState<UpdatedCast[]>([]);
-  const [isMobileDevice, setIsMobileDevice] = useState(false);
   const [remainingChars, setRemainingChars] = useState(CastLengthLimit);
   const [scrollPosition, setScrollPosition] = useState(0); // Store the scroll position
-  const hookIsConnected = useIsConnected();
-  const [signer_uuid, setSigner_uuid] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
   const {commands, setCommands, filteredCommands, setFilteredCommands} = useCommands();
   const [isPanelOpen, setIsPanelOpen] = useState(false);
@@ -95,7 +85,7 @@ const SocialMediaFeed = () => {
   const [selectedTeam, setSelectedTeam] = useState('');
   const { ready, authenticated, user, logout, sendTransaction } = usePrivy();
   //const {submitCast} = useExperimentalFarcasterSigner();
-  const {getFarcasterSignerPublicKey, signFarcasterMessage} = useExperimentalFarcasterSigner();
+  const {getFarcasterSignerPublicKey, signFarcasterMessage} = useFarcasterSigner();
   const privySigner = new ExternalEd25519Signer(signFarcasterMessage, getFarcasterSignerPublicKey);
   const [showEmojis, setShowEmojis] = useState(false);
 
@@ -128,22 +118,16 @@ const SocialMediaFeed = () => {
         radisk: true, // Use Radisk to persist data
       });      
       const parsedUrl = targetUrl.replace('https://', '');
-      gun.get(parsedUrl).get(casterFID.toString()).put({ message: teamName } as never);
-      console.log('Saved data to GunDB: ', casterFID ,teamName);
+        // Check if user and user.farcaster and user.farcaster.fid exist before proceeding
+      if (!user?.farcaster?.fid) {
+        const errorMessage = 'Something went wrong. Farcaster FID is missing';
+        console.error(errorMessage);
+        notify(errorMessage);
+        return;
+      }
+      gun.get(parsedUrl).get(user.farcaster.fid.toString()).put({ message: teamName } as never);
+      console.log('Saved data to GunDB: ', user.farcaster.fid ,teamName);
   };
-  
-
-  useEffect(() => {
-    setCasterFID(hookIsConnected.casterFID);
-    setSigner_uuid(hookIsConnected.signer_uuid);
-  }, [hookIsConnected]);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const isMobile = /Mobi/i.test(navigator.userAgent);
-      setIsMobileDevice(isMobile);
-    }
-  }, []);
 
   useEffect(() => {
     /*  Scroll to the bottom when casts change or new post is added ??
@@ -165,11 +149,6 @@ const SocialMediaFeed = () => {
     fetchCastersDetails(casts, hubAddress, setUpdatedCasts);
   }, [casts, hubAddress]);
 
-  useEffect(() => {
-    const apiKey = getApiKeyFromLocalStorage();
-    setApiKey(apiKey || ''); // Use an empty string as the default value or boom
-  }, []);
-
   // Adjust textarea height on window resize
   useEffect(() => {
     window.addEventListener('resize', adjustTextareaHeight);
@@ -181,13 +160,6 @@ const SocialMediaFeed = () => {
   useEffect(() => {
     adjustTextareaHeight();
   }, [newPost]); 
-  
-  useEffect(() => {
-    const storedApiKey = getApiKeyFromLocalStorage();
-    if (storedApiKey) {
-      setApiKey(storedApiKey);
-    }
-  }, []);
   
   useEffect(() => {
     if (!showEmojis && textareaRef.current) {
@@ -203,20 +175,6 @@ const SocialMediaFeed = () => {
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
   };    
-
-  const setApiKeyToLocalStorage = (apiKey: string) => {
-    localStorage.setItem('chatgpt-api-key', apiKey);
-  };
-
-  const getApiKeyFromLocalStorage = () => {
-    return localStorage.getItem('chatgpt-api-key');
-  };
-  
-  const handleApiKeyChange = (e: { target: { value: any; }; }) => {
-    const newApiKey = e.target.value;
-    setApiKey(newApiKey);
-    setApiKeyToLocalStorage(newApiKey);
-  };
   
   const handlePostChange = async (event: { target: { value: any; }; }) => {
     const inputValue = event.target.value;
@@ -295,7 +253,6 @@ const SocialMediaFeed = () => {
         <img
           src="/assets/defifa_spinner.gif"
           alt="Loading spinner"
-          className="w-32 h-32"
         />
       </div>
     );
@@ -435,10 +392,21 @@ const SocialMediaFeed = () => {
                       }
                       return;
                     }
-                    if (ready && authenticated) {
-                      submitCastPrivy(casterFID, newPost, targetUrl, privySigner);
-                      setNewPost("");
-                      setRemainingChars(CastLengthLimit);
+                    if (ready && authenticated && user?.farcaster?.fid) {
+                      console.log('fid is ', user?.farcaster?.fid)
+                      const fid = user?.farcaster?.fid;
+                      if (fid) {
+                        submitCastPrivy(fid, newPost, targetUrl, privySigner);
+                        setNewPost("");
+                        setRemainingChars(CastLengthLimit);
+                      } else {
+                        console.error("User not authenticated.");
+                        setNewPost("");
+                        setRemainingChars(CastLengthLimit);
+                        notify("Authenticate your Account to chat.");
+                        setIsWalletModalVisible(true);
+                        setShowDropdown(false); 
+                      }
                     } else {
                       console.error("User not authenticated.");
                       setNewPost("");
@@ -473,25 +441,39 @@ const SocialMediaFeed = () => {
                   }
                   return;
                 }
-                if (ready && authenticated) {
-                  submitCastPrivy(casterFID, newPost, targetUrl, privySigner);
-                  setNewPost("");
-                  setRemainingChars(CastLengthLimit);
+                if (ready && authenticated && user?.farcaster?.fid) {
+                  const fid = user?.farcaster?.fid;
+                  console.log('fid is2 ', fid)
+
+                      if (fid) {
+                        submitCastPrivy(fid, newPost, targetUrl, privySigner);
+                        setNewPost("");
+                        setRemainingChars(CastLengthLimit);
+                      }
+                    else {
+                      console.error("User not authenticated.");
+                      setNewPost("");
+                      setRemainingChars(CastLengthLimit);
+                      notify("Authenticate your Account to chat.");
+                      setIsWalletModalVisible(true);
+                      setShowDropdown(false); 
+                    }
                 } else {
-                  console.error("User not authenticated.");
-                  setNewPost("");
-                  setRemainingChars(CastLengthLimit);
-                  notify("Authenticate your Account to chat.");
-                  setIsWalletModalVisible(true);
-                  setShowDropdown(false); 
-                }
+                    console.error("User not authenticated.");
+                    setNewPost("");
+                    setRemainingChars(CastLengthLimit);
+                    notify("Authenticate your Account to chat.");
+                    setIsWalletModalVisible(true);
+                    setShowDropdown(false); 
+                  }
               }}>
               <ToastContainer
                 position="top-center"
                 autoClose={2000}
                 pauseOnFocusLoss={false}
                 hideProgressBar={true}
-              />
+                className="custom-toast-container" // Apply the custom class
+                />
               <img src="/favicon.ico" alt="Favicon" className="w-6 h-5" />
             </button>
           </div>
@@ -545,12 +527,6 @@ const SocialMediaFeed = () => {
             onFrameClick={() => {
               setIsFrameModalVisible(true);
               setShowDropdown(false);
-            }}
-            
-            apiKeyVisible={false}
-            openAiApiKey={''}
-            handleApiKeyChange={function (event: React.ChangeEvent<HTMLInputElement>): void {
-              throw new Error('Function not implemented.');
             }}
           />
         </div>

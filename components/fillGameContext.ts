@@ -1,4 +1,6 @@
 import sendOpenAi from './sendOpenAi';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const fillGameContext = async (sixCharacterString: string): Promise<void> => {
     const openAiApiKey = process.env.NEXT_PUBLIC_OPENAIKEY;
@@ -25,7 +27,14 @@ const fillGameContext = async (sixCharacterString: string): Promise<void> => {
           const summaryResponse = await fetch(summaryUrl(matchingEvent.id));
           const summaryData = await summaryResponse.json();
           console.log('Summary data:', summaryData);
-  
+          
+          if (!openAiApiKey) {
+            const errorMessage = 'OpenAI API key is missing';
+            console.error(errorMessage);
+            toast.error(errorMessage);
+            return null;
+          }
+
           if (!summaryData.keyEvents) {
             console.log('No key events found for:', sixCharacterString);
             await sendOpenAi(`no match events for ${sixCharacterString.slice(0, 2)} at the moment`, openAiApiKey);

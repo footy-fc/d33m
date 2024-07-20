@@ -47,6 +47,10 @@ a {
   animation: blink 0.5s infinite alternate; /* Blink animation */
 }
 
+/* ToastStyles.css */
+.custom-toast-container {
+  z-index: 9999 !important;
+}
 
 @keyframes blink {
   from {

@@ -1,3 +1,4 @@
+// Not currently used - for emoji viewing during authoring casts
 import React, { FC } from 'react';
 
 interface CustomTextAreaProps {

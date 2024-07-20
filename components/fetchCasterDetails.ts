@@ -1,5 +1,4 @@
 import { Message } from "@farcaster/core";
-import validTeamLogos from '../public/validTeams.json';
 import axios from 'axios';
 
 interface FidDetails {
@@ -38,12 +37,9 @@ const fetchCastersDetails = async (casts: Message[], hubAddress: string, setUpda
 
   const getUserDataFromFid = async (fid: number): Promise<FidDetails> => {
       const server = "https://hub.farcaster.standardcrypto.vc:2281";
-      //const server = "https://hubs.airstack.xyz";
       const result = await axios.get(`${server}/v1/userDataByFid?fid=${fid}`, {
         headers: {
           "Content-Type": "application/json",
-          "x-airstack-hubs": "18c933b177db0481294b63138fe69648d"
-          //process.env.AIRSTACK_API_KEY as string,
         },
       });
       let pfp = '', fname = '', bio = '';  

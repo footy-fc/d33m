@@ -1,8 +1,8 @@
+// not currently used
 import {usePrivy} from '@privy-io/react-auth';
 import { ReactElement, JSXElementConstructor, ReactNode, PromiseLikeOfReactNode } from 'react';
 import { ToastContainer, ToastContentProps, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 
 function SignMessageButton() {
   const {signMessage} = usePrivy();
