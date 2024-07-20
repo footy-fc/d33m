@@ -1,21 +1,20 @@
 // FooterNav.js
 import React, { FC, ChangeEvent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBuilding, faArrowAltCircleUp, faIdBadge, faCircleUser, faLightbulb } from '@fortawesome/free-regular-svg-icons';
+import { faBuilding, faSquare, faIdBadge, faCircleUser, faLightbulb } from '@fortawesome/free-regular-svg-icons';
 
 interface FooterNavProps {
   onLobbyClick: () => void;
   onBadgeClick: () => void;
   onAIClick: () => void;
   onWalletClick: () => void;
-  onSetupClick: () => void;
+  onFrameClick: () => void;
   apiKeyVisible: boolean;
   openAiApiKey: string;
   handleApiKeyChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
-const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onAIClick, onWalletClick, onSetupClick}) => {
-      
+const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onAIClick, onWalletClick, onFrameClick}) => {
     return (
     <div className="flex justify-between items-center p-2 mb-1">
       <button onClick={onLobbyClick} className="flex flex-col items-center">
@@ -25,9 +24,28 @@ const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onAIClick, 
 
       <button onClick={onBadgeClick} className="flex flex-col items-center">
         <FontAwesomeIcon className="h-6 w-6" icon={faIdBadge} style={{ color: '#C0B2F0' }} />
-        <p className="text-xxs" style={{ color: '#C0B2F0' }}>Badge</p>
+        <p className="text-xxs" style={{ color: '#C0B2F0' }}>Club Badge</p>
       </button>
 
+      <button onClick={onAIClick} className="flex flex-col items-center">
+        <FontAwesomeIcon className="h-6 w-6" icon={faLightbulb} style={{ color: '#C0B2F0' }} />
+        <p className="text-xxs" style={{ color: '#C0B2F0' }}>AI Summary</p>
+      </button>
+
+      <button onClick={onFrameClick} className="flex flex-col items-center">
+        <FontAwesomeIcon className="h-6 w-6" icon={faSquare} style={{ color: '#C0B2F0' }} />
+        <p className="text-xxs" style={{ color: '#C0B2F0' }}>Frame</p>
+      </button> 
+
+      <button onClick={onWalletClick} className="flex flex-col items-center">
+        <FontAwesomeIcon className="h-6 w-6" icon={faCircleUser} style={{ color: '#C0B2F0' }} />
+        <p className="text-xxs" style={{ color: '#C0B2F0' }}>Account</p>
+      </button>
+    </div>
+  );
+};
+
+export default FooterNav;
 {/*       <button onClick={onShareClick} className="flex flex-col items-center">
         <FontAwesomeIcon className="h-6 w-6" icon={faArrowAltCircleUp} style={{ color: '#C0B2F0' }} />
         <p className="text-xxs" style={{ color: '#C0B2F0' }}>Share</p>
@@ -51,18 +69,3 @@ const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onAIClick, 
         )}      
       </div> */}
       
-      <button onClick={onAIClick} className="flex flex-col items-center">
-        <FontAwesomeIcon className="h-6 w-6" icon={faLightbulb} style={{ color: '#C0B2F0' }} />
-        <p className="text-xxs" style={{ color: '#C0B2F0' }}>AI Summary</p>
-      </button>
-
-      <button onClick={onWalletClick} className="flex flex-col items-center">
-        <FontAwesomeIcon className="h-6 w-6" icon={faCircleUser} style={{ color: '#C0B2F0' }} />
-        <p className="text-xxs" style={{ color: '#C0B2F0' }}>Account</p>
-      </button>
-
-    </div>
-  );
-};
-
-export default FooterNav;

@@ -3,6 +3,7 @@ import React from 'react';
 import { SetStateAction, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import TeamsModal from './TeamLogos';
+import FrameModal from './FrameModal';
 import { ToastContainer, ToastContentProps, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -30,7 +31,7 @@ import 'gun/lib/store';
 import 'gun/lib/rindexed';
 
 /* CONSTANTS */
-import { DefaultChannelDomain, FarcasterAppName, FarcasterHub, FarcasterAppFID, FarcasterAppMneumonic, DefaultChannelName, CastLengthLimit, GunPeers } from '../constants/constants'
+import { DefaultChannelDomain, FarcasterAppName, FarcasterHub, FarcasterAppFID, DefaultChannelName, CastLengthLimit, GunPeers } from '../constants/constants'
 import { useCommands } from './slashCommands';
 const IMGAGE_WIDTH = 20; 
 import { customEmojis } from '../constants/customEmojis'; // Adjust the import path as necessary
@@ -89,6 +90,8 @@ const SocialMediaFeed = () => {
   const [casterFID, setCasterFID] = useState<number>(FarcasterAppFID);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isWalletModalVisible, setIsWalletModalVisible] = useState(false);
+  const [isFrameModalVisible, setIsFrameModalVisible] = useState(false);
+
   const [selectedTeam, setSelectedTeam] = useState('');
   const { ready, authenticated, user, logout, sendTransaction } = usePrivy();
   //const {submitCast} = useExperimentalFarcasterSigner();
@@ -386,6 +389,12 @@ const SocialMediaFeed = () => {
                   
                 /> 
               )}
+              {isFrameModalVisible && (
+                <FrameModal 
+                  isOpen={isFrameModalVisible}  
+                  onRequestClose={() => setIsFrameModalVisible(false)}                  
+                /> 
+              )}
               {isWalletModalVisible && (
                 <WalletModal 
                   isOpen={isWalletModalVisible} 
@@ -533,9 +542,11 @@ const SocialMediaFeed = () => {
               setIsWalletModalVisible(true);
               setShowDropdown(false);
             }}
-            onSetupClick={function (): void {
-              throw new Error('Function not implemented.');
+            onFrameClick={() => {
+              setIsFrameModalVisible(true);
+              setShowDropdown(false);
             }}
+            
             apiKeyVisible={false}
             openAiApiKey={''}
             handleApiKeyChange={function (event: React.ChangeEvent<HTMLInputElement>): void {

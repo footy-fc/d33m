@@ -1,9 +1,7 @@
 import sendOpenAi from './sendOpenAi';
-import dotenv from 'dotenv';
 
-dotenv.config();
 const fillGameContext = async (sixCharacterString: string): Promise<void> => {
-    const openAiApiKey = "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"; // Replace with your actual OpenAI API key
+    const openAiApiKey = process.env.NEXT_PUBLIC_OPENAIKEY;
     const prefix = "Clear the context and start over.";
   
     async function fill(sixCharacterString: string, tournament: string): Promise<any> {
@@ -58,8 +56,8 @@ const fillGameContext = async (sixCharacterString: string): Promise<void> => {
           const standings = summaryData.standings;
           const jsonData = JSON.stringify({ summarizedEvents, gameInfo, standings });
           const aiPrompt = prefix + jsonData;
-          await sendOpenAi(prefix, openAiApiKey); // hack to clear the context
-          await sendOpenAi(aiPrompt, openAiApiKey);
+          await sendOpenAi(prefix, openAiApiKey||""); // hack to clear the context
+          await sendOpenAi(aiPrompt, openAiApiKey||"");
   
           console.log('AI context set with:', summarizedEvents);
           return matchingEvent;
@@ -84,8 +82,8 @@ const fillGameContext = async (sixCharacterString: string): Promise<void> => {
   
     if (!matchingEvent) {
       console.error('No matching event found for:', sixCharacterString);
-      await sendOpenAi(prefix, openAiApiKey); // hack to clear the context
-      await sendOpenAi('No events found', openAiApiKey);
+      await sendOpenAi(prefix, openAiApiKey||""); // hack to clear the context
+      await sendOpenAi('No events found', openAiApiKey||"");
     }
   };
   

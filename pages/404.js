@@ -10,11 +10,11 @@ export default function Custom404() {
   useEffect(() => {
     // Redirect to the root ("/") when the 404 page is accessed
     // router.replace('/');
-    const originalRoute = window.location.pathname;
+   /*  const originalRoute = window.location.pathname;
     const formattedOriginalRoute = originalRoute.substring(1);
 
     router.replace({ pathname: '/', query: { channel: formattedOriginalRoute } });
-
+ */
   }, []);
 
   return (
