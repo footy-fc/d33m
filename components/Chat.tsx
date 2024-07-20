@@ -134,8 +134,8 @@ const SocialMediaFeed = () => {
   
 
   useEffect(() => {
-    setCasterFID(user?.farcaster?.fid || 2);
-   // setSigner_uuid(user?.farcaster?.signerPublicKey || '');
+    setCasterFID(hookIsConnected.casterFID);
+    setSigner_uuid(hookIsConnected.signer_uuid);
   }, [hookIsConnected]);
 
   useEffect(() => {
