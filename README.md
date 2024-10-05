@@ -12,11 +12,11 @@ There are experimental custom emojis that only render while in d33m rooms. They 
 
 There is also an experimental team badge feature that will display the team badge next to your Farcaster profile pic. This is using GunDB for peer to peer data sync and is not a part of the Farcaster protocol.
 
-Finally, there is an embedded wallet created in d33m by Privy. It is currently for tipping the d33m devs and may be used in the future use.
+Finally, there is an embedded wallet created in d33m by Privy. It is currently for tipping the d33m devs and may be used in the future.
 
 You will need a Farcaster account to use d33m. You can sign up for a Farcaster account at [Farcaster](https://farcaster.com).
 
-Note: At the moment this is app sends casts to Farcaster using a so called FIP-2 parentUrl. This is the OG channel technique. At this time Warpcast does not honor the context of FIP-2 parentUrl and will not display the context of d33m room casts in the Warpcast app. This is a known issue and will be addressed in the future either by a) Warpcast honoring or nerfing the parentUrl or b) d33m using a cast and reply technique. It is my belief that the parentUrl should be honored and that the app developers should not need to know nor car about what the the Warpcast app does.
+Note: At the moment this is app sends casts to Farcaster using a so called FIP-2 parentUrl. This is the OG channel technique. At this time Warpcast does not honor the context of FIP-2 parentUrl and will not display the context of d33m room casts in the Warpcast app. This is a known issue and will be addressed in the future either by a) Warpcast honoring or nerfing the parentUrl or b) d33m using a cast and reply technique. It is my belief that the parentUrl should be honored and that the app developers should not need to know nor care about what the the Warpcast app does.
 
 ## Installation
 
@@ -38,15 +38,15 @@ Get a free app id from Privy at https://www.privy.io/
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-For now the focus for d33m will be /football/ related content and features with focus on the English Premier League and Champions League. A design goal is to keep the app as simple as possible and to not add too many features. No backend database is used although Privy does store some data for the wallet users. The app is built with Next.js, React, and Tailwind.
+For now the focus for d33m will be /football related content and features with focus on the English Premier League and Champions League. A design goal is to keep the app as simple as possible and to not add too many features. No backend database is used although Privy does store some data for the wallet users. If there is a an elegant way to eliminate this dependency and the Warpcast dependency it will be implemented. The app is built with Next.js, React, and Tailwind.
 
-This code base is nearly 2 years old now and has gone through 5 major changes in how hubs are accessed and users are authenticated. There were a lot of experiments run and hopefully removed prior to this release. The code is a bit of a [Winchester Mystery House](https://winchestermysteryhouse.com/timeline/). I plan to clean it up in the future and you're welcome to help! The idea is to make this a community project and to have fun with it, learn, and build something cool. All experience levels are welcome to contribute.
+This code base is nearly 2 years old now and has gone through 5 major changes in how hubs are accessed and users are authenticated. There were a lot of experiments run and hopefully removed prior to this public release. The code is a bit of a [Winchester Mystery House](https://winchestermysteryhouse.com/timeline/). I plan to clean it up in the future and you're welcome to help! The idea is to make this a community project and to have fun with it, learn, and build something cool. Minimal coordination is a goal. All experience levels are welcome to contribute.
 
 The main entry point is the Chat.tsx component in the components folder. The app is a single page app and the chat is the main component. 
 
 ## Possible TODOs
 
-- [ ] Add frame/min-app rendering and curated content Footy content into a right sidebar
+- [ ] Add frame/min-app rendering and curated Footy content into a right sidebar
 - [ ] Create Footy frames and PR frame link for inclusion in right sidebar
 - [ ] Frame ideas include: AI match summaries, FC FEPL stats, curated articles and podcasts
 - [ ] Refactor the d33m room code to be more modular, extensible, and maintainable for anybody to spin up their own d33m powered apps
