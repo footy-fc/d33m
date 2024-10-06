@@ -1,22 +1,22 @@
 # d33m rooms - Farcaster chat for The Beautiful Game
 
-d33m rooms are scoped to support chat during live matches. No replies, no reactions, no nothing. Just an IRC like chat scoped to a live football matches.
+d33m rooms are scoped to support chat during live matches. No replies, no reactions, no nothing. Just an IRC-like chat scoped to a live football match.
 
 ## Live site: 
 [d33m.com](https://d33m.com)
 
 ## Usage
-When you visit d33m.com you show up in a a generic room called the gantry. You may select a match to join a room for that match. 
+When you visit d33m.com, you show up in a generic room called the gantry. You may select a match to join a room for that match.
 
 There are experimental custom emojis that only render while in d33m rooms. They will display as text in other Farcaster clients.
 
-There is also an experimental team badge feature that will display the team badge next to your Farcaster profile pic. This is using GunDB for peer to peer data sync and is not a part of the Farcaster protocol.
+There is also an experimental team badge feature that will display the team badge next to your Farcaster profile pic. It uses GunDB for peer-to-peer data sync and is not part of the Farcaster protocol.
 
 Finally, there is an embedded wallet created in d33m by Privy. It is currently for tipping the d33m devs and may be used in the future.
 
 You will need a Farcaster account to use d33m. You can sign up for a Farcaster account at [Farcaster](https://farcaster.com).
 
-Note: At the moment this is app sends casts to Farcaster using a so called FIP-2 parentUrl. This is the OG channel technique. At this time Warpcast does not honor the context of FIP-2 parentUrl and will not display the context of d33m room casts in the Warpcast app. This is a known issue and will be addressed in the future either by a) Warpcast honoring or nerfing the parentUrl or b) d33m using a cast and reply technique. It is my belief that the parentUrl should be honored and that the app developers should not need to know nor care about what the the Warpcast app does.
+Note: At the moment, this app sends casts to Farcaster using a so-called FIP-2 parentUrl. This is the OG channel technique. At this time, Warpcast does not honor the context of FIP-2 parentUrl and will not display the context of d33m room casts in the Warpcast app. This is a known issue and will be addressed in the future either by a) Warpcast honoring or nerfing the parentUrl or b) d33m using a cast and reply technique. It is my belief that the parentUrl should be honored and that the app developers should not need to know or care about what the Warpcast app does.
 
 ## Installation
 
@@ -38,7 +38,7 @@ Get a free app id from Privy at https://www.privy.io/
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-For now the focus for d33m will be /football related content and features with focus on the English Premier League and Champions League. A design goal is to keep the app as simple as possible and to not add too many features. No backend database is used although Privy does store some data for the wallet users. If there is a an elegant way to eliminate this dependency and the Warpcast dependency it will be implemented. The app is built with Next.js, React, and Tailwind.
+For now, the focus for d33m will be /football related content and features with a focus on the English Premier League and Champions League. A design goal is to keep the app as simple as possible and to not add too many features. No backend database is used, although Privy does store some data for wallet users. If there is an elegant way to eliminate this dependency and the Warpcast dependency, it will be implemented. The app is built with Next.js, React, and Tailwind.
 
 This code base is nearly 2 years old now and has gone through 5 major changes in how hubs are accessed and users are authenticated. There were a lot of experiments run and hopefully removed prior to this public release. The code is a bit of a [Winchester Mystery House](https://winchestermysteryhouse.com/timeline/). I plan to clean it up in the future and you're welcome to help! The idea is to make this a community project and to have fun with it, learn, and build something cool. Minimal coordination is a goal. All experience levels are welcome to contribute.
 
