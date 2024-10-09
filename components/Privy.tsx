@@ -13,7 +13,7 @@ const Privy = () => {
   const { requestFarcasterSignerFromWarpcast } = useExperimentalFarcasterSigner();
   
   const farcasterAccount = user?.linkedAccounts.find((account) => account.type === 'farcaster');
-
+  console.log(farcasterAccount);
   return (
     <>
       {ready && !authenticated ? (
@@ -43,6 +43,7 @@ const Privy = () => {
               <div>
                 {/* Display name */}
                 <h2 className="text-lg font-semibold text-darkPurple">{user?.farcaster?.displayName || "User"}</h2>
+                {/* @ts-ignore */}
                 <p className="text-gray-500">@{farcasterAccount?.username || "farcasterUser"}</p>
               </div>
             </div>
@@ -67,12 +68,14 @@ const Privy = () => {
             </div>
 
             {/* Authorize Farcaster */}
+            {/* @ts-ignore */}
             {(!farcasterAccount || !farcasterAccount?.signerPublicKey) && (
               <div className="text-gray-800 text-md font-semibold mb-4 flex flex-col">
                 <p>Step 2: Authorize Farcaster to Cast</p>
                 <button
                   className="bg-darkPurple py-2 px-4 text-lightPurple text-md font-semibold rounded-lg transition-all duration-200 ease-in-out mt-2"
                   onClick={() => requestFarcasterSignerFromWarpcast()}
+                  // @ts-ignore
                   disabled={!farcasterAccount || Boolean(farcasterAccount?.signerPublicKey)}
                 >
                   [ Authorize Farcaster ]
