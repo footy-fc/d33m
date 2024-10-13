@@ -5,6 +5,7 @@ interface FidDetails {
   pfp: string;
   fname: string;
   bio: string;
+  url: string;
 }
 
 interface UpdatedCast extends Message {
@@ -42,7 +43,7 @@ const fetchCastersDetails = async (casts: Message[], hubAddress: string, setUpda
           "Content-Type": "application/json",
         },
       });
-      let pfp = '', fname = '', bio = '';  
+      let pfp = '', fname = '', bio = '', url = '';  
     
     result.data.messages.forEach((message: { data: { userDataBody: any; }; }) => {
       const { userDataBody } = message.data; 
@@ -56,10 +57,13 @@ const fetchCastersDetails = async (casts: Message[], hubAddress: string, setUpda
         case "USER_DATA_TYPE_PFP":
           pfp = userDataBody.value;
           break;
+        case "USER_DATA_TYPE_URL":
+          console.log("URL:", userDataBody.value);
+          url = userDataBody.value;
       }
     });
     
-    return { pfp, fname, bio };
+    return { pfp, fname, bio, url };
   };
 
   const updatedData = await Promise.all(casts.filter(cast => cast.data?.castAddBody).map(async cast => {

@@ -35,6 +35,7 @@ import CommandDropdown from './CommandDropdown';
 import CustomTextArea from './UserInput';
 import WalletModal from './WalletSetup';
 import TeamsModal from './TeamLogos';
+import SlideOutPanelRight from './SlideOutPanelRight';
 
 // Interfaces
 interface UpdatedCast extends Message {
@@ -70,6 +71,7 @@ const SocialMediaFeed = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const {commands, setCommands, filteredCommands, setFilteredCommands} = useCommands();
   const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [isPanelRightOpen, setIsPanelRightOpen] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isWalletModalVisible, setIsWalletModalVisible] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState('');
@@ -85,6 +87,15 @@ const SocialMediaFeed = () => {
 
   const closePanel = () => {
     setIsPanelOpen(false);
+  };
+
+  const openPanelRight = () => {
+    setIsPanelRightOpen(true);
+    setShowDropdown(false);
+  };
+
+  const closePanelRight = () => {
+    setIsPanelRightOpen(false);
   };
 
   const handleTeamSelect = (teamName: SetStateAction<string>) => {
@@ -330,8 +341,12 @@ const SocialMediaFeed = () => {
                   onTeamSelect={handleTeamSelect}
                   
                 /> 
-              )}
-              {isWalletModalVisible && (
+              )}{isPanelRightOpen && (
+                <SlideOutPanelRight
+                  isOpen={isPanelRightOpen} 
+                  onClose={closePanelRight} 
+                /> 
+              )}{isWalletModalVisible && (
                 <WalletModal 
                   isOpen={isWalletModalVisible} 
                   onRequestClose={() => setIsWalletModalVisible(false)}
@@ -484,6 +499,14 @@ const SocialMediaFeed = () => {
             onBadgeClick={() => {
               setIsModalVisible(true);
               setShowDropdown(false);
+            } }
+            onFrameClick={() => {
+              console.log("Table click");
+              if (!isPanelRightOpen) {
+                openPanelRight();
+              } else {
+                closePanelRight();
+              }
             } }
             onWalletClick={function (): void {
               throw new Error('Function not implemented.');

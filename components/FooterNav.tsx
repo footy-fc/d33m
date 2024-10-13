@@ -7,13 +7,13 @@ interface FooterNavProps {
   onLobbyClick: () => void;
   onBadgeClick: () => void;
   onWalletClick: () => void;
-  /* onAIClick: () => void;
   onFrameClick: () => void;
+  /* onAIClick: () => void;
   onTableClick: () => void; */
 }
 
 //const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onAIClick, onWalletClick, onTableClick, onFrameClick}) => {
-const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onWalletClick}) => {
+const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onWalletClick, onFrameClick}) => {
 
     return (
     <div className="flex justify-between items-center p-2">
@@ -26,16 +26,17 @@ const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onWalletCli
         <FontAwesomeIcon className="h-6 w-6" icon={faIdBadge} style={{ color: '#C0B2F0' }} />
         <p className="text-xxs" style={{ color: '#C0B2F0' }}>Club Badge</p>
       </button>
+
+      <button onClick={onFrameClick} className="flex flex-col items-center">
+        <FontAwesomeIcon className="h-6 w-6" icon={faSquare} style={{ color: '#C0B2F0' }} />
+        <p className="text-xxs" style={{ color: '#C0B2F0' }}>Frame</p>
+      </button> 
+      
       {/*}
       <button onClick={onAIClick} className="flex flex-col items-center">
         <FontAwesomeIcon className="h-6 w-6" icon={faNewspaper} style={{ color: '#C0B2F0' }} />
         <p className="text-xxs" style={{ color: '#C0B2F0' }}>AI News</p>
       </button>
-     
-      <button onClick={onFrameClick} className="flex flex-col items-center">
-        <FontAwesomeIcon className="h-6 w-6" icon={faSquare} style={{ color: '#C0B2F0' }} />
-        <p className="text-xxs" style={{ color: '#C0B2F0' }}>Frame</p>
-      </button> 
       
      <button onClick={onPlayerClick} className="flex flex-col items-center">
         <FontAwesomeIcon className="h-6 w-6" icon={faIdBadge} style={{ color: '#C0B2F0' }} />

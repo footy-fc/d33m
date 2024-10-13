@@ -7,6 +7,7 @@ import CreateLoginButton from "./CreateLoginButton";
 import GetBalance from "./GetBalance";
 import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
+import ProfileData from "./ProfileData";
 
 const Privy = () => {
   const { ready, authenticated, user, logout, sendTransaction } = usePrivy();
@@ -45,8 +46,13 @@ const Privy = () => {
                 <h2 className="text-lg font-semibold text-darkPurple">{user?.farcaster?.displayName || "User"}</h2>
                 {/* @ts-ignore */}
                 <p className="text-gray-500">@{farcasterAccount?.username || "farcasterUser"}</p>
+                <p className="text-gray-500">{farcasterAccount?.url || "ipns/ipfs website here"}</p>
               </div>
             </div>
+            <div className="text-gray-800 text-md font-semibold mb-4">
+              <ProfileData user={user} />
+            </div>
+            {/* Create Wallet Button */}
             {/* Balance */}
             <div className="text-gray-800 text-md font-semibold mb-4">
               <GetBalance />
