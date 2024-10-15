@@ -82,21 +82,20 @@ const CastItem: React.FC<CastItemProps> = ({ index, updatedCast, room }) => {
   };
 
   return (
-    <div key={index} className="flex bg-darkPurple p-4 mb-3 rounded-lg items-start shadow-lg">
-      {/* Profile Picture and Team Logo */}
-      <div className="relative min-w-8 mr-4">
+    <div key={index} className="flex bg-darkPurple p-2 ml-2 mr-2 items-start">
+      <div className="relative min-w-8 mr-2">
         <Image
           src={updatedCast.pfp || '/assets/defifa_spinner.gif'}
           alt="Author Avatar"
-          className="rounded-full w-10 h-10"
-          width={40}
-          height={40}
+          className="rounded-full w-8 h-8"
+          width={24}
+          height={24}
         />
         <Image
           src={imageSrc}
           alt="Overlay Team Logo"
-          className="w-6 h-6 p-0.5 rounded-full absolute right-0 top-0"
-          style={{ transform: 'translate(30%, -30%)', border: '2px solid #181424' }}
+          className="w-5 h-5 p-0.5 rounded-full absolute right-0 top-0"
+          style={{ transform: 'translate(40%, -40%)' }}
           width={imageWidth}
           height={imageHeight}
           onLoad={(e) => {
@@ -104,29 +103,17 @@ const CastItem: React.FC<CastItemProps> = ({ index, updatedCast, room }) => {
             setImageWidth(imgElement.width);
           }}
           onError={() => {
-            setImageSrc('/assets/eur/defifa_spinner.gif'); // Fallback image on error
+            setImageSrc("/assets/eur/defifa_spinner.gif"); // Fallback image on error
           }}
         />
       </div>
-
-      {/* Cast Message and User Info */}
-      <div className="flex-1">
-        <div className="flex items-center justify-between">
-          {/* User's Name */}
-          <span className="text-sm text-notWhite font-semibold">{updatedCast.fname}</span>
-          {/* Time: Human-readable timestamp TOP RIGHT CORNER */}
-        </div>
-
-        {/* Message Body */}
-        <div className="text-sm mt-1 text-lightPurple font-normal leading-relaxed">
-          <span dangerouslySetInnerHTML={{ __html: textWithLinks ?? '' }}></span>
-        </div>
-
-        {/* Detailed Timestamp  */}
-        <div className="text-xs text-limeGreenOpacity mt-1">
-          <span>{detailedTime(updatedCast?.data?.timestamp)}</span>
-        </div>
-      </div>
+      <span className="text-sm ml-2 text-notWhite font-semibold">
+        {updatedCast.fname}
+        <span
+          className="text-sm ml-2 text-lightPurple font-normal inline-block"
+          dangerouslySetInnerHTML={{ __html: textWithLinks ?? '' }}
+        ></span>
+      </span>
     </div>
   );
 };
