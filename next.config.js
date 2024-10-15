@@ -12,8 +12,11 @@ const nextConfig = {
   },
 };
 const withFonts = require("next-fonts");
+const withPWA = require("@ducanh2912/next-pwa").default({
+  dest: "public",
+});
 
-module.exports = withFonts();
+module.exports = withFonts(), withPWA();
 webpack: (config) => {
   config.module.rules.push({
     test: /\.css$/,
