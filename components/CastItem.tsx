@@ -1,8 +1,10 @@
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { Message } from "@farcaster/core";
+import { Message } from '@farcaster/core';
 import useCustomProfileData from './useCustomProfileData';
-import { customEmojis } from '../constants/customEmojis'; // Adjust the import path as necessary
+import { customEmojis } from '../constants/customEmojis';
+import { formatDistanceToNow, format } from 'date-fns'; // For human-readable timestamp
+import { time } from 'console';
 
 interface UpdatedCast extends Message {
   fname: string;
@@ -27,36 +29,57 @@ const CastItem: React.FC<CastItemProps> = ({ index, updatedCast, room }) => {
   const [imageHeight, setImageHeight] = useState(IMGAGE_WIDTH);
   const [imageSrc, setImageSrc] = useState<string>('/assets/eur/defifa_spinner.gif');
 
-  // Use the hook at the top level
-  const profileData = useCustomProfileData(parsedUrl, updatedCast?.data?.fid ?? 2); // 2 is @v lol now the default
+  // Hook for fetching profile data
+  const profileData = useCustomProfileData(parsedUrl, updatedCast?.data?.fid ?? 2);
 
+  // Process profile data for team logo
   useEffect(() => {
     if (profileData) {
-      setImageSrc("/assets/epl/" + profileData + ".png");
+      setImageSrc(`/assets/epl/${profileData}.png`);
     } else {
-      setImageSrc("/assets/eur/defifa_spinner.gif");
+      setImageSrc('/assets/eur/defifa_spinner.gif');
     }
   }, [profileData]);
 
+  // Adjust image height to maintain aspect ratio
   useEffect(() => {
     const aspectRatio = imageWidth / IMGAGE_WIDTH;
     const newHeight = IMGAGE_WIDTH / aspectRatio;
     setImageHeight(newHeight);
   }, [imageWidth]);
 
+  // Replace emojis in text with custom emojis
   const replaceCustomEmojis = (text: string | undefined) => {
     return text?.replace(/:\d+:/g, (match) => {
       return customEmojis[match] || match;
     });
   };
 
-  // Logic for processing cast data
-  let textWithLinks = updatedCast?.data?.castAddBody?.text.replace(
+  // Replace links with anchor tags and style the links
+  let textWithLinks = updatedCast?.data?.castAddBody?.text?.replace(
     /(https?:\/\/[^\s]+)/g,
-    (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-deepPink">${'External Link'}</a>`
+    (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-deepPink underline">${'External Link'}</a>`
   );
 
   textWithLinks = replaceCustomEmojis(textWithLinks);
+
+  // Convert timestamp to human-readable format
+  const formatTime = (timestamp: number) => {
+    const date = new Date(timestamp * 1000); // Timestamp is in seconds
+    return formatDistanceToNow(date, { addSuffix: true });
+  };
+
+  const detailedTime = (timestamp: any) => {
+    const now = new Date();
+    const date = new Date(timestamp * 1000);
+    const isWithin24Hours = (now.getTime() - date.getTime()) < 24 * 60 * 60 * 1000;
+
+    if (isWithin24Hours) {
+      return formatDistanceToNow(date, { addSuffix: true });
+    } else {
+      return format(date, 'MMM d, h:mm a'); // Example: "Oct 7, 5:30 PM"
+    }
+  };
 
   return (
     <div key={index} className="flex bg-darkPurple p-2 ml-2 mr-2 items-start">
