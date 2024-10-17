@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { SetStateAction, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { ToastContainer, toast } from 'react-toastify';
