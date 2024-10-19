@@ -15,7 +15,7 @@ export default function Custom404() {
 
     router.replace({ pathname: '/', query: { channel: formattedOriginalRoute } });
  
-  }, []);
+  }, [router]);
 
   return (
     // Use the Head component to set the OG image meta tag

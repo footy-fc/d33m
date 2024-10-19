@@ -95,18 +95,18 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
     }
   };
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (panelRef.current && !panelRef.current.contains(event.target as Node) && isOpen) {
-      onClose(); // Close the panel if clicked outside
-    }
-  };
-
   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (panelRef.current && !panelRef.current.contains(event.target as Node) && isOpen) {
+        onClose(); // Close the panel if clicked outside
+      }
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   const renderImages = (event: Event) => {
     const homeTeam = event.shortName.split('@')[1].trim().toLowerCase();

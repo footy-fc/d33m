@@ -63,11 +63,11 @@ const Header: React.FC<HeaderProps> = ({ isConnected, openPanel, targetUrl, onWa
     const intervalId = setInterval(fetchMatchInfo, 60000); // Fetch every 60 seconds
 
     return () => clearInterval(intervalId); // Cleanup on unmount
-  }, [targetUrl]);
+  }, [pathName, targetUrl]);
 
   return (
     <div>
-<     div className="flex items-center justify-between p-5 lg:p-2 bg-deepPink">
+<     div className="flex items-center justify-between p-2 bg-deepPink">
           <div className="ml-2 flex text-md items-center font-semibold text-notWhite ">
           {targetUrl.startsWith("chain://eip155") 
             ? "football" 
