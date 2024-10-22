@@ -112,6 +112,8 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
     const homeTeam = event.shortName.split('@')[1].trim().toLowerCase();
     const awayTeam = event.shortName.split('@')[0].trim().toLowerCase();
     const eventTime = new Date(event.date);
+    const scores = event.competitions[0]?.competitors.map((c) => c.score).join('  -  ');
+    const eventStarted = new Date() >= new Date(event.date);
     const dateTimeString = eventTime.toLocaleDateString('en-GB', { month: '2-digit', day: '2-digit' }) + 
       ' ' + eventTime.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
 
@@ -147,7 +149,7 @@ const SlideOutPanel: FC<SlideOutPanelProps> = ({ isOpen, onClose, setNewPost, ha
                   width={20}
                   height={20}
                 />
-                <span className="ml-2 text-sm text-lightPurple font-semibold">{dateTimeString}</span>
+                <span className={`${eventStarted ? `ml-7` : `ml-4`} text-sm text-lightPurple font-semibold`}>{eventStarted ? scores :  dateTimeString}</span> 
               </div>
             </button>
           </div>
