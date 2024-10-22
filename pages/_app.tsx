@@ -49,6 +49,10 @@ function MyApp({ Component, pageProps }: AppProps) {
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>d33m rooms - Footy Watch Parties</title>
   <meta name="description" content="Join footy watch parties and more in d33m rooms." />
+  <meta
+          property="og:image"
+          content="/512.png"
+        />
   <link rel="shortcut icon" href="/favicon.ico" />
 
   {/* Icons for various platforms */}
