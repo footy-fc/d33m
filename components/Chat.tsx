@@ -22,6 +22,7 @@ import { useFarcasterSigner, usePrivy } from '@privy-io/react-auth';
 import fetchCastersDetails from './fetchCasterDetails';
 import submitCastPrivy from './sendCastPrivy';
 import sendTip from './sendTip';
+import sendAI from './sendAI';
 
 // Constants
 import { DefaultChannelDomain, FarcasterHub, DefaultChannelName, CastLengthLimit, GunPeers } from '../constants/constants';
@@ -359,7 +360,12 @@ const SocialMediaFeed = () => {
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
+                    const aiPost = /^\/ai\s/; 
                     const tipPost = /^\/tip/;
+                    if (aiPost.test(newPost)) {
+                      sendAI(newPost, setNewPost, setRemainingChars, targetUrl, selectedTeam);
+                      return;
+                    }
                     if (tipPost.test(newPost)) {
                       if(ready && user?.wallet?.address) {
                         sendTip(newPost, setNewPost, setRemainingChars, ready, user?.wallet?.address, sendTransaction, notify);
@@ -403,7 +409,12 @@ const SocialMediaFeed = () => {
             <button
               className="mb-2 py-2 px-2 bg-deepPink hover:bg-pink-600 rounded-full flex items-center justify-center transition duration-300 ease-in-out shadow-md hover:shadow-lg text-lightPurple font-semibold text-medium z-1"
               onClick={() => {
+                const aiPost = /^\/ai\s/; 
                 const tipPost = /^\/tip\s/;
+                if (aiPost.test(newPost)) {
+                  sendAI(newPost, setNewPost, setRemainingChars, targetUrl, selectedTeam);
+                  return;
+                }
                 if (tipPost.test(newPost)) {
                   if(ready && user?.wallet?.address) {
                     sendTip(newPost, setNewPost, setRemainingChars, ready, user?.wallet?.address, sendTransaction, notify);
@@ -486,6 +497,7 @@ const SocialMediaFeed = () => {
               setIsModalVisible(true);
               setShowDropdown(false);
             } }
+            onAIClick={() => sendAI("/ai Summarize the match data. Do not exceed 320 characters when replying. Start every reply prefixed with [AI]", setNewPost, setRemainingChars, targetUrl, selectedTeam)}
             onWalletClick={function (): void {
               throw new Error('Function not implemented.');
             } } 
