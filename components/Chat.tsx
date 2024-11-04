@@ -37,6 +37,7 @@ import CommandDropdown from './CommandDropdown';
 import CustomTextArea from './UserInput';
 import WalletModal from './WalletSetup';
 import TeamsModal from './TeamLogos';
+import { getRoomName } from '../utility/helper';
 
 // Interfaces
 interface UpdatedCast extends Message {
@@ -79,6 +80,7 @@ const SocialMediaFeed = () => {
   const {getFarcasterSignerPublicKey, signFarcasterMessage} = useFarcasterSigner();
   const privySigner = new ExternalEd25519Signer(signFarcasterMessage, getFarcasterSignerPublicKey);
   const [showEmojis, setShowEmojis] = useState(false);
+  
 
   const openPanel = () => {
     setIsPanelOpen(true);
@@ -281,10 +283,12 @@ const SocialMediaFeed = () => {
       }
     }, 100);
   };
-  
+
+  const roomName = getRoomName(targetUrl);
+
   
   const notify = (message: string | number | boolean | null | undefined) => toast(message);
-
+  
   // TODO make some better components for this and use them in the panel
   // TODO slide out panel only closing on affordnace click, should close on click outside
   return (
@@ -497,6 +501,7 @@ const SocialMediaFeed = () => {
               setIsModalVisible(true);
               setShowDropdown(false);
             } }
+            isGantry={roomName==='gantry'}
             onAIClick={() => sendAI("/ai Summarize the match data. Do not exceed 320 characters when replying. Start every reply prefixed with [AI]", setNewPost, setRemainingChars, targetUrl, selectedTeam)}
             onWalletClick={function (): void {
               throw new Error('Function not implemented.');
