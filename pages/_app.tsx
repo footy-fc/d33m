@@ -57,7 +57,8 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   {/* Icons for various platforms */}
   <link rel="mask-icon" href="/icons/mask-icon.svg" color="#000000" />
-  <meta name="theme-color" content="#000000" />
+  <meta name="theme-color" content="#BD195D" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
   <link rel="apple-touch-icon" href="/icons/touch-icon-iphone.png" />
   <link
