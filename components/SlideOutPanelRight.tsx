@@ -59,17 +59,11 @@ const SlideOutPanel: FC<SlideOutPanelRightProps> = ({ isOpen, onClose }) => {
     setSelectedFrameUrl(null);
   };
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (panelRef.current && !panelRef.current.contains(event.target as Node) && isOpen) {
-        onClose(); // Close the panel if clicked outside
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('click', handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('click', handleClickOutside);
     };
-  }, [isOpen, onClose]);
+  }, [handleClickOutside, isOpen]);
   
   useEffect(() => {
     const loadFrameImages = async () => {
