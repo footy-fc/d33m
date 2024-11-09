@@ -28,11 +28,17 @@ const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onAIClick, 
         <p className="text-xxs" style={{ color: '#C0B2F0' }}>Club Badge</p>
       </button>
       
-      <button disabled={isGantry} onClick={onAIClick} className="flex flex-col items-center">
-        {/* change color and set cursor to none if isGantry is true */}
-      {/* <FontAwesomeIcon className={`h-6 w-6 ${isGantry ? 'cursor-none': ''}`} icon={faNewspaper} style={{ color: ` ${isGantry ? 'gray': ' #C0B2F0'}` }} /> */}
-
-        <FontAwesomeIcon className={`h-6 w-6 ${isGantry ? 'cursor-none': ''}`} icon={faNewspaper} style={{ color: `#C0B2F0` }} />
+      <button
+        disabled={isGantry}
+        onClick={onAIClick}
+        className={`flex flex-col items-center ${isGantry ? 'pointer-events-none visibility-hidden' : ''}`}
+        style={{ display: isGantry ? 'none' : 'block' }}
+      >
+        <FontAwesomeIcon
+          className={`h-6 w-6 ${isGantry ? 'cursor-none' : ''}`}
+          icon={faNewspaper}
+          style={{ color: '#C0B2F0' }}
+        />
         <p className="text-xxs" style={{ color: '#C0B2F0' }}>AI News</p>
       </button>
      {/*}
