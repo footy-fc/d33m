@@ -9,12 +9,12 @@ interface FooterNavProps {
   onWalletClick: () => void;
   onAIClick: () => void;
   isGantry: boolean;
-  /*onFrameClick: () => void;
-  onTableClick: () => void; */
+  onFrameClick: () => void;
+  /* onTableClick: () => void; */
 }
 
 //const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onAIClick, onWalletClick, onTableClick, onFrameClick}) => {
-const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onAIClick, onWalletClick, isGantry}) => {
+const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onAIClick, onWalletClick, onFrameClick, isGantry}) => {
 
     return (
     <div className="flex justify-between items-center p-2">
@@ -41,12 +41,12 @@ const FooterNav: FC<FooterNavProps> = ({ onLobbyClick, onBadgeClick, onAIClick, 
         />
         <p className="text-xxs" style={{ color: '#C0B2F0' }}>AI News</p>
       </button>
-     {/*}
+     {
       <button onClick={onFrameClick} className="flex flex-col items-center">
         <FontAwesomeIcon className="h-6 w-6" icon={faSquare} style={{ color: '#C0B2F0' }} />
         <p className="text-xxs" style={{ color: '#C0B2F0' }}>Frame</p>
       </button> 
-      
+      /*}
      <button onClick={onPlayerClick} className="flex flex-col items-center">
         <FontAwesomeIcon className="h-6 w-6" icon={faIdBadge} style={{ color: '#C0B2F0' }} />
         <p className="text-xxs" style={{ color: '#C0B2F0' }}>Players</p>
