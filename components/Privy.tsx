@@ -30,7 +30,7 @@ const Privy = () => {
         </div>
       ) : (ready && authenticated) ? (
         <div className="flex items-center justify-center flex-col bg-deepPink rounded-lg shadow-lg">
-             <h1 className="text-2xl font-bold mb-2 text-center text-notWhite">Choose Club</h1>
+             <h1 className="text-2xl font-bold mb-2 text-center text-notWhite">Account</h1>
         
           {/* Profile Section */}
           <div className="bg-darkPurple p-4 rounded-lg shadow-lg w-full max-w-md">
