@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import { useExperimentalFarcasterSigner, usePrivy } from "@privy-io/react-auth";
-import CreateWalletButton from "./CreateWalletButton";
 import ExportWalletButton from "./ExportWalletButton";
 import CreateLoginButton from "./CreateLoginButton";
 import GetBalance from "./GetBalance";
@@ -30,9 +29,11 @@ const Privy = () => {
           </div>
         </div>
       ) : (ready && authenticated) ? (
-        <div className="flex items-center justify-center flex-col p-6 bg-darkPurple rounded-lg shadow-lg">
+        <div className="flex items-center justify-center flex-col bg-deepPink rounded-lg shadow-lg">
+             <h1 className="text-2xl font-bold mb-2 text-center text-notWhite">Choose Club</h1>
+        
           {/* Profile Section */}
-          <div className="bg-deepPink p-4 rounded-lg shadow-lg w-full max-w-md">
+          <div className="bg-darkPurple p-4 rounded-lg shadow-lg w-full max-w-md">
             <div className="flex items-center space-x-4 mb-6">
               {/* Display picture */}
               <img
