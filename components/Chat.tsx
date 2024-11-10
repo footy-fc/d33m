@@ -30,6 +30,7 @@ import { customEmojis } from '../constants/customEmojis';
 
 // Components
 import SlideOutPanel from '../components/SlideOutPanel';
+import SlideOutPanelRight from './SlideOutPanelRight';
 import CastItem from './CastItem';
 import FooterNav from './FooterNav';
 import Header from './Header';
@@ -73,6 +74,7 @@ const SocialMediaFeed = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const {commands, setCommands, filteredCommands, setFilteredCommands} = useCommands();
   const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [isPanelRightOpen, setIsPanelRightOpen] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isWalletModalVisible, setIsWalletModalVisible] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState('');
@@ -89,6 +91,14 @@ const SocialMediaFeed = () => {
 
   const closePanel = () => {
     setIsPanelOpen(false);
+  };
+
+  const openPanelRight = () => {
+    setIsPanelRightOpen(true);
+    setShowDropdown(false);
+  };
+  const closePanelRight = () => {
+    setIsPanelRightOpen(false);
   };
 
   const handleTeamSelect = (teamName: SetStateAction<string>) => {
@@ -336,8 +346,12 @@ const SocialMediaFeed = () => {
                   onTeamSelect={handleTeamSelect}
                   
                 /> 
-              )}
-              {isWalletModalVisible && (
+              )}{isPanelRightOpen && (
+                <SlideOutPanelRight
+                  isOpen={isPanelRightOpen} 
+                  onClose={closePanelRight} 
+                /> 
+              )}{isWalletModalVisible && (
                 <WalletModal 
                   isOpen={isWalletModalVisible} 
                   onRequestClose={() => setIsWalletModalVisible(false)}
@@ -500,6 +514,14 @@ const SocialMediaFeed = () => {
             onBadgeClick={() => {
               setIsModalVisible(true);
               setShowDropdown(false);
+            } }
+            onFrameClick={() => {
+              console.log("Table click");
+              if (!isPanelRightOpen) {
+                openPanelRight();
+              } else {
+                closePanelRight();
+              }
             } }
             isGantry={roomName==='gantry'}
             onAIClick={() => sendAI("/ai Summarize the match data. Do not exceed 320 characters when replying. Start every reply prefixed with [AI]", setNewPost, setRemainingChars, targetUrl, selectedTeam)}
