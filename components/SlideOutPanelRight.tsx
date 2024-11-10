@@ -2,7 +2,7 @@ import React, { FC, useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBuilding } from '@fortawesome/free-regular-svg-icons';
-import FrameModal from '../components/FrameModal';
+import FrameModal from './FrameModal';
 interface SlideOutPanelRightProps {
   isOpen: boolean;
   onClose: () => void;
@@ -22,6 +22,11 @@ const framesData = [
     {
         name: "Football Bets",
         link: "https://fp-lbets.vercel.app/",
+        image: null,
+    },
+    {
+        name: "EPL Resuts",
+        link: "https://premier-league-frame-xyz.vercel.app/frames",
         image: null,
     },
     {
