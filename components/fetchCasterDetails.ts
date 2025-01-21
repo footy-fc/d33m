@@ -1,5 +1,6 @@
 import { Message } from "@farcaster/core";
 import axios from 'axios';
+import { FarcasterHub } from "../constants/constants";
 
 interface FidDetails {
   pfp: string;
@@ -36,7 +37,8 @@ const fetchCastersDetails = async (casts: Message[], hubAddress: string, setUpda
   const fidDetailsCache: Record<number, FidDetails> = {};
 
   const getUserDataFromFid = async (fid: number): Promise<FidDetails> => {
-      const server = "https://hub.farcaster.standardcrypto.vc:2281";
+      // const server = "https://hub.farcaster.standardcrypto.vc:2281";
+      const server = FarcasterHub;
       const result = await axios.get(`${server}/v1/userDataByFid?fid=${fid}`, {
         headers: {
           "Content-Type": "application/json",
