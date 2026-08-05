@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Message } from '@farcaster/core';
-import axios from "axios";
+import axios from 'axios';
  
 export function useFetchCastsParentUrl(url: string, FarcasterHub: string, pageSize: number = 10) {
   const [casts, setCasts] = useState<Message[]>([]); // Provide a type annotation for casts
@@ -9,9 +9,14 @@ export function useFetchCastsParentUrl(url: string, FarcasterHub: string, pageSi
   useEffect(() => {
     const fetchCasts = async () => {
       try {
-        const castsResult = await axios.get(`${FarcasterHub}/v1/castsByParent?pageSize=10&reverse=1&url=${url}`, {
+        const castsResult = await axios.get(`${FarcasterHub}/v1/castsByParent`, {
+          params: {
+            pageSize,
+            reverse: 'true',
+            url,
+          },
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         });
       
@@ -33,7 +38,7 @@ export function useFetchCastsParentUrl(url: string, FarcasterHub: string, pageSi
     return () => {
       clearInterval(intervalId);
     };
-  }, [FarcasterHub, url]);
+  }, [FarcasterHub, pageSize, url]);
 
   return {
     casts,
