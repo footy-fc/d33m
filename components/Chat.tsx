@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Message } from "@farcaster/core";
-import { ExternalEd25519Signer } from '@standard-crypto/farcaster-js-hub-rest';
 
 // Gundb for team logos within d33m rooms
 import Gun from 'gun';
@@ -20,7 +19,7 @@ import { useFarcasterSigner, usePrivy } from '@privy-io/react-auth';
 
 // Utilities
 import fetchCastersDetails from './fetchCasterDetails';
-import submitCastPrivy from './sendCastPrivy';
+import submitCastPrivy, { createPrivyFarcasterSigner } from './sendCastPrivy';
 import sendTip from './sendTip';
 import sendAI from './sendAI';
 
@@ -80,7 +79,7 @@ const SocialMediaFeed = () => {
   const [selectedTeam, setSelectedTeam] = useState('');
   const { ready, authenticated, user, logout, sendTransaction } = usePrivy();
   const {getFarcasterSignerPublicKey, signFarcasterMessage} = useFarcasterSigner();
-  const privySigner = new ExternalEd25519Signer(signFarcasterMessage, getFarcasterSignerPublicKey);
+  const privySigner = createPrivyFarcasterSigner(signFarcasterMessage, getFarcasterSignerPublicKey);
   const [showEmojis, setShowEmojis] = useState(false);
   
 
