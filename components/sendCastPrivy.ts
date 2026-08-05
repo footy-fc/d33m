@@ -2,6 +2,12 @@ import axios from 'axios';
 import { FarcasterNetwork, HubError, Message, Signer, SignatureScheme, makeCastAdd } from '@farcaster/core';
 import { err, ok } from 'neverthrow';
 import { FarcasterHub } from '../constants/constants';
+
+type PrivySignFarcasterMessage = {
+  (messageHash: Uint8Array): Promise<Uint8Array>;
+  (payload: { hash: string }): Promise<Uint8Array>;
+};
+
 export type PrivyFarcasterSigner = Signer;
 
 const sendCastPrivy = async (
@@ -10,8 +16,6 @@ const sendCastPrivy = async (
   targetUrl: string,
   privySigner: Signer,
 ) => {
-  console.log('privySigner FID', casterFID, privySigner);
-
   if (privySigner === undefined) {
     console.error('privySigner is undefined');
     return;
@@ -53,7 +57,7 @@ const sendCastPrivy = async (
 };
 
 export const createPrivyFarcasterSigner = (
-  signFarcasterMessage: (messageHash: Uint8Array) => Promise<Uint8Array>,
+  signFarcasterMessage: PrivySignFarcasterMessage,
   getFarcasterSignerPublicKey: () => Promise<Uint8Array>,
 ): PrivyFarcasterSigner => ({
   scheme: SignatureScheme.ED25519,
@@ -66,7 +70,13 @@ export const createPrivyFarcasterSigner = (
   },
   signMessageHash: async (hash: Uint8Array) => {
     try {
-      return ok(await signFarcasterMessage(hash));
+      const base64UrlHash = Buffer.from(hash)
+        .toString('base64')
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/g, '');
+      const signature = await signFarcasterMessage({ hash: base64UrlHash });
+      return ok(signature.length === 64 ? signature : signature.slice(0, 64));
     } catch (error) {
       return err(new HubError('unknown', error instanceof Error ? error.message : 'Unable to sign message hash'));
     }
