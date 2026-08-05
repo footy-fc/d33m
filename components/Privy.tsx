@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
-import { useExperimentalFarcasterSigner, usePrivy } from "@privy-io/react-auth";
+import { useFarcasterSigner, usePrivy } from "@privy-io/react-auth";
 import ExportWalletButton from "./ExportWalletButton";
 import CreateLoginButton from "./CreateLoginButton";
 import GetBalance from "./GetBalance";
@@ -9,7 +9,7 @@ import Withdraw from "./Withdraw";
 
 const Privy = () => {
   const { ready, authenticated, user, logout, sendTransaction } = usePrivy();
-  const { requestFarcasterSignerFromWarpcast } = useExperimentalFarcasterSigner();
+  const { requestFarcasterSignerFromWarpcast } = useFarcasterSigner();
   
   const farcasterAccount = user?.linkedAccounts.find((account) => account.type === 'farcaster');
 

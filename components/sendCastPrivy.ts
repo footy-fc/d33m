@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { FarcasterNetwork, HubError, Message, Signer, SignatureScheme, makeCastAdd } from '@farcaster/core';
+import { CastType, FarcasterNetwork, HubError, Message, Signer, SignatureScheme, makeCastAdd } from '@farcaster/core';
 import { err, ok } from 'neverthrow';
 import { FarcasterHub } from '../constants/constants';
 
@@ -21,6 +21,7 @@ const sendCastPrivy = async (
   const submitCastMessage = await makeCastAdd(
     {
       text: newPost,
+      type: CastType.CAST,
       parentUrl: targetUrl,
       embeds: [],
       embedsDeprecated: [],

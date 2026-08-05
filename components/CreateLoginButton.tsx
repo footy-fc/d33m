@@ -1,8 +1,13 @@
 import React from 'react';
-import { usePrivy } from '@privy-io/react-auth';
+import { useLogin } from '@privy-io/react-auth';
+import { useRouter } from 'next/router';
 
 const CreateLoginButton = () => {
-  const { login } = usePrivy();
+  const router = useRouter();
+  const { login } = useLogin({
+    onComplete: () => router.push('/?channel=gantry'),
+  });
+
   return (
     <>
         <button

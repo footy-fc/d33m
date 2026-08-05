@@ -7,7 +7,7 @@ const ExportWalletButton = () => {
   // Check that your user has an embedded wallet
   const hasEmbeddedWallet = !!user?.linkedAccounts.find(
     (account) => {
-      if (account.type === 'wallet' && account.walletClient === 'privy') {
+      if (account.type === 'wallet' && account.walletClientType === 'privy') {
         return true; // Return true if the condition is met
       }
       return false; // Return false otherwise
