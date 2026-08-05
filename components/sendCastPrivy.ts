@@ -1,4 +1,4 @@
-import { ExternalEd25519Signer, HubRestAPIClient } from '@standard-crypto/farcaster-js';
+import { ExternalEd25519Signer, HubRestAPIClient } from '@standard-crypto/farcaster-js-hub-rest';
 import { FarcasterHub } from '../constants/constants';
 
 type PrivySignFarcasterMessage = (messageHash: Uint8Array) => Promise<Uint8Array>;
