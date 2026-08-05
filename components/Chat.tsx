@@ -297,6 +297,23 @@ const SocialMediaFeed = () => {
 
   
   const notify = (message: string | number | boolean | null | undefined) => toast(message);
+
+  const submitCurrentCast = async () => {
+    if (!user?.farcaster?.fid || !newPost.trim()) {
+      notify('Authenticate your Farcaster account to chat.');
+      setIsWalletModalVisible(true);
+      return;
+    }
+
+    try {
+      await submitCastPrivy(user.farcaster.fid, newPost, targetUrl, privySigner);
+      setNewPost('');
+      setRemainingChars(CastLengthLimit);
+    } catch (error) {
+      console.error('Failed to submit Farcaster cast', error);
+      notify('Unable to submit cast. Authorize your Farcaster signer in Account, then try again.');
+    }
+  };
   
   // TODO make some better components for this and use them in the panel
   // TODO slide out panel only closing on affordnace click, should close on click outside
@@ -394,9 +411,7 @@ const SocialMediaFeed = () => {
                       console.log('fid is ', user?.farcaster?.fid)
                       const fid = user?.farcaster?.fid;
                       if (fid) {
-                        submitCastPrivy(fid, newPost, targetUrl, privySigner);
-                        setNewPost("");
-                        setRemainingChars(CastLengthLimit);
+                        void submitCurrentCast();
                       } else {
                         console.error("User not authenticated.");
                         setNewPost("");
@@ -442,9 +457,7 @@ const SocialMediaFeed = () => {
                 if (ready && authenticated && user?.farcaster?.fid) {
                   const fid = user?.farcaster?.fid;
                   if (fid) {
-                    submitCastPrivy(fid, newPost, targetUrl, privySigner);
-                    setNewPost("");
-                    setRemainingChars(CastLengthLimit);
+                    void submitCurrentCast();
                   }
                   else {
                     console.error("User not authenticated.");
