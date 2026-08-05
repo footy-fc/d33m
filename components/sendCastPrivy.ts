@@ -1,12 +1,14 @@
 import axios from 'axios';
-import { Ed25519Signer, FarcasterNetwork, Message, makeCastAdd } from '@farcaster/core';
+import { FarcasterNetwork, HubError, Message, Signer, SignatureScheme, makeCastAdd } from '@farcaster/core';
+import { err, ok } from 'neverthrow';
 import { FarcasterHub } from '../constants/constants';
+export type PrivyFarcasterSigner = Signer;
 
 const sendCastPrivy = async (
   casterFID: number,
   newPost: string,
   targetUrl: string,
-  privySigner: Ed25519Signer,
+  privySigner: Signer,
 ) => {
   console.log('privySigner FID', casterFID, privySigner);
 
@@ -16,7 +18,14 @@ const sendCastPrivy = async (
   }
 
   const submitCastMessage = await makeCastAdd(
-    { text: newPost, parentUrl: targetUrl },
+    {
+      text: newPost,
+      parentUrl: targetUrl,
+      embeds: [],
+      embedsDeprecated: [],
+      mentions: [],
+      mentionsPositions: [],
+    },
     {
       fid: casterFID,
       network: FarcasterNetwork.MAINNET,
@@ -43,23 +52,25 @@ const sendCastPrivy = async (
   return submitCastResponse.data;
 };
 
-export type PrivyFarcasterSigner = Pick<Ed25519Signer, 'scheme' | 'getSignerKey' | 'signMessageHash'>;
-
 export const createPrivyFarcasterSigner = (
   signFarcasterMessage: (messageHash: Uint8Array) => Promise<Uint8Array>,
   getFarcasterSignerPublicKey: () => Promise<Uint8Array>,
 ): PrivyFarcasterSigner => ({
-  scheme: FarcasterNetwork ? 1 : 1,
-  getSignerKey: async () => ({
-    isOk: () => true,
-    isErr: () => false,
-    value: await getFarcasterSignerPublicKey(),
-  }) as Awaited<ReturnType<Ed25519Signer['getSignerKey']>>,
-  signMessageHash: async (hash: Uint8Array) => ({
-    isOk: () => true,
-    isErr: () => false,
-    value: await signFarcasterMessage(hash),
-  }) as Awaited<ReturnType<Ed25519Signer['signMessageHash']>>,
+  scheme: SignatureScheme.ED25519,
+  getSignerKey: async () => {
+    try {
+      return ok(await getFarcasterSignerPublicKey());
+    } catch (error) {
+      return err(new HubError('unknown', error instanceof Error ? error.message : 'Unable to get signer key'));
+    }
+  },
+  signMessageHash: async (hash: Uint8Array) => {
+    try {
+      return ok(await signFarcasterMessage(hash));
+    } catch (error) {
+      return err(new HubError('unknown', error instanceof Error ? error.message : 'Unable to sign message hash'));
+    }
+  },
 });
 
 export default sendCastPrivy;
