@@ -37,6 +37,9 @@ const fetchCastersDetails = async (casts: Message[], hubAddress: string, setUpda
   const fidDetailsCache: Record<number, FidDetails> = {};
 
   const getUserDataFromFid = async (fid: number): Promise<FidDetails> => {
+    let pfp = '', fname = '', bio = '';
+
+    try {
       // const server = "https://hub.farcaster.standardcrypto.vc:2281";
       const server = FarcasterHub;
       const result = await axios.get(`${server}/v1/userDataByFid?fid=${fid}`, {
@@ -44,22 +47,24 @@ const fetchCastersDetails = async (casts: Message[], hubAddress: string, setUpda
           "Content-Type": "application/json",
         },
       });
-      let pfp = '', fname = '', bio = '';  
-    
-    result.data.messages.forEach((message: { data: { userDataBody: any; }; }) => {
-      const { userDataBody } = message.data; 
-      switch (userDataBody.type) { 
-        case "USER_DATA_TYPE_USERNAME":
-          fname = userDataBody.value;
-          break;
-        case "USER_DATA_TYPE_BIO":
-          bio = userDataBody.value;
-          break;
-        case "USER_DATA_TYPE_PFP":
-          pfp = userDataBody.value;
-          break;
-      }
-    });
+
+      result.data.messages.forEach((message: { data: { userDataBody: any; }; }) => {
+        const { userDataBody } = message.data;
+        switch (userDataBody.type) {
+          case "USER_DATA_TYPE_USERNAME":
+            fname = userDataBody.value;
+            break;
+          case "USER_DATA_TYPE_BIO":
+            bio = userDataBody.value;
+            break;
+          case "USER_DATA_TYPE_PFP":
+            pfp = userDataBody.value;
+            break;
+        }
+      });
+    } catch (error) {
+      console.error(`Failed to fetch Farcaster profile for FID ${fid}`, error);
+    }
     
     return { pfp, fname, bio };
   };
