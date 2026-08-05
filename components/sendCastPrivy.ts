@@ -3,10 +3,7 @@ import { FarcasterNetwork, HubError, Message, Signer, SignatureScheme, makeCastA
 import { err, ok } from 'neverthrow';
 import { FarcasterHub } from '../constants/constants';
 
-type PrivySignFarcasterMessage = {
-  (messageHash: Uint8Array): Promise<Uint8Array>;
-  (payload: { hash: string }): Promise<Uint8Array>;
-};
+type PrivySignFarcasterMessage = (messageHash: Uint8Array) => Promise<Uint8Array>;
 
 export type PrivyFarcasterSigner = Signer;
 
@@ -70,12 +67,7 @@ export const createPrivyFarcasterSigner = (
   },
   signMessageHash: async (hash: Uint8Array) => {
     try {
-      const base64UrlHash = Buffer.from(hash)
-        .toString('base64')
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/g, '');
-      const signature = await signFarcasterMessage({ hash: base64UrlHash });
+      const signature = await signFarcasterMessage(hash);
       return ok(signature.length === 64 ? signature : signature.slice(0, 64));
     } catch (error) {
       return err(new HubError('unknown', error instanceof Error ? error.message : 'Unable to sign message hash'));
