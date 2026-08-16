@@ -5,7 +5,7 @@ const CreateWalletButton = () => {
   const { ready, authenticated, user, createWallet } = usePrivy();
   const isAuthenticated = ready && authenticated;
   const hasEmbeddedWallet = !!user?.linkedAccounts.find(
-    (account) => account.type === 'wallet' && account.walletClient === 'privy'
+    (account) => account.type === 'wallet' && account.walletClientType === 'privy'
   );
   return (
     <>

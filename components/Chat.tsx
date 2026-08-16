@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Message } from "@farcaster/core";
-import { ExternalEd25519Signer } from '@standard-crypto/farcaster-js-hub-rest';
 
 // Gundb for team logos within d33m rooms
 import Gun from 'gun';
@@ -20,7 +19,7 @@ import { useFarcasterSigner, usePrivy } from '@privy-io/react-auth';
 
 // Utilities
 import fetchCastersDetails from './fetchCasterDetails';
-import submitCastPrivy from './sendCastPrivy';
+import submitCastPrivy, { createPrivyFarcasterSigner } from './sendCastPrivy';
 import sendTip from './sendTip';
 import sendAI from './sendAI';
 
@@ -80,7 +79,7 @@ const SocialMediaFeed = () => {
   const [selectedTeam, setSelectedTeam] = useState('');
   const { ready, authenticated, user, logout, sendTransaction } = usePrivy();
   const {getFarcasterSignerPublicKey, signFarcasterMessage} = useFarcasterSigner();
-  const privySigner = new ExternalEd25519Signer(signFarcasterMessage, getFarcasterSignerPublicKey);
+  const privySigner = createPrivyFarcasterSigner(signFarcasterMessage, getFarcasterSignerPublicKey);
   const [showEmojis, setShowEmojis] = useState(false);
   
 
@@ -298,6 +297,23 @@ const SocialMediaFeed = () => {
 
   
   const notify = (message: string | number | boolean | null | undefined) => toast(message);
+
+  const submitCurrentCast = async () => {
+    if (!user?.farcaster?.fid || !newPost.trim()) {
+      notify('Authenticate your Farcaster account to chat.');
+      setIsWalletModalVisible(true);
+      return;
+    }
+
+    try {
+      await submitCastPrivy(user.farcaster.fid, newPost, targetUrl, privySigner);
+      setNewPost('');
+      setRemainingChars(CastLengthLimit);
+    } catch (error) {
+      console.error('Failed to submit Farcaster cast', error);
+      notify('Unable to submit cast. Authorize your Farcaster signer in Account, then try again.');
+    }
+  };
   
   // TODO make some better components for this and use them in the panel
   // TODO slide out panel only closing on affordnace click, should close on click outside
@@ -395,9 +411,7 @@ const SocialMediaFeed = () => {
                       console.log('fid is ', user?.farcaster?.fid)
                       const fid = user?.farcaster?.fid;
                       if (fid) {
-                        submitCastPrivy(fid, newPost, targetUrl, privySigner);
-                        setNewPost("");
-                        setRemainingChars(CastLengthLimit);
+                        void submitCurrentCast();
                       } else {
                         console.error("User not authenticated.");
                         setNewPost("");
@@ -443,9 +457,7 @@ const SocialMediaFeed = () => {
                 if (ready && authenticated && user?.farcaster?.fid) {
                   const fid = user?.farcaster?.fid;
                   if (fid) {
-                    submitCastPrivy(fid, newPost, targetUrl, privySigner);
-                    setNewPost("");
-                    setRemainingChars(CastLengthLimit);
+                    void submitCurrentCast();
                   }
                   else {
                     console.error("User not authenticated.");

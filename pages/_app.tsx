@@ -4,8 +4,7 @@
 
 import 'tailwindcss/tailwind.css';
 import '../styles/embedder.css';
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { AppProps } from 'next/app';
 import {PrivyProvider} from '@privy-io/react-auth';
@@ -14,37 +13,16 @@ import Head from 'next/head';
 //TODO Update OG and Twitter meta tags with d33m info and icons
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
     // Assuming your root element has the ID 'root'. Adjust if it's different.
     Modal.setAppElement('#__next');
+    setMounted(true);
   }, []);
   console.log('d33m is hobby project that is under development. If you run into issues dm @kmacb.eth on Farcaster. The console log msg may help debug.')
   return (
-    <PrivyProvider
-      appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID || ''}
-      onSuccess={() => router.push('/?channel=gantry')}
-      
-      config={{
-        appearance: {
-          theme: `#${'181424'}`, 
-        },  
-        loginMethods: ['farcaster']
-
-       /*  externalWallets: { 
-          coinbaseWallet: { 
-            // Valid connection options include 'eoaOnly' (default), 'smartWalletOnly', or 'all'
-            connectionOptions: 'all', 
-          }, 
-        },  */
-       /*  embeddedWallets: {
-          createOnLogin: 'users-without-wallets',
-          //showWalletLoginFirst: false,
-          // waitForTransactionConfirmation: false,
-          // noPromptOnSignature: true,
-        }, */
-      }}
-    >
+    <>
       <Head>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>d33m rooms - Footy Watch Parties</title>
@@ -132,8 +110,33 @@ function MyApp({ Component, pageProps }: AppProps) {
   />
 </Head>
 
-      <Component {...pageProps} />
-    </PrivyProvider>
+      {mounted ? (
+        <PrivyProvider
+          appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID || ''}
+          config={{
+            appearance: {
+              theme: `#${'181424'}`, 
+            },  
+            loginMethods: ['farcaster']
+
+           /*  externalWallets: { 
+              coinbaseWallet: { 
+                // Valid connection options include 'eoaOnly' (default), 'smartWalletOnly', or 'all'
+                connectionOptions: 'all', 
+              }, 
+            },  */
+           /*  embeddedWallets: {
+              createOnLogin: 'users-without-wallets',
+              //showWalletLoginFirst: false,
+              // waitForTransactionConfirmation: false,
+              // noPromptOnSignature: true,
+            }, */
+          }}
+        >
+          <Component {...pageProps} />
+        </PrivyProvider>
+      ) : null}
+    </>
   )
 }
 

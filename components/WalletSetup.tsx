@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import ExportWalletButton from './ExportWalletButton';
 import CreateWalletButton from './CreateWalletButton';
-import { useExperimentalFarcasterSigner, usePrivy } from "@privy-io/react-auth";
+import { useFarcasterSigner, usePrivy } from "@privy-io/react-auth";
 import Link from "next/link";
 import Privy from './Privy';
 
@@ -35,7 +35,7 @@ const customStyles = {
 const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onRequestClose }) => {
     //const {login} = usePrivy();
     const { ready, authenticated, user, logout, createWallet } = usePrivy();
-    const { requestFarcasterSignerFromWarpcast } = useExperimentalFarcasterSigner();
+    const { requestFarcasterSignerFromWarpcast } = useFarcasterSigner();
     const farcasterAccount = user?.linkedAccounts.find((account: { type: string; }) => account.type === 'farcaster');
     const [copySuccess, setCopySuccess] = useState(false);
     const GetPublicKey = () => {
